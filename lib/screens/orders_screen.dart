@@ -10,6 +10,14 @@ class OrdersScreen extends StatefulWidget {
 class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Center(
+        child: Text(
+          'orders',
+           textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black),
+        )
+      )
+    );
   }
 }

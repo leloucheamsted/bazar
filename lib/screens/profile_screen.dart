@@ -11,9 +11,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        children: [],
-      ),
-    );
+        child: Center(
+            child: Text(
+      'Profile',
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.black),
+    )));
   }
 }

@@ -38,7 +38,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  shared_preferences: ^2.0.13
+  get: ^4.6.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -68,6 +69,25 @@ flutter:
     - assets/nav_icons/orders.png
     - assets/nav_icons/profile.png
     - assets/nav_icons/search.png
+    - assets/drop.png
+    - assets/Cameroon.png
+
+  fonts:
+    - family: Prompt_Regular
+      fonts:
+        - asset: assets/fonts/Prompt-Regular.ttf
+
+    - family: Prompt_Medium
+      fonts:
+        - asset: assets/fonts/Prompt-Medium.ttf
+
+    - family: Prompt_Bold
+      fonts:
+        - asset: assets/fonts/Prompt-Bold.ttf
+
+    - family: Prompt_Bold
+      fonts:
+        - asset: assets/fonts/Prompt-SemiBold.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

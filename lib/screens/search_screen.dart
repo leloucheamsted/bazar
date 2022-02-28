@@ -10,6 +10,15 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+   
+      child: Center(
+        child: Text(
+          'Search',
+           textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black),
+        )
+      )
+    );
   }
 }

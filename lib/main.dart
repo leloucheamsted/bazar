@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import './screens/screens.dart';
 import './config/palette.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 void main() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.white, // navigation bar color
     statusBarColor: Colors.white, // status bar color
-    statusBarBrightness: Brightness.dark,//status bar brigtness
-    statusBarIconBrightness:Brightness.dark , //status barIcon Brightness
-    systemNavigationBarDividerColor: Colors.white,//Navigation bar divider color
-    systemNavigationBarIconBrightness: Brightness.light, //navigation bar icon 
+    statusBarBrightness: Brightness.dark, //status bar brigtness
+    statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
+    systemNavigationBarDividerColor:
+        Colors.white, //Navigation bar divider color
+    systemNavigationBarIconBrightness: Brightness.light, //navigation bar icon
   ));
-  runApp(const MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +25,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
