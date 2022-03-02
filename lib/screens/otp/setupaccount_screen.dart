@@ -1,0 +1,224 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
+import '../../config/palette.dart';
+// Import the firebase_core and cloud_firestore plugin
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class SetupAccountScreen extends StatefulWidget {
+  const SetupAccountScreen({Key? key}) : super(key: key);
+
+  @override
+  _SetupAccountScreenState createState() => _SetupAccountScreenState();
+}
+
+class _SetupAccountScreenState extends State<SetupAccountScreen> {
+  TextEditingController textController = TextEditingController();
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
+
+  bool isValid = false;
+  bool visibilityError = false;
+  bool visibilitySucces = false;
+  _onChanged(String value) {
+    setState(() {
+      if (value.length <= 3) {
+        isValid = false;
+        visibilityError = false;
+        visibilitySucces = false;
+      } else {
+        isValid = true;
+        if (value == "basic" || value == "Basic" || value == "BASIC") {
+          visibilityError = true;
+          visibilitySucces = false;
+        } else {
+          visibilityError = false;
+          visibilitySucces = true;
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+
+    Future<void> addUser() {
+      // Call the user's CollectionReference to add a new user
+      return users
+          .add({
+            'name': textController.text, // John Doe
+            'number': Get.arguments, // Stokes and Sons
+          })
+          .then((value) => {
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName(Navigator.defaultRouteName)),
+                print("User Added")
+              })
+          .catchError((error) => print("Failed to add user: $error"));
+    }
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+        child: Align(
+          alignment: Alignment.center,
+          child: ListView(
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleButton(
+                    icon: Icons.arrow_back_outlined,
+                    iconSize: 20.0,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Expanded(
+                    child: Text(
+                      'basic',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 40.0,
+                        fontFamily: 'Prompt_Bold',
+                        color: Palette.primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Setup account',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontFamily: 'Prompt_Bold',
+                    color: Palette.colorText,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Create a username to get started',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontFamily: 'Prompt_Regular',
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                height: 50,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Palette.colorgray,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: TextFormField(
+                  onChanged: _onChanged,
+                  controller: textController,
+                  autocorrect: false,
+                  textAlign: TextAlign.start,
+                  validator: (value) {
+                    if (value == "base" || value == "basic") {
+                      return "Username  not valid";
+                    }
+                  },
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: 'Prompt_Regular',
+                  ),
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Enter your username',
+                    hintStyle: TextStyle(color: Palette.secondColor),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              visibilityError
+                  ? Text(
+                      'Username not available',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontFamily: "Prompt_Regular",
+                        fontSize: 14,
+                      ),
+                    )
+                  : new Container(),
+              visibilitySucces
+                  ? Text(
+                      'Username available',
+                      style: TextStyle(
+                        color: Palette.validNameColorStatut,
+                        fontFamily: "Prompt_Regular",
+                        fontSize: 14,
+                      ),
+                    )
+                  : new Container(),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                height: 50.0,
+                width: double.infinity,
+                child: RaisedButton(
+                  textColor: Colors.white,
+                  color: isValid && visibilitySucces
+                      ? Palette.primaryColor
+                      : Palette.disableButton,
+                  disabledColor: Palette.disableButton,
+                  disabledTextColor: Palette.colorLight,
+                  child: Text(
+                    "Valid",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontFamily: 'Prompt_Medium',
+                    ),
+                  ),
+                  onPressed: isValid && visibilitySucces
+                      ? () async {
+                          FocusScope.of(context).unfocus();
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setString('name', textController.text);
+                          prefs.setString('number', Get.arguments.text);
+                          addUser();
+                         
+                        }
+                      : null,
+                  //status
+                  //     ? () {
+                  //         Get.to(
+                  //           EnterCodeScreen(),
+                  //           transition: Transition.rightToLeft,
+                  //           duration: Duration(seconds: 1),
+                  //         );
+                  //       }
+                  //     : null,
+                  shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(15.0),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+// Add Users in Firebase
+
+}

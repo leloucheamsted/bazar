@@ -56,6 +56,7 @@ class _NavScreenState extends State<NavScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: PageStorage(
         child: currentScreen,
         bucket: bucket,

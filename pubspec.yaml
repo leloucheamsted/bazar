@@ -35,6 +35,15 @@ dependencies:
   cupertino_icons: ^1.0.2
   cached_network_image: ^2.2.0+1
   material_design_icons_flutter: 5.0.6595
+  pinput: ^2.0.2
+  firebase_auth: ^3.3.5
+  firebase_core: ^1.11.0
+  image_picker: ^0.8.4+10
+  firebase_storage: ^10.2.9
+  permission_handler: ^9.2.0
+  cloud_firestore: ^3.1.10
+  font_awesome_flutter: ^9.2.0
+  getwidget: ^2.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -71,6 +80,7 @@ flutter:
     - assets/nav_icons/search.png
     - assets/drop.png
     - assets/Cameroon.png
+    - assets/back.png
 
   fonts:
     - family: Prompt_Regular
@@ -88,7 +98,21 @@ flutter:
     - family: Prompt_Bold
       fonts:
         - asset: assets/fonts/Prompt-SemiBold.ttf
-
+    - family: fa
+      fonts:
+        - asset: assets/fonts/fa-brands-400.ttf
+    - family: fad
+      fonts:
+        - asset: assets/fonts/fa-duotone-900.ttf
+    - family: fal
+      fonts:
+        - asset: assets/fonts/fa-light-300.ttf
+    - family: far
+      fonts:
+        - asset: assets/fonts/fa-regular-400.ttf
+    - family: fas
+      fonts:
+        - asset: assets/fonts/fa-solid-900.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
