@@ -57,9 +57,9 @@ class _NavScreenState extends State<NavScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: PageStorage(
-        child: currentScreen,
-        bucket: bucket,
+      body: IndexedStack(
+        index: currentTab,
+        children: screens,
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Palette.primaryColor,

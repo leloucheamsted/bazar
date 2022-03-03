@@ -33,7 +33,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  cached_network_image: ^2.2.0+1
+  cached_network_image: ^3.2.0
   material_design_icons_flutter: 5.0.6595
   pinput: ^2.0.2
   firebase_auth: ^3.3.5
@@ -43,11 +43,18 @@ dependencies:
   permission_handler: ^9.2.0
   cloud_firestore: ^3.1.10
   font_awesome_flutter: ^9.2.0
+  video_player: ^2.2.19
+  stacked_services: ^0.8.6
+  stacked: ^2.1.7
+  get_it: ^7.1.3
+  flutter_svg: ^1.0.3
   getwidget: ^2.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
   shared_preferences: ^2.0.13
+  measured_size: ^1.0.0
+  carousel_slider: ^4.0.0
   get: ^4.6.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -78,9 +85,13 @@ flutter:
     - assets/nav_icons/orders.png
     - assets/nav_icons/profile.png
     - assets/nav_icons/search.png
-    - assets/drop.png
-    - assets/Cameroon.png
+    - assets/drop.svg
+    - assets/Cameroon.svg
     - assets/back.png
+    - assets/userShow.svg
+    - assets/user.svg
+    - assets/fire.svg
+    - assets/fireShow.svg
 
   fonts:
     - family: Prompt_Regular

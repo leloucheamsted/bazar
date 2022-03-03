@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class EnterNumberScreen extends StatefulWidget {
   const EnterNumberScreen({Key? key}) : super(key: key);
@@ -98,14 +99,15 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Image.asset(
-                            'assets/Cameroon.png',
-                          ),
-                          ImageIcon(
-                            AssetImage(
-                              'assets/drop.png',
-                            ),
-                          ),
+                          SvgPicture.asset('assets/Cameroon.svg'),
+                          SvgPicture.asset('assets/drop.svg'),
+                          // Image.asset(
+                          //   'assets/Cameroon.png',
+                          // ),
+                          // ImageIcon(
+                          //   AssetImage(
+                          //     'assets/drop.png',
+                          //   ),
                         ],
                       ),
                     ),

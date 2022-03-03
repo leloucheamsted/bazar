@@ -1,3 +1,4 @@
+import 'package:bazar/service_locator.dart';
 import 'package:flutter/material.dart';
 import './screens/screens.dart';
 import './config/palette.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  setup();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.white, // navigation bar color
     statusBarColor: Colors.white, // status bar color
