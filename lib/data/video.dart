@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:video_player/video_player.dart';
 
 class Video {
@@ -13,6 +15,7 @@ class Video {
   String details;
   String nom;
   String profile;
+
   VideoPlayerController? controller;
 
   Video(
@@ -54,9 +57,29 @@ class Video {
     return data;
   }
 
+  static Video fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+
+    return Video(
+      numeroVendeur: snapshot['numeroVendeur'],
+      nom: snapshot['nom'],
+      profile: snapshot['profile'],
+      likes: snapshot['likes'],
+      video_title: snapshot['video_title'],
+      Category: snapshot['Category'],
+      quantite: snapshot['quantite'],
+      //likes: snapshot['caption'],
+      details: snapshot['details'],
+      prix: snapshot['prix'],
+      url: snapshot['url'],
+    );
+  }
+
   Future<Null> loadController() async {
     controller = VideoPlayerController.network(url);
-    await controller?.initialize();
+    await controller
+        ?.initialize()
+        .then((value) => debugPrint('Controller Initialiszed!!'));
     controller?.setLooping(true);
   }
 }

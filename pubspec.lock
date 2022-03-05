@@ -570,7 +570,7 @@ packages:
     source: hosted
     version: "4.2.4"
   provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: provider
       url: "https://pub.dartlang.org"
@@ -750,7 +750,7 @@ packages:
     source: hosted
     version: "2.1.1"
   video_player:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: video_player
       url: "https://pub.dartlang.org"

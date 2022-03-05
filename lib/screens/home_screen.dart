@@ -1,11 +1,21 @@
+import 'dart:async';
+
+import 'package:bazar/Services/service_video.dart';
+import 'package:bazar/Services/test.dart';
 import 'package:bazar/config/palette.dart';
+import 'package:bazar/screens/otp/VideoWidget.dart';
+import 'package:bazar/widgets/Test2.dart';
 import 'package:bazar/widgets/button.dart';
+import 'package:bazar/widgets/loading_card.dart';
+import 'package:bazar/widgets/testFire.dart';
+import 'package:bazar/widgets/testProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 import '../../widgets/widgets.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:video_player/video_player.dart';
@@ -14,11 +24,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../Services/feef_videoModel.dart';
+import '../Services/video_controller.dart';
 import '../data/video.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -26,34 +36,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final locator = GetIt.instance;
   final feedViewModel = GetIt.instance<FeedViewModel>();
+  // final VideoService videoControlle = Get.put(VideoService());
+  //final VideoController videoController = Get.put(VideoController());
+  bool CarouselShow = false;
   //late VideoPlayerController _controller1;
 
   @override
   void initState() {
-    feedViewModel.loadVideo(0);
-    feedViewModel.loadVideo(1);
     print('leleouche');
     // TODO: implement initState
     super.initState();
-    // _controller1 = VideoPlayerController.network(
-    //     'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
-    //   ..initialize().then((_) {
-    //     // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-    //     setState(() {
-    //       _controller1.play();
-    //     });
-    //   });
+    Timer(Duration(seconds: 4), () {
+      CarouselShow = true;
+    });
+    CarouselShow = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<FeedViewModel>.reactive(
-        disposeViewModel: false,
-        builder: (context, model, child) => videoScreen(),
-        viewModelBuilder: () => feedViewModel);
-  }
-
-  Widget videoScreen() {
     return Column(
       children: [
         Padding(
@@ -120,81 +120,14 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 8,
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            child: Stack(
-              children: [
-                PageView.builder(
-                  controller: PageController(
-                    initialPage: 0,
-                    viewportFraction: 1,
-                  ),
-                  itemCount: feedViewModel.videoSource?.listVideos.length,
-                  onPageChanged: (index) {
-                    index =
-                        index % (feedViewModel.videoSource!.listVideos.length);
-                    feedViewModel.changeVideo(index);
-                  },
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (context, index) {
-                    var _scale = index == index ? 1.0 : 0.8;
-                    return TweenAnimationBuilder(
-                      tween: Tween(begin: _scale, end: _scale),
-                      curve: Curves.ease,
-                      duration: const Duration(milliseconds: 350),
-                      child: videoCard(
-                          feedViewModel.videoSource!.listVideos[index]),
-                      builder: (context, value, child) {
-                        //return
-                        return Transform.scale(
-                          scale: double.parse(value.toString()),
-                          child: child,
-                        );
-                      },
-                    );
-
-                    index =
-                        index % (feedViewModel.videoSource!.listVideos.length);
-                    // return videoCard(
-                    //     feedViewModel.videoSource!.listVideos[index]);
-                  },
-                ),
-              ],
-            ),
-            // child: CarouselSlider.builder(
-            //   // items: items,
-            //   itemCount: feedViewModel.videoSource?.listVideos.length,
-
-            //   itemBuilder:
-            //       (BuildContext context, int itemIndex, int pageViewIndex) =>
-            //           (videoCard(
-            //               feedViewModel.videoSource!.listVideos[pageViewIndex])
-
-            //           //  },
-            //           ),
-
-            //   options: CarouselOptions(
-            //     //height: 400,
-            //     // height: h,
-            //     aspectRatio: 2.0,
-            //     viewportFraction: 1,
-            //     enlargeCenterPage: true,
-            //     initialPage: 0,
-            //     scrollDirection: Axis.vertical,
-            //     enableInfiniteScroll: false,
-            //     reverse: false,
-            //     // autoPlay: true,
-            //   ),
-            // ),
+          child: Stack(
+            children: [
+              //  CarouselShow ? LoadingScreen() : TestFire(),
+              ProviderTest()
+            ],
           ),
-
-          //  ClipRRect( child: _controller.value.isInitialized
-          //     ? AspectRatio(
-          //         aspectRatio: _controller.value.aspectRatio,
-          //         child: VideoPlayer(_controller),
-          //       )
-          //     : Container(),
         ),
+        //  Expanded(child: Test()),
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 8, 8, 20),
           child: Row(
@@ -267,73 +200,4 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // VIDEO CAERD
 
-  Widget videoCard(Video video) {
-    return video.controller != null
-        ? VideoPlayer(video.controller!)
-        // return ClipRRect(
-        //   borderRadius: BorderRadius.circular(20),
-        //   child: Stack(
-        //     children: [
-        //       video.controller != null
-        //           ? GestureDetector(
-        //               onTap: () {
-        //                 if (video.controller!.value.isPlaying) {
-        //                   video.controller?.pause();
-        //                 } else {
-        //                   video.controller?.play();
-        //                 }
-        //               },
-        //               child: SizedBox.expand(
-        //                   child: FittedBox(
-        //                 fit: BoxFit.cover,
-        //                 child: SizedBox(
-        //                   width: video.controller?.value.size.width ?? 0,
-        //                   height: video.controller?.value.size.height ?? 0,
-        //                   child: VideoPlayer(video.controller!),
-        //                 ),
-        //               )),
-        //             )
-        //VideoPlayer(video.controller!)
-        : Container(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            height: 700,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [
-                    Colors.grey,
-                    Colors.white,
-
-                    Colors.white,
-                    Colors.grey,
-                    //add more colors for gradient
-                  ],
-                  begin: Alignment.topCenter, //begin of the gradient color
-                  end: Alignment.bottomCenter, //end of the gradient color
-                  stops: [0, 0.2, 0.5, 0.8] //stops for individual color
-                  //set the stops number equal to numbers of color
-                  ),
-            ),
-            //),
-            //  ],
-            //  ),
-          );
-    // Column(
-    //   mainAxisAlignment: MainAxisAlignment.end,
-    //   children: <Widget>[
-    //     Row(
-    //       mainAxisSize: MainAxisSize.max,
-    //       crossAxisAlignment: CrossAxisAlignment.end,
-    //       children: <Widget>[
-    //         VideoDescription(video.user, video.videoTitle, video.songName),
-    //         ActionsToolbar(video.likes, video.comments,
-    //             "https://www.andersonsobelcosmetic.com/wp-content/uploads/2018/09/chin-implant-vs-fillers-best-for-improving-profile-bellevue-washington-chin-surgery.jpg"),
-    //       ],
-    //     ),
-  }
-
-  @override
-  void dispose() {
-    feedViewModel.controller?.dispose();
-    super.dispose();
-  }
 }

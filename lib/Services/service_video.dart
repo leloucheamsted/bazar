@@ -1,6 +1,8 @@
+import 'package:bazar/constants.dart';
 import 'package:bazar/data/demo_data.dart';
 import 'package:bazar/data/video.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class VideoService {
   List<Video> listVideos = <Video>[];
@@ -8,7 +10,6 @@ class VideoService {
   VideoService() {
     load();
   }
-
   void load() async {
     listVideos = await getVideoList();
   }
