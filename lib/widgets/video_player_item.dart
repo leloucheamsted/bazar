@@ -1,3 +1,4 @@
+import 'package:bazar/Services/service_fire.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -14,7 +15,7 @@ class VideoPlayerItem extends StatefulWidget {
 
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
   late VideoPlayerController videoPlayerController;
-
+  ServiceFire? _serviceFire;
   @override
   void initState() {
     super.initState();

@@ -12,6 +12,7 @@ class VideoService {
   }
   void load() async {
     listVideos = await getVideoList();
+    listVideos[0].loadController();
   }
 
   Future<List<Video>> getVideoList() async {

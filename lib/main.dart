@@ -1,7 +1,12 @@
 import 'package:bazar/Services/providerModel.dart';
-import 'package:bazar/Services/test.dart';
+import 'package:bazar/screens/camera_screen.dart';
+import 'package:bazar/widgets/Test2.dart';
+import 'package:bazar/widgets/Test3.dart';
+import 'package:bazar/widgets/test.dart';
 import 'package:bazar/screens/otp/VideoWidget.dart';
 import 'package:bazar/service_locator.dart';
+import 'package:bazar/widgets/testProvider.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './screens/screens.dart';
@@ -10,9 +15,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+List<CameraDescription>? cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  cameras = await availableCameras();
   setup();
   setap();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

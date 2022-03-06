@@ -34,7 +34,7 @@ class _TestFireState extends State<TestFire> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<FielModelFire>.reactive(
         disposeViewModel: false,
-        onModelReady: (viewModel) => viewModel.initialised,
+        onModelReady: (viewModel) => viewModel.loadVideo(0),
         builder: (context, model, child) => videoScreen(),
         viewModelBuilder: () => FielModelFire());
   }

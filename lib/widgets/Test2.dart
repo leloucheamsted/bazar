@@ -24,6 +24,10 @@ class _Test2State extends State<Test2> {
   final feedViewModel = GetIt.instance<FeedViewModel>();
   @override
   void initState() {
+    setState(() {
+      feedViewModel.loadVideo(0);
+      feedViewModel.loadVideo(1);
+    });
     feedViewModel.loadVideo(0);
     feedViewModel.loadVideo(1);
 

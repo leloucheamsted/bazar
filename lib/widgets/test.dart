@@ -21,11 +21,14 @@ class _TestState extends State<Test> {
   // Test({Key? key}) : super(key: key);
   final locator = GetIt.instance;
   final feedViewModel = GetIt.instance<FeedViewModel>();
+  late int prevVideo = 0;
   @override
   void initState() {
     feedViewModel.loadVideo(0);
     feedViewModel.loadVideo(1);
-
+    setState(() {
+      prevVideo;
+    });
     super.initState();
   }
 
@@ -78,8 +81,6 @@ class _TestState extends State<Test> {
                           int pageViewIndex) {
                         itemIndex =
                             itemIndex % (videoController.videoList.length);
-                        // return videoCard(
-                        //     feedViewModel.videoSource!.listVideos[itemIndex]);
                         return videoController.videoList != null
                             ? VideoPlayerItem(
                                 videoUrl:
@@ -121,27 +122,15 @@ class _TestState extends State<Test> {
                         enlargeCenterPage: true,
                         //  onPageChanged: callbackFunction,
                         scrollDirection: Axis.vertical,
+                        onPageChanged: (index, reason) {
+                          index = index % (videoController.videoList.length);
+                          changeVideo(index);
+                          //  model.changeVideo(index);
+                        },
                       ),
                     ),
             ],
           );
-          // return PageView.builder(
-          //   itemCount: videoController.videoList.length,
-          //   controller: PageController(initialPage: 0, viewportFraction: 1),
-          //   scrollDirection: Axis.vertical,
-          //   itemBuilder: (context, index) {
-          //     final data = videoController.videoList[index];
-          //     return Stack(
-          //       children: [
-          //         Expanded(
-          //           child: VideoPlayerItem(
-          //             videoUrl: data.url,
-          //           ),
-          //         ),
-          //       ],
-          //     );
-          //   },
-          // );
         }),
       ],
     );
@@ -151,6 +140,21 @@ class _TestState extends State<Test> {
   void dispose() {
     feedViewModel.controller?.dispose();
     super.dispose();
+  }
+
+  void changeVideo(index) async {
+    if (videoController.videoList[index].controller == null) {
+      await videoController.videoList[index].loadController();
+    }
+    videoController.videoList[index].controller!.play();
+    //videoSource.listVideos[prevVideo].controller.removeListener(() {});
+
+    if (videoController.videoList[prevVideo].controller != null)
+      videoController.videoList[prevVideo].controller!.pause();
+
+    setState(() {
+      prevVideo = index;
+    });
   }
 
   Widget videoCard(Video video) {

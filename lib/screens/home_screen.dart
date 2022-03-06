@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:bazar/Services/service_video.dart';
-import 'package:bazar/Services/test.dart';
+import 'package:bazar/widgets/Test3.dart';
+import 'package:bazar/widgets/test.dart';
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/screens/otp/VideoWidget.dart';
 import 'package:bazar/widgets/Test2.dart';
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Stack(
             children: [
               //  CarouselShow ? LoadingScreen() : TestFire(),
-              ProviderTest()
+              //Test()
             ],
           ),
         ),

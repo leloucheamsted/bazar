@@ -44,6 +44,7 @@ dependencies:
   cloud_firestore: ^3.1.10
   font_awesome_flutter: ^9.2.0
   stacked_services: ^0.8.6
+  camera: ^0.9.4+14
   stacked: ^2.1.7
   get_it: ^7.1.3
   flutter_svg: ^1.0.3
@@ -55,6 +56,7 @@ dev_dependencies:
   shared_preferences: ^2.0.13
   measured_size: ^1.0.0
   video_player: ^2.2.19
+
   carousel_slider: ^4.0.0
   get: ^4.6.1
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -93,6 +95,13 @@ flutter:
     - assets/user.svg
     - assets/fire.svg
     - assets/fireShow.svg
+    - assets/reverse.svg
+    - assets/backwhite.svg
+    - assets/flashshow.svg
+    - assets/upload.svg
+    - assets/elipse1.svg
+    - assets/elipse2.svg
+    - assets/elipse3.svg
 
   fonts:
     - family: Prompt_Regular

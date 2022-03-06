@@ -11,6 +11,7 @@ class ServiceFire extends GetxController {
   List<Video> get videoList => _videoList.value;
   ServiceFire() {
     load();
+    //videoList[0].loadController();
   }
   @override
   void onInit() {
@@ -29,7 +30,10 @@ class ServiceFire extends GetxController {
   }
 
   void load() async {
-    _videoList = (await getVideoList()) as Rx<List<Video>>;
+    getVideoList();
+    // _videoList = (await getVideoList()) as Rx<List<Video>>;
+    //_videoList.value[0].loadController();
+    // videoList[0].loadController();
   }
 
   Future getVideoList() async {

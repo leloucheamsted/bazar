@@ -1,8 +1,11 @@
+import 'package:bazar/main.dart';
+import 'package:bazar/screens/camera_screen.dart';
 import 'package:bazar/screens/home_screen.dart';
 import 'package:bazar/screens/orders_screen.dart';
 import 'package:bazar/screens/otp/otp1.dart';
 import 'package:bazar/screens/profile_screen.dart';
 import 'package:bazar/screens/search_screen.dart';
+import 'package:camera/camera.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -20,6 +23,7 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<int> _counter;
+
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
     HomeScreen(),
@@ -289,12 +293,20 @@ class _NavScreenState extends State<NavScreen> {
                           fontFamily: 'Prompt_Medium',
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        await availableCameras().then((value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CameraScreen(
+                                  cameras: value,
+                                ),
+                              ),
+                            ));
                         //  Fermerture du popup
-                        Navigator.of(context).pop();
-                        Get.to(
-                          EnterNumberScreen(),
-                        );
+                        // Navigator.of(context).pop();
+                        // Get.to(
+                        //   CameraScreen(cameras),
+                        // );
                       },
                       shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(15.0),
