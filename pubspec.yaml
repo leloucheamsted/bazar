@@ -49,14 +49,16 @@ dependencies:
   get_it: ^7.1.3
   flutter_svg: ^1.0.3
   getwidget: ^2.0.4
+  # flutter_ffmpeg: ^0.4.2
   provider: ^6.0.2
+  flutter_ffmpeg: ^0.4.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
   shared_preferences: ^2.0.13
   measured_size: ^1.0.0
   video_player: ^2.2.19
-
+  expandable: ^5.0.1
   carousel_slider: ^4.0.0
   get: ^4.6.1
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -102,6 +104,9 @@ flutter:
     - assets/elipse1.svg
     - assets/elipse2.svg
     - assets/elipse3.svg
+    - assets/next.svg
+    - assets/sound_off.svg
+    - assets/sound_on.svg
 
   fonts:
     - family: Prompt_Regular

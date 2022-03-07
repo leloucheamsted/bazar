@@ -1,5 +1,6 @@
 import 'package:bazar/Services/providerModel.dart';
-import 'package:bazar/screens/camera_screen.dart';
+import 'package:bazar/screens/create_post/add_details.dart';
+import 'package:bazar/screens/create_post/camera_screen.dart';
 import 'package:bazar/widgets/Test2.dart';
 import 'package:bazar/widgets/Test3.dart';
 import 'package:bazar/widgets/test.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: NavScreen(),
+        home: AddDetailsScreen(),
       ),
     );
     // return GetMaterialApp(

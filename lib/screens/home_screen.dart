@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/widgets/Test3.dart';
@@ -12,6 +13,7 @@ import 'package:bazar/widgets/testFire.dart';
 import 'package:bazar/widgets/testProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,6 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     print('leleouche');
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark, // dark text for status bar
+          statusBarColor: Colors.transparent));
+    }
     // TODO: implement initState
     super.initState();
     Timer(Duration(seconds: 4), () {
@@ -55,6 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark, // dark text for status bar
+          statusBarColor: Colors.transparent));
+    }
     return Column(
       children: [
         Padding(
