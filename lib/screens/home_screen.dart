@@ -38,7 +38,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final locator = GetIt.instance;
-  final feedViewModel = GetIt.instance<FeedViewModel>();
+  // final feedViewModel = GetIt.instance<FeedViewModel>();
   // final VideoService videoControlle = Get.put(VideoService());
   //final VideoController videoController = Get.put(VideoController());
   bool CarouselShow = false;
@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        //  Expanded(child: Test()),
+        Expanded(child: Test3()),
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 8, 8, 20),
           child: Row(

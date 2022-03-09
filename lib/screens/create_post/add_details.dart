@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:expandable/expandable.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class AddDetailsScreen extends StatefulWidget {
   const AddDetailsScreen({Key? key}) : super(key: key);
@@ -13,11 +14,13 @@ class AddDetailsScreen extends StatefulWidget {
   _AddDetailsScreenState createState() => _AddDetailsScreenState();
 }
 
-final List<String> Categories = <String>[];
+final List<String> Categories = <String>["Repas", "Habillements", "Mobilier"];
 bool? isExpand;
 TextEditingController textPriceController = TextEditingController();
 TextEditingController nbreController = TextEditingController();
-
+String choiceCategory = "Categories";
+String price="0";
+int NbrePiece = 01;
 class DataList {
   DataList(this.title, [this.children = const <String>[]]);
 
@@ -27,10 +30,14 @@ class DataList {
 
 class _AddDetailsScreenState extends State<AddDetailsScreen> {
   String? _chosenValue;
-  int NbrePiece = 01;
 
   @override
   void initState() {
+    setState(() {
+      price="0";
+      NbrePiece =01;
+      choiceCategory = "Categories";
+    });
     // TODO: implement initState
     super.initState();
   }
@@ -43,36 +50,14 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
         systemNavigationBarDividerColor: Palette.primaryColor,
         statusBarIconBrightness: Brightness.dark, // dark text for status bar
         statusBarColor: Colors.transparent));
+
     return Scaffold(
+            resizeToAvoidBottomInset: false,   // Pour empecher le debordemnent de la page a l'affiche du cla
       backgroundColor: Palette.colorLight,
-      body: Stack(children: [
-        Positioned(
-          bottom: 0.0,
-          child: Container(
-              color: Palette.primaryColor,
-              width: MediaQuery.of(context).size.width,
-              height: 60,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        'Next',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontStyle: FontStyle.normal,
-                          fontFamily: "Prompt_Regular",
-                          color: Palette.colorLight,
-                          fontSize: 24,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-        ),
-        Padding(
+      body: 
+     Column(children: [
+       Expanded( child: 
+       Padding(
           padding: EdgeInsets.fromLTRB(8, 40, 8, 0),
           child: Align(
             alignment: Alignment.center,
@@ -116,6 +101,9 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                 SizedBox(
                   height: 30,
                 ),
+
+                // Details du produit
+
                 SizedBox(
                   height: 150,
                   child: Container(
@@ -159,14 +147,13 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                   height: 12,
                 ),
 
-                //  DropDownList(),
-
                 /// List de categories
                 ExpandableNotifier(
                   // <-- Provides ExpandableController to its children
                   child: Column(
                     children: [
                       Expandable(
+                        // controller: controller,
                         // <-- Driven by ExpandableController from ExpandableNotifier
                         collapsed: ExpandableButton(
                           // <-- Expands when tapped on the cover photo
@@ -186,7 +173,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text(
-                                        'Category',
+                                        choiceCategory,
                                         style: TextStyle(
                                           fontFamily: "Prompt_Regular",
                                           fontSize: 22,
@@ -204,15 +191,47 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         ),
                         expanded: Column(children: [
                           Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                            height: 200,
-                            alignment: Alignment.topLeft,
-                            decoration: BoxDecoration(
-                              color: Palette.colorgray,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
+                              width: double.infinity,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 18),
+                              height: 200,
+                              alignment: Alignment.topLeft,
+                              decoration: BoxDecoration(
+                                color: Palette.colorgray,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+
+                              //  Liste de Categories
+                              child: ListView.builder(
+                                  itemCount: Categories.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    var controller = ExpandableController.of(
+                                        context,
+                                        required: true);
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          choiceCategory =
+                                              Categories[index].toString();
+                                        });
+                                        controller
+                                            ?.toggle(); // fermeture du expandeur apres clique
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        child: ListTile(
+                                            title: Text(
+                                          Categories[index].toString(),
+                                          style: TextStyle(
+                                            fontFamily: "Prompt_Regular",
+                                            fontSize: 20,
+                                            color: Palette.colorText,
+                                          ),
+                                        )),
+                                      ),
+                                    );
+                                  })),
                           ExpandableButton(
                             // <-- Collapses when tapped on
                             child: Align(
@@ -236,6 +255,8 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                 // Prix et Nombre de piece
                 Row(
                   children: [
+
+                    //  Prix du produit
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(8),
@@ -252,7 +273,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                                 padding:
                                     const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
                                 child: TextField(
-                                  // controller: textController,
+                                   controller: textPriceController,
                                   autofocus: false,
                                   inputFormatters: <TextInputFormatter>[
                                     // PhoneNumberFormatter(),
@@ -261,7 +282,11 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                                       "[^,.-]",
                                     )),
                                   ],
-                                  //onChanged: _onChanged,
+                                  onChanged: (value){
+                                    setState((){
+                                      price=value;
+                                    });
+                                  },
                                   keyboardType: TextInputType.number,
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
@@ -292,6 +317,8 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                     SizedBox(
                       width: 15,
                     ),
+
+                    //  Nombres de pieces du produits
                     Container(
                       padding: const EdgeInsets.all(10),
                       height: 50,
@@ -301,6 +328,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(children: [
+                        // Bouton de soustraction
                         GestureDetector(
                           onTap: () {
                             if (NbrePiece == 1) {
@@ -318,39 +346,32 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         SizedBox(
                           width: 5,
                         ),
-                        Container(
+                        // Nombre de pieces
+                        GestureDetector(
+                          onTap:(){
+                            showDialog(
+             
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialog(context),
+            );
+                          },
+                        child:Container(
                           width: 40,
                           child: Center(
-                            child: TextField(
-                              controller: nbreController
-                                ..text = NbrePiece.toString(),
-
-                              autofocus: false,
-                              inputFormatters: <TextInputFormatter>[
-                                // PhoneNumberFormatter(),
-                                // LengthLimitingTextInputFormatter(9),
-                                FilteringTextInputFormatter.allow(RegExp(
-                                  "[^,.-]",
-                                )),
-                              ],
-                              //onChanged: _onChanged,
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.center,
+                            child: Text( NbrePiece.toString(),
                               style: TextStyle(
                                 color: Palette.colorText,
                                 fontSize: 20.0,
                                 fontFamily: 'Prompt_Regular',
                               ),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                // labelText: '01',
-                              ),
                             ),
                           ),
+                        ),
                         ),
                         SizedBox(
                           width: 5,
                         ),
+                        // Boutton Pour ajoute
                         GestureDetector(
                           onTap: () {
                             setState(() {
@@ -366,10 +387,34 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
               ],
             ),
           ),
-        ),
-        Positioned(
-          bottom: 13,
-          right: 8,
+        )),
+      Container(
+              color: Palette.primaryColor,
+              width: MediaQuery.of(context).size.width,
+              height: 60,
+              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+              child: Row(
+                children: [
+                    Expanded(
+                    child:Padding(
+                      padding: const EdgeInsets.fromLTRB(35,0,0,0),
+                       child:
+                    Center(
+                      child: Text(
+                        'Next',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontStyle: FontStyle.normal,
+                          fontFamily: "Prompt_Regular",
+                          color: Palette.colorLight,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
+                    ),
+                  ),
+                   Positioned(
+          
           child: InkWell(
             onTap: () {},
             borderRadius: BorderRadius.circular(30),
@@ -380,44 +425,95 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
             // onPressed: () {},
           ),
         ),
-      ]),
-    );
+                
+                ],
+              )),
+
+     
+      
+      
+      
+      
+         ] ),);
   }
 
-  Widget DropDownList() {
-    return DropdownButton<String>(
-      focusColor: Colors.white,
-      value: _chosenValue,
-      //elevation: 5,
-      style: TextStyle(color: Colors.white),
-      iconEnabledColor: Colors.black,
-      items: <String>[
-        'Android',
-        'IOS',
-        'Flutter',
-        'Node',
-        'Java',
-        'Python',
-        'PHP',
-      ].map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(
-            value,
-            style: TextStyle(color: Colors.black),
-          ),
-        );
-      }).toList(),
-      hint: Text(
-        "Please choose a langauage",
-        style: TextStyle(
-            color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+// Popup de saisirr du Nombre de piece 
+  Widget _buildPopupDialog(BuildContext context) {
+  return new AlertDialog(
+    title: const Text('Number of rooms', style: TextStyle(
+                                color: Palette.colorText,
+                                fontSize: 20.0,
+                                fontFamily: 'Prompt_Regular',
+                              ),),
+    content: new Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+             SizedBox(
+                  height: 50,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    // height: 200,
+                    alignment: Alignment.topLeft,
+                    decoration: BoxDecoration(
+                      color: Palette.colorgray,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Stack(children: [
+                      TextFormField(
+                        
+                        controller: nbreController,
+                        //  focusNode: focusNode,
+                        textAlignVertical: TextAlignVertical.center,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 5,
+                        minLines: 1,
+                        style: TextStyle(
+                            color: Palette.colorText,
+                            fontFamily: "Prompt_Regular",
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 22),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "10",
+                          hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontFamily: "Prompt_Regular",
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 22),
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
+      ],
+    ),
+    actions: <Widget>[
+      new FlatButton(
+        onPressed: () {
+          setState((){
+            NbrePiece=int.parse(nbreController.text);
+          });
+          Navigator.of(context).pop();
+        },
+        textColor: Theme.of(context).primaryColor,
+        child: const Text('Valider'),
       ),
-      onChanged: (String? value) {
-        setState(() {
-          _chosenValue = value;
-        });
-      },
-    );
+      new FlatButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        textColor: Theme.of(context).primaryColor,
+        child: const Text('Close'),
+      ),
+    ],
+  );
   }
 }
+
+      
+      
+      

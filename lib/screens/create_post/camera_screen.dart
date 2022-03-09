@@ -273,13 +273,12 @@ class _CameraScreenState extends State<CameraScreen> {
                                 if (_start == 0) {
                                   XFile videopath = _cameraController
                                       .stopVideoRecording() as XFile;
-                                  // _flutterFFmpeg
-                                  //     .execute(" -y -i " +
-                                  //         videopath.path.toString() +
-                                  //         " -vf transpose=3 " +
-                                  //         videopath.path.toString())
-                                  //     .then((rc) => print(
-                                  //         "FFmpeg process exited with rc $rc"));
+                                  XFile? finalpath;
+                                  _flutterFFmpeg
+                                      .execute(
+                                          "ffmeg  -i ${videopath.path} -vf hflip -c:a copy ${finalpath!.path}")
+                                      .then((rc) => print(
+                                          "FFmpeg process exited with rc $rc"));
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -294,16 +293,14 @@ class _CameraScreenState extends State<CameraScreen> {
                               onLongPressUp: () async {
                                 XFile videopath = await _cameraController
                                     .stopVideoRecording();
-                                videopath.path.toString();
+                                File? fl;
                                 setState(() {
                                   isRecoring = false;
                                   _start = 15;
                                 });
                                 _flutterFFmpeg
-                                    .execute(" -y -i " +
-                                        videopath.path.toString() +
-                                        " -vf transpose=3 " +
-                                        videopath.path.toString())
+                                    .execute(
+                                        "-y -i ${videopath.path} -vf hflip -c:a copy ${fl!.path}")
                                     .then((rc) => print(
                                         "FFmpeg process exited with rc $rc"));
                                 startTimer(false);
@@ -311,7 +308,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (builder) => VideoViewPage(
-                                              path: videopath.path,
+                                              path: fl.path,
                                             )));
                               },
                               onTap: () {

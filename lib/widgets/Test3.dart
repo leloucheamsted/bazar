@@ -1,7 +1,6 @@
 import 'dart:ffi';
 
-import 'package:bazar/Services/feef_videoModel.dart';
-import 'package:bazar/Services/fiel_model_fire.dart';
+// import 'package:bazar/Services/feef_videoModel.dart';
 import 'package:bazar/Services/service_fire.dart';
 import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/Services/video_controller.dart';
@@ -9,7 +8,12 @@ import 'package:bazar/screens/otp/VideoWidget.dart';
 import 'package:bazar/widgets/loading_card.dart';
 import 'package:bazar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:stacked/stacked.dart';
 import 'package:get_it/get_it.dart';
+import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
@@ -26,13 +30,15 @@ class _Test3State extends State<Test3> {
 //   TestFire({Key? key}) : super(key: key);
   //final locator = GetIt.instance;
   late FielModelFire fielViewModel = new FielModelFire();
-  VideoService? service;
+  ServiceFire? service;
   @override
   void initState() {
+    loadVideo(0);
+    fielViewModel.loadVideo(0);
+    service = new ServiceFire();
+
     // TODO: implement initState
-    setState(() {
-      fielViewModel.loadVideo(0);
-    });
+    setState(() {});
     // service = VideoService();
     // service?.load();
     //service?.listVideos[0].loadController();
@@ -43,10 +49,11 @@ class _Test3State extends State<Test3> {
 
   @override
   Widget build(BuildContext context) {
+    loadVideo(0);
     //   Function VoidCallback;
     final size = MediaQuery.of(context).size.height;
     return ViewModelBuilder<FielModelFire>.reactive(
-      viewModelBuilder: () => fielViewModel,
+      viewModelBuilder: () => FielModelFire(),
       initialiseSpecialViewModelsOnce: true,
       disposeViewModel: false,
       onModelReady: (fielViewModel) => fielViewModel.loadVideo(0),
@@ -96,6 +103,14 @@ class _Test3State extends State<Test3> {
     );
   }
 
+  void loadVideo(int index) async {
+    if (service!.videoList.length > index) {
+      await service!.videoList[index].loadController();
+      service!.videoList[index].controller?.play();
+      print('index');
+    }
+  }
+
   Widget videoCard(Video video) {
     //  fielViewModel.loadVideo(0);
     return video.controller != null
@@ -134,4 +149,51 @@ class _Test3State extends State<Test3> {
   //   model.controller?.dispose();
   //   super.dispose();
   // }
+}
+
+class FielModelFire extends BaseViewModel {
+  VideoPlayerController? controller;
+
+  ServiceFire? videoSource;
+
+  int prevVideo = 0;
+
+  int actualScreen = 0;
+  FielModelFire() {
+    videoSource = ServiceFire();
+    loadfirst;
+    //videoSource!.videoList[0].loadController();
+  }
+  changeVideo(index) async {
+    if (videoSource!.videoList[index].controller == null) {
+      await videoSource!.videoList[index].loadController();
+    }
+    videoSource!.videoList[index].controller!.play();
+    //videoSource.listVideos[prevVideo].controller.removeListener(() {});
+
+    if (videoSource!.videoList[prevVideo].controller != null)
+      videoSource!.videoList[prevVideo].controller!.pause();
+
+    prevVideo = index;
+    notifyListeners();
+
+    // print(index);
+  }
+
+  void loadVideo(int index) async {
+    if (videoSource!.videoList.length > index) {
+      await videoSource!.videoList[index].loadController();
+      videoSource!.videoList[index].controller?.play();
+      print('index');
+      notifyListeners();
+    }
+  }
+
+  loadfirst(String url) async {
+    controller = VideoPlayerController.network(url);
+    await controller
+        ?.initialize()
+        .then((value) => debugPrint('Controller Initialiszed!!'));
+    controller?.setLooping(true);
+  }
 }
