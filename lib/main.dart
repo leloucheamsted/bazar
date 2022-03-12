@@ -1,9 +1,6 @@
 import 'package:bazar/Services/providerModel.dart';
 import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
-import 'package:bazar/widgets/Test2.dart';
-import 'package:bazar/widgets/Test3.dart';
-import 'package:bazar/widgets/test.dart';
 import 'package:bazar/screens/otp/VideoWidget.dart';
 import 'package:bazar/service_locator.dart';
 import 'package:bazar/widgets/testProvider.dart';
@@ -22,7 +19,6 @@ Future<void> main() async {
   await Firebase.initializeApp();
   cameras = await availableCameras();
   setup();
-  setap();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.white, // navigation bar color
     statusBarColor: Colors.white, // status bar color
@@ -53,7 +49,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: AddDetailsScreen(),
+        home: NavScreen(),
       ),
     );
     // return GetMaterialApp(

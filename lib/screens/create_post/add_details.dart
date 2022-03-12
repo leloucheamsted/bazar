@@ -1,32 +1,40 @@
-import 'dart:ffi';
+import 'dart:io';
 
 import 'package:bazar/config/palette.dart';
+import 'package:bazar/data/video.dart';
 import 'package:bazar/widgets/circle_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:expandable/expandable.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AddDetailsScreen extends StatefulWidget {
-  const AddDetailsScreen({Key? key}) : super(key: key);
+  const AddDetailsScreen({Key? key, required this.path}) : super(key: key);
+  final String path;
   @override
   _AddDetailsScreenState createState() => _AddDetailsScreenState();
 }
 
 final List<String> Categories = <String>["Repas", "Habillements", "Mobilier"];
 bool? isExpand;
-TextEditingController textPriceController = TextEditingController();
-TextEditingController nbreController = TextEditingController();
-String choiceCategory = "Categories";
-String price="0";
-int NbrePiece = 01;
-class DataList {
-  DataList(this.title, [this.children = const <String>[]]);
 
-  final String title;
-  final List<String> children;
-}
+TextEditingController detailsController = TextEditingController();
+TextEditingController textPriceController =
+    TextEditingController(); // Input price
+TextEditingController nbreController =
+    TextEditingController(); // input quantity
+String choiceCategory = "Categories"; // string categoriex of product
+firebase_storage.FirebaseStorage storage =
+    firebase_storage.FirebaseStorage.instance;
+String price = "0";
+String? details;
+int NbrePiece = 01;
 
 class _AddDetailsScreenState extends State<AddDetailsScreen> {
   String? _chosenValue;
@@ -34,8 +42,8 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
   @override
   void initState() {
     setState(() {
-      price="0";
-      NbrePiece =01;
+      price = "0";
+      NbrePiece = 01;
       choiceCategory = "Categories";
     });
     // TODO: implement initState
@@ -52,12 +60,12 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
         statusBarColor: Colors.transparent));
 
     return Scaffold(
-            resizeToAvoidBottomInset: false,   // Pour empecher le debordemnent de la page a l'affiche du cla
+      resizeToAvoidBottomInset:
+          false, // Pour empecher le debordemnent de la page a l'affiche du cla
       backgroundColor: Palette.colorLight,
-      body: 
-     Column(children: [
-       Expanded( child: 
-       Padding(
+      body: Column(children: [
+        Expanded(
+            child: Padding(
           padding: EdgeInsets.fromLTRB(8, 40, 8, 0),
           child: Align(
             alignment: Alignment.center,
@@ -116,7 +124,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                     ),
                     child: Stack(children: [
                       TextFormField(
-                        ///  controller: _controller,
+                        controller: detailsController,
                         //  focusNode: focusNode,
                         textAlignVertical: TextAlignVertical.center,
                         keyboardType: TextInputType.multiline,
@@ -128,7 +136,11 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.normal,
                             fontSize: 22),
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          setState(() {
+                            details = detailsController.text;
+                          });
+                        },
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Détails de l'article",
@@ -255,7 +267,6 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                 // Prix et Nombre de piece
                 Row(
                   children: [
-
                     //  Prix du produit
                     Expanded(
                       child: Container(
@@ -273,7 +284,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                                 padding:
                                     const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
                                 child: TextField(
-                                   controller: textPriceController,
+                                  controller: textPriceController,
                                   autofocus: false,
                                   inputFormatters: <TextInputFormatter>[
                                     // PhoneNumberFormatter(),
@@ -282,9 +293,9 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                                       "[^,.-]",
                                     )),
                                   ],
-                                  onChanged: (value){
-                                    setState((){
-                                      price=value;
+                                  onChanged: (value) {
+                                    setState(() {
+                                      price = value;
                                     });
                                   },
                                   keyboardType: TextInputType.number,
@@ -348,25 +359,26 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         ),
                         // Nombre de pieces
                         GestureDetector(
-                          onTap:(){
+                          onTap: () {
                             showDialog(
-             
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context),
-            );
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  _buildPopupDialog(context),
+                            );
                           },
-                        child:Container(
-                          width: 40,
-                          child: Center(
-                            child: Text( NbrePiece.toString(),
-                              style: TextStyle(
-                                color: Palette.colorText,
-                                fontSize: 20.0,
-                                fontFamily: 'Prompt_Regular',
+                          child: Container(
+                            width: 40,
+                            child: Center(
+                              child: Text(
+                                NbrePiece.toString(),
+                                style: TextStyle(
+                                  color: Palette.colorText,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Prompt_Regular',
+                                ),
                               ),
                             ),
                           ),
-                        ),
                         ),
                         SizedBox(
                           width: 5,
@@ -388,20 +400,24 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
             ),
           ),
         )),
-      Container(
-              color: Palette.primaryColor,
-              width: MediaQuery.of(context).size.width,
-              height: 60,
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-              child: Row(
-                children: [
-                    Expanded(
-                    child:Padding(
-                      padding: const EdgeInsets.fromLTRB(35,0,0,0),
-                       child:
-                    Center(
+        Container(
+            color: Palette.primaryColor,
+            width: MediaQuery.of(context).size.width,
+            height: 60,
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap:(){
+                      uploadStorage();
+                      print("assj");
+                    },
+                child:  Padding(
+                    padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                    child: Center(
                       child: Text(
-                        'Next',
+                        'Post',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontStyle: FontStyle.normal,
@@ -411,109 +427,136 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         ),
                       ),
                     ),
-                    ),
-                  ),
-                   Positioned(
-          
-          child: InkWell(
-            onTap: () {},
-            borderRadius: BorderRadius.circular(30),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SvgPicture.asset('assets/next.svg'),
-            ),
-            // onPressed: () {},
-          ),
-        ),
-                
-                ],
-              )),
-
-     
-      
-      
-      
-      
-         ] ),);
-  }
-
-// Popup de saisirr du Nombre de piece 
-  Widget _buildPopupDialog(BuildContext context) {
-  return new AlertDialog(
-    title: const Text('Number of rooms', style: TextStyle(
-                                color: Palette.colorText,
-                                fontSize: 20.0,
-                                fontFamily: 'Prompt_Regular',
-                              ),),
-    content: new Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-             SizedBox(
-                  height: 50,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    // height: 200,
-                    alignment: Alignment.topLeft,
-                    decoration: BoxDecoration(
-                      color: Palette.colorgray,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Stack(children: [
-                      TextFormField(
-                        
-                        controller: nbreController,
-                        //  focusNode: focusNode,
-                        textAlignVertical: TextAlignVertical.center,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 5,
-                        minLines: 1,
-                        style: TextStyle(
-                            color: Palette.colorText,
-                            fontFamily: "Prompt_Regular",
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 22),
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "10",
-                          hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontFamily: "Prompt_Regular",
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 22),
-                        ),
-                      ),
-                    ]),
                   ),
                 ),
+                ),
+                Positioned(
+                  child: InkWell(
+                    onTap: () {
+                      uploadStorage();
+                      print("lelocueh");
+                    },
+                    borderRadius: BorderRadius.circular(30),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SvgPicture.asset('assets/next.svg'),
+                    ),
+                    // onPressed: () {},
+                  ),
+                ),
+              ],
+            )),
+      ]),
+    );
+  }
+
+// Popup de saisirr du Nombre de piece
+  Widget _buildPopupDialog(BuildContext context) {
+    return new AlertDialog(
+      title: const Text(
+        'Number of rooms',
+        style: TextStyle(
+          color: Palette.colorText,
+          fontSize: 20.0,
+          fontFamily: 'Prompt_Regular',
+        ),
+      ),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            height: 50,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              // height: 200,
+              alignment: Alignment.topLeft,
+              decoration: BoxDecoration(
+                color: Palette.colorgray,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Stack(children: [
+                TextFormField(
+                  controller: nbreController,
+                  //  focusNode: focusNode,
+                  textAlignVertical: TextAlignVertical.center,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  minLines: 1,
+                  style: TextStyle(
+                      color: Palette.colorText,
+                      fontFamily: "Prompt_Regular",
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 22),
+                  onChanged: (value) {},
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "10",
+                    hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: "Prompt_Regular",
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 22),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            setState(() {
+              NbrePiece = int.parse(nbreController.text);
+            });
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Valider'),
+        ),
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
       ],
-    ),
-    actions: <Widget>[
-      new FlatButton(
-        onPressed: () {
-          setState((){
-            NbrePiece=int.parse(nbreController.text);
-          });
-          Navigator.of(context).pop();
-        },
-        textColor: Theme.of(context).primaryColor,
-        child: const Text('Valider'),
-      ),
-      new FlatButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        textColor: Theme.of(context).primaryColor,
-        child: const Text('Close'),
-      ),
-    ],
-  );
+    );
+  }
+
+// Fonction d'ajout de la video sur firebase et d'ajout de la publication
+  Future uploadStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? user = prefs.getString('name');
+    try {
+      await storage.ref('$user/$widget.path').putFile(
+            File(widget.path),
+          );
+      String downloadURL = await firebase_storage.FirebaseStorage.instance
+          .ref('$user/$widget.path')
+          .getDownloadURL();
+
+      var data = [
+        {
+          "numeroVendeur": '$prefs.getString("number")',
+          "prix": price,
+          "nom": "$prefs.getString('name')",
+          "video_title": "video_title",
+          "Category": choiceCategory,
+          "likes": 0,
+          "details": details!,
+          "profile": '$prefs.getString("photo")',
+          "quantite": nbreController.text,
+          "url": downloadURL
+        }
+      ];
+      await FirebaseFirestore.instance.collection("Videos").add(data.first);
+    } catch (e) {
+      print(e);
+    }
   }
 }
-
-      
-      
-      

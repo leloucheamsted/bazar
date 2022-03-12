@@ -46,7 +46,9 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
 
-    Future<void> addUser() {
+    Future addUser() async {
+      final prefs = await SharedPreferences.getInstance();
+
       // Call the user's CollectionReference to add a new user
       return users
           .add({
@@ -54,9 +56,11 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
             'number': Get.arguments, // Stokes and Sons
           })
           .then((value) => {
+           
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(Navigator.defaultRouteName)),
                 print("User Added")
+               
               })
           .catchError((error) => print("Failed to add user: $error"));
     }
@@ -191,11 +195,11 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   onPressed: isValid && visibilitySucces
                       ? () async {
                           FocusScope.of(context).unfocus();
-                          final prefs = await SharedPreferences.getInstance();
-                          prefs.setString('name', textController.text);
-                          prefs.setString('number', Get.arguments.text);
+                           final prefs = await SharedPreferences.getInstance();
+                        await  prefs.setString('name', textController.text);
+                       await    prefs.setString('number', Get.arguments);
                           addUser();
-                         
+                          print('$Get.arguments');
                         }
                       : null,
                   //status

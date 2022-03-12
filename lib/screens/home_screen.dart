@@ -2,11 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bazar/Services/service_video.dart';
-import 'package:bazar/widgets/Test3.dart';
-import 'package:bazar/widgets/test.dart';
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/screens/otp/VideoWidget.dart';
-import 'package:bazar/widgets/Test2.dart';
 import 'package:bazar/widgets/button.dart';
 import 'package:bazar/widgets/loading_card.dart';
 import 'package:bazar/widgets/testFire.dart';
@@ -77,6 +74,19 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.fromLTRB(10.0, 40, 8, 0),
           child: Row(
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+                child: Text(
+                  ' Explore',
+                  style: TextStyle(
+                    fontFamily: "Prompt_SemiBold",
+                    fontWeight: FontWeight.w600,
+                    color: Palette.colorText,
+                    fontSize: 25,
+                  ),
+                ),
+              ),
+              Spacer(),
               InkWell(
                 borderRadius: BorderRadius.circular(30),
                 // When the user taps the button, show a snackbar.
@@ -89,47 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Button(
-                  iconImage: 'assets/fireShow.svg',
+                  iconImage: 'assets/chrono.svg',
                   // iconSize: 30,
                   onPressed: () {}),
-              Spacer(),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Color.fromRGBO(0, 0, 0, 0.1),
-                ),
-                //   color: Colors.grey,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Text(
-                          '2,000',
-                          style: TextStyle(
-                            fontFamily: "Prompt_Regular",
-                            fontWeight: FontWeight.w600,
-                            color: Palette.colorText,
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          'FCFA',
-                          style: TextStyle(
-                            fontFamily: "Prompt_Regular",
-                            fontWeight: FontWeight.w600,
-                            color: Palette.secondColor,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -139,12 +111,17 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: Stack(
             children: [
-              //  CarouselShow ? LoadingScreen() : TestFire(),
-              //Test()
+              Container(
+                color: Colors.black,
+              ),
+
+              TestProvider(),
+              //  TestProvider()
+              //       //  CarouselShow ? LoadingScreen() : TestFire(),
+              //       TestProvider()
             ],
           ),
         ),
-        Expanded(child: Test3()),
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 8, 8, 20),
           child: Row(

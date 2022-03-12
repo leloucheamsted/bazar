@@ -274,11 +274,11 @@ class _CameraScreenState extends State<CameraScreen> {
                                   XFile videopath = _cameraController
                                       .stopVideoRecording() as XFile;
                                   XFile? finalpath;
-                                  _flutterFFmpeg
-                                      .execute(
-                                          "ffmeg  -i ${videopath.path} -vf hflip -c:a copy ${finalpath!.path}")
-                                      .then((rc) => print(
-                                          "FFmpeg process exited with rc $rc"));
+                                  // _flutterFFmpeg
+                                  //     .execute(
+                                  //         "ffmeg  -i ${videopath.path} -vf hflip -c:a copy ${finalpath!.path}")
+                                  //     .then((rc) => print(
+                                  //         "FFmpeg process exited with rc $rc"));
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -298,17 +298,17 @@ class _CameraScreenState extends State<CameraScreen> {
                                   isRecoring = false;
                                   _start = 15;
                                 });
-                                _flutterFFmpeg
-                                    .execute(
-                                        "-y -i ${videopath.path} -vf hflip -c:a copy ${fl!.path}")
-                                    .then((rc) => print(
-                                        "FFmpeg process exited with rc $rc"));
+                                // _flutterFFmpeg
+                                //     .execute(
+                                //         "-y -i ${videopath.path} -vf hflip -c:a copy ${fl!.path}")
+                                //     .then((rc) => print(
+                                //         "FFmpeg process exited with rc $rc"));
                                 startTimer(false);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (builder) => VideoViewPage(
-                                              path: fl.path,
+                                              path: videopath.path,
                                             )));
                               },
                               onTap: () {

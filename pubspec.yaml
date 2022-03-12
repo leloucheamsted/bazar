@@ -52,6 +52,8 @@ dependencies:
   #flutter_ffmpeg: ^0.4.2
   provider: ^6.0.2
   flutter_ffmpeg: ^0.4.2
+  path: ^1.8.1
+  firebase_database: ^9.0.8
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -107,6 +109,7 @@ flutter:
     - assets/next.svg
     - assets/sound_off.svg
     - assets/sound_on.svg
+    - assets/chrono.svg
 
   fonts:
     - family: Prompt_Regular
@@ -121,7 +124,7 @@ flutter:
       fonts:
         - asset: assets/fonts/Prompt-Bold.ttf
 
-    - family: Prompt_Bold
+    - family: Prompt_SemiBold
       fonts:
         - asset: assets/fonts/Prompt-SemiBold.ttf
     - family: fa

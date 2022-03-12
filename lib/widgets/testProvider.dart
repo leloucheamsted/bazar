@@ -40,47 +40,40 @@ class _TestProviderState extends State<TestProvider> {
   }
 
   Widget _ui(VideoModel fielViewModel) {
-    fielViewModel.loadVideo(0);
-    return Scaffold(
-      body: Stack(
-        children: [
-          Obx(
-            (() {
-              return Stack(children: [
-                CarouselSlider.builder(
-                  itemCount: fielViewModel.videoSource?.videoList.length,
-                  itemBuilder:
-                      (BuildContext context, int itemIndex, int pageViewIndex) {
-                    //  fielViewModel.loadVideo(0);
-                    itemIndex = itemIndex %
-                        (fielViewModel.videoSource!.videoList.length);
-                    return videoCard(
-                      fielViewModel.videoSource!.videoList[itemIndex],
-                    );
-                  },
-                  options: CarouselOptions(
-                    viewportFraction: 1,
-                    initialPage: 0,
-                    //  height: size,
-                    enableInfiniteScroll: false,
-                    reverse: false,
-                    autoPlay: false,
-                    enlargeCenterPage: true,
-                    onPageChanged: (index, reason) {
-                      index =
-                          index % (fielViewModel.videoSource!.videoList.length);
-                      fielViewModel.changeVideo(index);
-                    },
-                    //  onPageChanged: callbackFunction,
-                    scrollDirection: Axis.vertical,
-                  ),
-                ),
-              ]);
-            }),
-          )
-        ],
-      ),
-    );
+    final size = MediaQuery.of(context).size.height;
+    return Scaffold(body: Obx(
+      (() {
+        return Stack(children: [
+          CarouselSlider.builder(
+            itemCount: fielViewModel.videoSource?.videoList.length,
+            itemBuilder:
+                (BuildContext context, int itemIndex, int pageViewIndex) {
+              //  fielViewModel.loadVideo(0);
+              itemIndex =
+                  itemIndex % (fielViewModel.videoSource!.videoList.length);
+              return videoCard(
+                fielViewModel.videoSource!.videoList[itemIndex],
+              );
+            },
+            options: CarouselOptions(
+              viewportFraction: 1,
+              initialPage: 0,
+              height: size,
+              enableInfiniteScroll: false,
+              reverse: false,
+              autoPlay: false,
+              enlargeCenterPage: true,
+              onPageChanged: (index, reason) {
+                index = index % (fielViewModel.videoSource!.videoList.length);
+                fielViewModel.changeVideo(index);
+              },
+              //  onPageChanged: callbackFunction,
+              scrollDirection: Axis.vertical,
+            ),
+          ),
+        ]);
+      }),
+    ));
   }
 
   Widget videoCard(Video video) {

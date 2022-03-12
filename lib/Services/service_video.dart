@@ -2,11 +2,15 @@ import 'package:bazar/constants.dart';
 import 'package:bazar/data/demo_data.dart';
 import 'package:bazar/data/video.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:path/path.dart';
 
 class VideoService {
   List<Video> listVideos = <Video>[];
-
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
   VideoService() {
     load();
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bazar/config/palette.dart';
+import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -124,7 +125,17 @@ class _VideoViewPageState extends State<VideoViewPage> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Center(
+                          child: 
+                          GestureDetector(
+                            onTap:(){
+                               Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => AddDetailsScreen(
+                                path: widget.path,
+                              )));
+                            },
+                         child: Center(
                             child: Text(
                               'Next',
                               textAlign: TextAlign.center,
@@ -135,6 +146,7 @@ class _VideoViewPageState extends State<VideoViewPage> {
                                 fontSize: 24,
                               ),
                             ),
+                          ),
                           ),
                         ),
                       ],
@@ -199,8 +211,17 @@ class _VideoViewPageState extends State<VideoViewPage> {
                   ),
                 )),
             Positioned(
-                bottom: 4,
-                right: 0,
+              bottom: 4,
+              right: 0,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => AddDetailsScreen(
+                                path: widget.path,
+                              )));
+                },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
                   child: CircleAvatar(
@@ -212,7 +233,9 @@ class _VideoViewPageState extends State<VideoViewPage> {
                       width: 25,
                     ),
                   ),
-                )),
+                ),
+              ),
+            ),
           ],
         ),
       ),
