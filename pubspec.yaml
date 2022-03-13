@@ -110,6 +110,8 @@ flutter:
     - assets/sound_off.svg
     - assets/sound_on.svg
     - assets/chrono.svg
+    - assets/follow.svg
+    - assets/details.svg
 
   fonts:
     - family: Prompt_Regular

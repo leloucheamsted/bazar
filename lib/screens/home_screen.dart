@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(10.0, 40, 8, 0),
+          padding: const EdgeInsets.fromLTRB(2.0, 40, 2, 0),
           child: Row(
             children: [
               Padding(
@@ -105,9 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        SizedBox(
-          height: 8,
-        ),
+
         Expanded(
           child: Stack(
             children: [
@@ -122,72 +120,73 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10, 8, 8, 20),
-          child: Row(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GFAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/cabraule.jpg?alt=media&token=d43ea864-6f86-4b6f-b2cd-385ffb65b7b5"),
-                    child: Text('l'),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Lelouche',
-                        style: TextStyle(
-                          fontFamily: "Prompt_Medium",
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          color: Palette.colorText,
-                        ),
-                      ),
-                      Text(
-                        '@amsted',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: "Prompt_Medium",
-                          color: Palette.secondColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Spacer(),
-              SizedBox(
-                height: 45,
-                child: RaisedButton(
-                  textColor: Colors.white,
-                  color: Palette.primaryColor,
-                  disabledColor: Palette.disableButton,
-                  disabledTextColor: Palette.colorLight,
-                  child: Text(
-                    "Buy Now",
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontFamily: 'Prompt_Regular',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  onPressed: () {},
-                  shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(25.0),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(10, 8, 8, 20),
+        //   child: Row(
+        //     children: [
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           GFAvatar(
+        //             backgroundImage: NetworkImage(
+        //                 "https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/cabraule.jpg?alt=media&token=d43ea864-6f86-4b6f-b2cd-385ffb65b7b5"),
+        //             child: Text('l'),
+        //           ),
+        //           SizedBox(
+        //             width: 5,
+        //           ),
+        //           Column(
+        //             mainAxisAlignment: MainAxisAlignment.start,
+        //             crossAxisAlignment: CrossAxisAlignment.start,
+        //             children: [
+        //               Text(
+        //                 'Lelouche',
+        //                 style: TextStyle(
+        //                   fontFamily: "Prompt_Medium",
+        //                   letterSpacing: 1,
+        //                   fontWeight: FontWeight.w600,
+        //                   fontSize: 18,
+        //                   color: Palette.colorText,
+        //                 ),
+        //               ),
+        //               Text(
+        //                 '@amsted',
+        //                 style: TextStyle(
+        //                   fontSize: 14,
+        //                   fontFamily: "Prompt_Medium",
+        //                   color: Palette.secondColor,
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         ],
+        //       ),
+        //       Spacer(),
+        //       SizedBox(
+        //         height: 45,
+        //         child: RaisedButton(
+        //           textColor: Colors.white,
+        //           color: Palette.primaryColor,
+        //           disabledColor: Palette.disableButton,
+        //           disabledTextColor: Palette.colorLight,
+        //           child: Text(
+        //             "Buy Now",
+        //             style: TextStyle(
+        //               fontSize: 20.0,
+        //               fontFamily: 'Prompt_Regular',
+        //               fontWeight: FontWeight.w500,
+        //             ),
+        //           ),
+        //           onPressed: () {},
+        //           shape: new RoundedRectangleBorder(
+        //             borderRadius: new BorderRadius.circular(25.0),
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }
