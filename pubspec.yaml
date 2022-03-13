@@ -112,6 +112,7 @@ flutter:
     - assets/chrono.svg
     - assets/follow.svg
     - assets/details.svg
+    - assets/french.svg
 
   fonts:
     - family: Prompt_Regular

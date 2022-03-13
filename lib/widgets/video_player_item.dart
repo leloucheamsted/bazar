@@ -29,7 +29,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
     super.initState();
     videoPlayerController = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((value) {
-        //  videoPlayerController.play();
+        videoPlayerController.play();
         videoPlayerController.setVolume(1);
         videoPlayerController.setLooping(true);
       });
@@ -51,18 +51,27 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
         borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 115),
-              width: size.width,
-              height: size.height,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-              ),
-              child: OverflowBox(
-                maxWidth: double.infinity,
-                child: AspectRatio(
-                    aspectRatio: videoPlayerController.value.aspectRatio,
-                    child: VideoPlayer(videoPlayerController)),
+            GestureDetector(
+              onTap: () {
+                if (videoPlayerController.value.isPlaying) {
+                  videoPlayerController.pause();
+                } else {
+                  videoPlayerController.play();
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 115),
+                width: size.width,
+                height: size.height,
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: OverflowBox(
+                  maxWidth: double.infinity,
+                  child: AspectRatio(
+                      aspectRatio: videoPlayerController.value.aspectRatio,
+                      child: VideoPlayer(videoPlayerController)),
+                ),
               ),
             ),
             Column(
@@ -143,7 +152,9 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                           //  details button
                           FlatButton(
                             minWidth: 15,
-                            onPressed: () {},
+                            onPressed: () {
+                              DetailsPopup(context);
+                            },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -210,7 +221,9 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                           height: 55,
                           minWidth: 50,
                           color: Palette.primaryColor,
-                          onPressed: () {},
+                          onPressed: () {
+                            BuyPopup(context);
+                          },
                           child: Text(
                             'Buy Now',
                             style: TextStyle(
@@ -229,6 +242,160 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
         ),
       ),
     );
+  }
+
+//  Popup  Details
+  void DetailsPopup(context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext bc) {
+          return Container(
+            height: MediaQuery.of(context).size.height * .30,
+            padding: const EdgeInsets.all(20.0),
+            decoration: const BoxDecoration(
+              color: Palette.colorLight,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
+            ),
+            child: Center(
+              child: Column(
+                children: [
+                  Text(
+                    'Welcome to basic',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Bold',
+                      fontSize: 24.0,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    'Experience a new way of shopping with short videos feed. Just swipe for new items and if you found the one you like, tap buy now button to purchase it.',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Regular',
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  SizedBox(
+                    height: 40.0,
+                    width: double.infinity,
+                    child: RaisedButton(
+                      textColor: Colors.white,
+                      color: Palette.primaryColor,
+                      child: Text(
+                        "Start",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontFamily: 'Prompt_Medium',
+                        ),
+                      ),
+                      onPressed: () async {
+                        // await availableCameras().then((value) => Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => CameraScreen(
+                        //           cameras: value,
+                        //         ),
+                        //       ),
+                        //     ));
+                        //  Fermerture du popup
+                        // Navigator.of(context).pop();
+                        // Get.to(
+                        //   CameraScreen(cameras),
+                        // );
+                      },
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(15.0),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+// Buy Popup
+  void BuyPopup(context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext bc) {
+          return Container(
+            height: MediaQuery.of(context).size.height * .30,
+            padding: const EdgeInsets.all(20.0),
+            decoration: const BoxDecoration(
+              color: Palette.colorLight,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
+            ),
+            child: Center(
+              child: Column(
+                children: [
+                  Text(
+                    'Welcome to basic',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Bold',
+                      fontSize: 24.0,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    'Experience a new way of shopping with short videos feed. Just swipe for new items and if you found the one you like, tap buy now button to purchase it.',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Regular',
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  SizedBox(
+                    height: 40.0,
+                    width: double.infinity,
+                    child: RaisedButton(
+                      textColor: Colors.white,
+                      color: Palette.primaryColor,
+                      child: Text(
+                        "Start",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontFamily: 'Prompt_Medium',
+                        ),
+                      ),
+                      onPressed: () async {
+                        // await availableCameras().then((value) => Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => CameraScreen(
+                        //           cameras: value,
+                        //         ),
+                        //       ),
+                        //     ));
+                        //  Fermerture du popup
+                        // Navigator.of(context).pop();
+                        // Get.to(
+                        //   CameraScreen(cameras),
+                        // );
+                      },
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(15.0),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
 //  OverflowBox(
