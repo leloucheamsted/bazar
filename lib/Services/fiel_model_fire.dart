@@ -17,8 +17,10 @@ class FielModelFire extends BaseViewModel {
   FielModelFire() {
     videoSource = ServiceFire();
     loadfirst;
+
     //videoSource!.videoList[0].loadController();
   }
+
   changeVideo(index) async {
     if (videoSource!.videoList[index].controller == null) {
       await videoSource!.videoList[index].loadController();
@@ -35,7 +37,7 @@ class FielModelFire extends BaseViewModel {
     // print(index);
   }
 
-  void loadVideo(int index) async {
+  loadVideo(int index) async {
     if (videoSource!.videoList.length > index) {
       await videoSource!.videoList[index].loadController();
       videoSource!.videoList[index].controller?.play();

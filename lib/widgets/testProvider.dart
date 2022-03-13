@@ -24,36 +24,42 @@ class TestProvider extends StatefulWidget {
   _TestProviderState createState() => _TestProviderState();
 }
 
-class _TestProviderState extends State<TestProvider> {
+final VideoController videoController = Get.put(VideoController());
+
+class _TestProviderState extends State<TestProvider>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    VideoModel? fielViewModel = context.watch<VideoModel>();
-    ServiceFire? service = new ServiceFire();
+    //   VideoModel? fielViewModel = context.watch<VideoModel>();
+    //   ServiceFire? service = new ServiceFire();
+    //  final locator = GetIt.instance;
+    //  final feedViewModel = GetIt.instance<VideoModel>();
+    //// var feedViewModel = new VideoModel();
+
     @override
     void initState() {
-      context.watch<VideoModel>().loadVideo(0);
-      service.videoList[0].loadController();
+      //  feedViewModel.loadVideo(0);
+      //  feedViewModel.loadVideo(1);
+
       super.initState();
     }
 
-    return _ui(fielViewModel);
+    return _ui();
   }
 
-  Widget _ui(VideoModel fielViewModel) {
+  Widget _ui() {
     final size = MediaQuery.of(context).size.height;
     return Scaffold(body: Obx(
       (() {
         return Stack(children: [
           CarouselSlider.builder(
-            itemCount: fielViewModel.videoSource?.videoList.length,
+            itemCount: videoController.videoList.length,
             itemBuilder:
                 (BuildContext context, int itemIndex, int pageViewIndex) {
+              final data = videoController.videoList[itemIndex];
               //  fielViewModel.loadVideo(0);
-              itemIndex =
-                  itemIndex % (fielViewModel.videoSource!.videoList.length);
-              return videoCard(
-                fielViewModel.videoSource!.videoList[itemIndex],
-              );
+              itemIndex = itemIndex % (videoController.videoList.length);
+              return VideoPlayerItem(videoUrl: data.url);
             },
             options: CarouselOptions(
               viewportFraction: 1,
@@ -63,11 +69,10 @@ class _TestProviderState extends State<TestProvider> {
               reverse: false,
               autoPlay: false,
               enlargeCenterPage: true,
-              onPageChanged: (index, reason) {
-                index = index % (fielViewModel.videoSource!.videoList.length);
-                fielViewModel.changeVideo(index);
-              },
-              //  onPageChanged: callbackFunction,
+              // onPageChanged: (index, reason) {
+              //   index = index % (fielViewModel.videoSource!.videoList.length);
+              //   fielViewModel.changeVideo(index);
+              // },
               scrollDirection: Axis.vertical,
             ),
           ),

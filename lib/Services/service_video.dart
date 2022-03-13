@@ -34,6 +34,7 @@ class VideoService {
 
     videos.docs.forEach((element) {
       Video video = Video.fromJson(element.data());
+      video.loadController();
       videoList.add(video);
     });
 
