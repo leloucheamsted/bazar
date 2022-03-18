@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
+import 'package:cached_video_player/cached_video_player.dart';
 
 class Video {
   String numeroVendeur;
@@ -16,7 +17,7 @@ class Video {
   String nom;
   String profile;
 
-  VideoPlayerController? controller;
+  CachedVideoPlayerController? controller;
 
   Video(
       {required this.numeroVendeur,
@@ -76,7 +77,7 @@ class Video {
   }
 
   Future<Null> loadController() async {
-    controller = VideoPlayerController.network(url);
+    controller = CachedVideoPlayerController.network(url);
     await controller
         ?.initialize()
         .then((value) => debugPrint('Controller Initialiszed!!'));

@@ -5,7 +5,8 @@ import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
+import 'package:cached_video_player/cached_video_player.dart';
 
 class VideoViewPage extends StatefulWidget {
   const VideoViewPage({Key? key, required this.path}) : super(key: key);
@@ -16,12 +17,12 @@ class VideoViewPage extends StatefulWidget {
 }
 
 class _VideoViewPageState extends State<VideoViewPage> {
-  late VideoPlayerController _controller;
+  late CachedVideoPlayerController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.file(File(widget.path))
+    _controller = CachedVideoPlayerController.file(File(widget.path))
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
@@ -60,10 +61,10 @@ class _VideoViewPageState extends State<VideoViewPage> {
           children: [
             OverflowBox(
               maxWidth: double.infinity,
-              child: _controller.value.isInitialized
+              child: _controller.value.initialized
                   ? AspectRatio(
                       aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
+                      child: CachedVideoPlayer(_controller),
                     )
                   : Container(),
             ),
@@ -125,28 +126,27 @@ class _VideoViewPageState extends State<VideoViewPage> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: 
-                          GestureDetector(
-                            onTap:(){
-                               Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (builder) => AddDetailsScreen(
-                                path: widget.path,
-                              )));
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (builder) => AddDetailsScreen(
+                                            path: widget.path,
+                                          )));
                             },
-                         child: Center(
-                            child: Text(
-                              'Next',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontStyle: FontStyle.normal,
-                                fontFamily: "Prompt_Regular",
-                                color: Palette.colorLight,
-                                fontSize: 24,
+                            child: Center(
+                              child: Text(
+                                'Next',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontStyle: FontStyle.normal,
+                                  fontFamily: "Prompt_Regular",
+                                  color: Palette.colorLight,
+                                  fontSize: 24,
+                                ),
                               ),
                             ),
-                          ),
                           ),
                         ),
                       ],

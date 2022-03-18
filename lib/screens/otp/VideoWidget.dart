@@ -1,6 +1,6 @@
 import 'package:bazar/Services/service_video.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
 
 import '../../widgets/video_player_item.dart';

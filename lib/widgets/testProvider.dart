@@ -13,7 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
-import 'package:video_player/video_player.dart';
+import 'package:cached_video_player/cached_video_player.dart';
+
+// import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../data/video.dart';
@@ -30,17 +32,8 @@ class _TestProviderState extends State<TestProvider>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    //   VideoModel? fielViewModel = context.watch<VideoModel>();
-    //   ServiceFire? service = new ServiceFire();
-    //  final locator = GetIt.instance;
-    //  final feedViewModel = GetIt.instance<VideoModel>();
-    //// var feedViewModel = new VideoModel();
-
     @override
     void initState() {
-      //  feedViewModel.loadVideo(0);
-      //  feedViewModel.loadVideo(1);
-
       super.initState();
     }
 
@@ -59,7 +52,7 @@ class _TestProviderState extends State<TestProvider>
               final data = videoController.videoList[itemIndex];
               //  fielViewModel.loadVideo(0);
               itemIndex = itemIndex % (videoController.videoList.length);
-              return VideoPlayerItem(videoUrl: data.url);
+              return VideoPlayerItem(element: data);
             },
             options: CarouselOptions(
               viewportFraction: 1,
@@ -103,7 +96,7 @@ class _TestProviderState extends State<TestProvider>
                             child: SizedBox(
                               width: video.controller?.value.size.width ?? 0,
                               height: video.controller?.value.size.height ?? 0,
-                              child: VideoPlayer(video.controller!),
+                              child: CachedVideoPlayer(video.controller!),
                             )),
                       ))
                 ],

@@ -53,13 +53,5 @@ class MyApp extends StatelessWidget {
         home: NavScreen(),
       ),
     );
-    // return GetMaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //     visualDensity: VisualDensity.adaptivePlatformDensity,
-    //   ),
-    //   home: NavScreen(),
-    // );
   }
 }

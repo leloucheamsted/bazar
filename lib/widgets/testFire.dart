@@ -5,7 +5,8 @@ import 'package:bazar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:stacked/stacked.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
+import 'package:cached_video_player/cached_video_player.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -115,7 +116,7 @@ class _TestFireState extends State<TestFire> {
                   child: SizedBox(
                     width: video.controller?.value.size.width ?? 0,
                     height: video.controller?.value.size.height ?? 0,
-                    child: VideoPlayer(video.controller!),
+                    child: CachedVideoPlayer(video.controller!),
                   ),
                 )),
               )

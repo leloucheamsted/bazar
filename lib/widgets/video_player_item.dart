@@ -1,25 +1,27 @@
 import 'dart:ui';
-
+import 'package:bazar/data/video.dart';
+import 'package:bazar/widgets/profile_card.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bazar/config/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getwidget/components/avatar/gf_avatar.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
+import 'package:cached_video_player/cached_video_player.dart';
 
 class VideoPlayerItem extends StatefulWidget {
-  final String videoUrl;
+  final Video element;
   const VideoPlayerItem({
     Key? key,
-    required this.videoUrl,
+    required this.element,
   }) : super(key: key);
 
   @override
   _VideoPlayerItemState createState() => _VideoPlayerItemState();
 }
 
-class _VideoPlayerItemState extends State<VideoPlayerItem>
-    with AutomaticKeepAliveClientMixin {
-  late VideoPlayerController videoPlayerController;
+class _VideoPlayerItemState extends State<VideoPlayerItem> {
+  late CachedVideoPlayerController videoPlayerController;
 
   @override
   bool get wantKeepAlive => true;
@@ -27,12 +29,13 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
   @override
   void initState() {
     super.initState();
-    videoPlayerController = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((value) {
-        videoPlayerController.play();
-        videoPlayerController.setVolume(1);
-        videoPlayerController.setLooping(true);
-      });
+    videoPlayerController =
+        CachedVideoPlayerController.network(widget.element.url)
+          ..initialize().then((value) {
+            videoPlayerController.play();
+            videoPlayerController.setVolume(1);
+            videoPlayerController.setLooping(true);
+          });
   }
 
   @override
@@ -60,7 +63,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                 }
               },
               child: Container(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 115),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 55),
                 width: size.width,
                 height: size.height,
                 decoration: const BoxDecoration(
@@ -70,7 +73,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                   maxWidth: double.infinity,
                   child: AspectRatio(
                       aspectRatio: videoPlayerController.value.aspectRatio,
-                      child: VideoPlayer(videoPlayerController)),
+                      child: CachedVideoPlayer(videoPlayerController)),
                 ),
               ),
             ),
@@ -79,7 +82,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
               children: [
                 Container(
                   padding: const EdgeInsets.only(bottom: 0),
-                  color: Color.fromRGBO(245, 245, 245, 1),
+                  color: Color.fromRGBO(0, 0, 0, 0.4),
                   height: 60,
                   child: Row(
                     children: [
@@ -89,11 +92,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              GFAvatar(
-                                backgroundImage: NetworkImage(
-                                    "https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/cabraule.jpg?alt=media&token=d43ea864-6f86-4b6f-b2cd-385ffb65b7b5"),
-                                child: Text('l'),
-                              ),
+                              ProfileAvatar(imgUrl: widget.element.profile),
                               SizedBox(
                                 width: 5,
                               ),
@@ -102,17 +101,17 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Lelouche',
+                                    widget.element.nom,
                                     style: TextStyle(
                                       fontFamily: "Prompt_Medium",
                                       letterSpacing: 1,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 18,
-                                      color: Palette.colorText,
+                                      color: Palette.colorLight,
                                     ),
                                   ),
                                   Text(
-                                    '@amsted',
+                                    widget.element.nom,
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "Prompt_Medium",
@@ -134,13 +133,16 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SvgPicture.asset('assets/follow.svg'),
+                                SvgPicture.asset(
+                                  'assets/follow.svg',
+                                  color: Palette.colorLight,
+                                ),
                                 Text(
                                   'Follow',
                                   style: TextStyle(
                                       fontFamily: "Prompt_SemiBold",
                                       fontWeight: FontWeight.w600,
-                                      color: Palette.colorText,
+                                      color: Palette.colorLight,
                                       fontSize: 14),
                                 ),
                               ],
@@ -158,13 +160,16 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SvgPicture.asset('assets/details.svg'),
+                                SvgPicture.asset(
+                                  'assets/details.svg',
+                                  color: Palette.colorLight,
+                                ),
                                 Text(
                                   'details',
                                   style: TextStyle(
                                       fontFamily: "Prompt_SemiBold",
                                       fontWeight: FontWeight.w600,
-                                      color: Palette.colorText,
+                                      color: Palette.colorLight,
                                       fontSize: 14),
                                 ),
                               ],
@@ -192,7 +197,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                           children: [
                             //  Prix du peoduits
                             Text(
-                              '2,000',
+                              widget.element.prix,
                               style: TextStyle(
                                 fontFamily: "Prompt_SemiBold",
                                 fontWeight: FontWeight.w600,
@@ -398,10 +403,3 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
         });
   }
 }
-//  OverflowBox(
-//               maxWidth: double.infinity,
-//               child: _controller.value.isInitialized
-//                   ? AspectRatio(
-//                       aspectRatio: _controller.value.aspectRatio,
-//                       child: VideoPlayer(_controller),
-//                     )

@@ -4,10 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
+import 'package:cached_video_player/cached_video_player.dart';
 
 class VideoModel extends ChangeNotifier {
-  VideoPlayerController? controller;
+  CachedVideoPlayerController? controller;
 
   ServiceFire? videoSource;
 
@@ -40,13 +41,12 @@ class VideoModel extends ChangeNotifier {
     if (videoSource!.videoList.length > index) {
       await videoSource!.videoList[index].loadController();
       videoSource!.videoList[index].controller?.play();
-      print('index');
       notifyListeners();
     }
   }
 
   loadfirst(String url) async {
-    controller = VideoPlayerController.network(url);
+    controller = CachedVideoPlayerController.network(url);
     await controller
         ?.initialize()
         .then((value) => debugPrint('Controller Initialiszed!!'));

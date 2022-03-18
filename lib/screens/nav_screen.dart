@@ -8,6 +8,7 @@ import 'package:bazar/screens/search_screen.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/palette.dart';
@@ -352,43 +353,64 @@ class _NavScreenState extends State<NavScreen> {
   void SearchPopup(context) {
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (BuildContext bc) {
-          return Container(
-            height: 70,
-            color: Colors.black,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    height: 45,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Palette.colorgray,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: TextField(
-                      //    controller: textController,
-                      autofocus: true,
-                      //   inputFormatters: <TextInputFormatter>[
-                      // PhoneNumberFormatter(),
-                      //    LengthLimitingTextInputFormatter(9),
-                      //  FilteringTextInputFormatter.allow(RegExp(
-                      //      "[^,.-]",
-                      //    )),
-                      //   ],
-                      //  onChanged: _onChanged,
-                      //  keyboardType: TextInputType.number,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontFamily: 'Prompt_Regular',
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Palette.colorgray,
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: TextField(
+                            autofocus: true,
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: new InputDecoration.collapsed(
+                              hintText: 'Search for an item …',
+                              hintStyle: TextStyle(
+                                fontFamily: "Prompt_Regular",
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: Color.fromRGBO(117, 117, 117, 1),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      decoration:
-                          InputDecoration.collapsed(hintText: '6 80 80 80 80'),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                        child: InkWell(
+                          onTap: () async {
+                            // Allez a l'onglet 2
+                            currentScreen = await SearchScreen();
+                            currentTab = 1;
+                            FocusScope.of(context).unfocus();
+                          },
+                          borderRadius: BorderRadius.circular(30),
+                          child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SvgPicture.asset('assets/search.svg')),
+                        ),
+                      ),
+                      // onPressed: () {},
+                    ],
                   ),
                 ),
+                SizedBox(height: 10),
               ],
             ),
           );

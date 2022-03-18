@@ -1,10 +1,11 @@
 import 'package:bazar/Services/service_video.dart';
 import 'package:flutter/services.dart';
 import 'package:stacked/stacked.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
+import 'package:cached_video_player/cached_video_player.dart';
 
 class FeedViewModel extends BaseViewModel {
-  VideoPlayerController? controller;
+  CachedVideoPlayerController? controller;
 
   VideoService? videoSource;
 
