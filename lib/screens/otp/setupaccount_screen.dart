@@ -17,7 +17,8 @@ class SetupAccountScreen extends StatefulWidget {
 }
 
 class _SetupAccountScreenState extends State<SetupAccountScreen> {
-  TextEditingController textController = TextEditingController();
+  TextEditingController nametextController = TextEditingController();
+  TextEditingController pseudocontroller = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   bool isValid = false;
@@ -52,15 +53,16 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
       // Call the user's CollectionReference to add a new user
       return users
           .add({
-            'name': textController.text, // John Doe
+            'name': nametextController.text,
+            'username': pseudocontroller.text, // John Doe
             'number': Get.arguments, // Stokes and Sons
+            'followers': <String>[],
+            'following': <String>[],
           })
           .then((value) => {
-           
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(Navigator.defaultRouteName)),
                 print("User Added")
-               
               })
           .catchError((error) => print("Failed to add user: $error"));
     }
@@ -121,6 +123,38 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
               SizedBox(
                 height: 20,
               ),
+
+// Full name of user
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                height: 50,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Palette.colorgray,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: TextFormField(
+                  // onChanged: _onChanged,
+                  controller: nametextController,
+                  autocorrect: false,
+                  textAlign: TextAlign.start,
+                  focusNode: FocusNode(),
+                  validator: (value) {},
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: 'Prompt_Regular',
+                  ),
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Full name (ex: Ben Biya)',
+                    hintStyle: TextStyle(color: Palette.secondColor),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+
+              //   Textfield Name
               Container(
                 padding: const EdgeInsets.all(8.0),
                 height: 50,
@@ -131,7 +165,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                 ),
                 child: TextFormField(
                   onChanged: _onChanged,
-                  controller: textController,
+                  controller: pseudocontroller,
                   autocorrect: false,
                   textAlign: TextAlign.start,
                   validator: (value) {
@@ -144,11 +178,12 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                     fontFamily: 'Prompt_Regular',
                   ),
                   decoration: InputDecoration.collapsed(
-                    hintText: 'Enter your username',
+                    hintText: 'username (ex: benbiya)',
                     hintStyle: TextStyle(color: Palette.secondColor),
                   ),
                 ),
               ),
+
               SizedBox(
                 height: 10,
               ),
@@ -172,6 +207,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                       ),
                     )
                   : new Container(),
+
               SizedBox(
                 height: 10,
               ),
@@ -195,9 +231,12 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   onPressed: isValid && visibilitySucces
                       ? () async {
                           FocusScope.of(context).unfocus();
-                           final prefs = await SharedPreferences.getInstance();
-                        await  prefs.setString('name', textController.text);
-                       await    prefs.setString('number', Get.arguments);
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setString(
+                              'name', nametextController.text);
+                          await prefs.setString(
+                              'username', pseudocontroller.text);
+                          await prefs.setString('number', Get.arguments);
                           addUser();
                           print('$Get.arguments');
                         }
@@ -222,6 +261,8 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
       ),
     );
   }
+
+// GO NEXT FOCUS
 
 // Add Users in Firebase
 

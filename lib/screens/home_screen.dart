@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/config/palette.dart';
-import 'package:bazar/screens/otp/VideoWidget.dart';
 import 'package:bazar/widgets/button.dart';
 import 'package:bazar/widgets/loading_card.dart';
 import 'package:bazar/widgets/testFire.dart';
@@ -11,6 +10,7 @@ import 'package:bazar/widgets/testProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -35,11 +35,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final locator = GetIt.instance;
-  // final feedViewModel = GetIt.instance<FeedViewModel>();
-  // final VideoService videoControlle = Get.put(VideoService());
-  //final VideoController videoController = Get.put(VideoController());
+
   bool CarouselShow = false;
-  //late VideoPlayerController _controller1;
 
   @override
   void initState() {
@@ -70,41 +67,41 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(2.0, 40, 2, 0),
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 0),
-                child: Text(
-                  ' Explore',
-                  style: TextStyle(
-                    fontFamily: "Prompt_SemiBold",
-                    fontWeight: FontWeight.w600,
-                    color: Palette.colorText,
-                    fontSize: 25,
-                  ),
-                ),
-              ),
-              Spacer(),
-              InkWell(
-                borderRadius: BorderRadius.circular(30),
-                // When the user taps the button, show a snackbar.
-                onTap: () {},
-                child: BadgeButton(
-                  iconImage: 'assets/user.svg',
-                  color: Palette.iconColor,
-                  //  iconSize: 30.0,
-                  //onPressed: () {},
-                ),
-              ),
-              Button(
-                  iconImage: 'assets/chrono.svg',
-                  // iconSize: 30,
-                  onPressed: () {}),
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(2.0, 40, 2, 0),
+        //   child: Row(
+        //     children: [
+        //       Padding(
+        //         padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+        //         child: Text(
+        //           ' Explore',
+        //           style: TextStyle(
+        //             fontFamily: "Prompt_SemiBold",
+        //             fontWeight: FontWeight.w600,
+        //             color: Palette.colorText,
+        //             fontSize: 25,
+        //           ),
+        //         ),
+        //       ),
+        //       Spacer(),
+        //       // InkWell(
+        //       //     borderRadius: BorderRadius.circular(30),
+        //       //     // When the user taps the button, show a snackbar.
+        //       //     onTap: () {},
+        //       //     child: SvgPicture.asset('assets/userShow.svg')),
+
+        //       Button(
+        //           iconImage: 'assets/userShow.svg',
+        //           //iconSize: 30,
+        //           onPressed: () {}),
+        //       Button(
+        //           iconImage: 'assets/chrono.svg',
+        //           // iconSize: 30,
+        //           onPressed: () {}),
+        //     ],
+        //   ),
+        // ),
+
         Expanded(
           child: Stack(
             children: [

@@ -6,7 +6,8 @@ import 'package:bazar/Services/providerModel.dart';
 import 'package:bazar/Services/service_fire.dart';
 import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/Services/video_controller.dart';
-import 'package:bazar/screens/otp/VideoWidget.dart';
+import 'package:bazar/config/palette.dart';
+import 'package:bazar/widgets/button.dart';
 import 'package:bazar/widgets/loading_card.dart';
 import 'package:bazar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -42,36 +43,76 @@ class _TestProviderState extends State<TestProvider>
 
   Widget _ui() {
     final size = MediaQuery.of(context).size.height;
-    return Scaffold(body: Obx(
-      (() {
-        return Stack(children: [
-          CarouselSlider.builder(
-            itemCount: videoController.videoList.length,
-            itemBuilder:
-                (BuildContext context, int itemIndex, int pageViewIndex) {
-              final data = videoController.videoList[itemIndex];
-              //  fielViewModel.loadVideo(0);
-              itemIndex = itemIndex % (videoController.videoList.length);
-              return VideoPlayerItem(element: data);
-            },
-            options: CarouselOptions(
-              viewportFraction: 1,
-              initialPage: 0,
-              height: size,
-              enableInfiniteScroll: false,
-              reverse: false,
-              autoPlay: false,
-              enlargeCenterPage: true,
-              // onPageChanged: (index, reason) {
-              //   index = index % (fielViewModel.videoSource!.videoList.length);
-              //   fielViewModel.changeVideo(index);
-              // },
-              scrollDirection: Axis.vertical,
-            ),
-          ),
-        ]);
-      }),
-    ));
+    return Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: Palette.colorLight,
+        body: Obx(
+          (() {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4.0, 0, 2, 0),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+                          child: Text(
+                            ' Explore',
+                            style: TextStyle(
+                              fontFamily: "Prompt_SemiBold",
+                              fontWeight: FontWeight.w600,
+                              color: Palette.colorText,
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Button(
+                            iconImage: 'assets/userShow.svg',
+                            //iconSize: 30,
+                            onPressed: () {}),
+                        Button(
+                            iconImage: 'assets/chrono.svg',
+                            // iconSize: 30,
+                            onPressed: () {}),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: CarouselSlider.builder(
+                      itemCount: videoController.videoList.length,
+                      itemBuilder: (BuildContext context, int itemIndex,
+                          int pageViewIndex) {
+                        final data = videoController.videoList[itemIndex];
+                        //  fielViewModel.loadVideo(0);
+                        itemIndex =
+                            itemIndex % (videoController.videoList.length);
+                        return VideoPlayerItem(element: data);
+                      },
+                      options: CarouselOptions(
+                        viewportFraction: 1,
+                        initialPage: 0,
+                        height: size,
+                        enableInfiniteScroll: false,
+                        reverse: false,
+                        autoPlay: false,
+                        enlargeCenterPage: true,
+                        // onPageChanged: (index, reason) {
+                        //   index = index % (fielViewModel.videoSource!.videoList.length);
+                        //   fielViewModel.changeVideo(index);
+                        // },
+                        scrollDirection: Axis.vertical,
+                      ),
+                    ),
+                    // ]),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ));
   }
 
   Widget videoCard(Video video) {

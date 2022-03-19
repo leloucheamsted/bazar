@@ -16,13 +16,14 @@ class Video {
   String details;
   String nom;
   String profile;
-
+  String username;
   CachedVideoPlayerController? controller;
 
   Video(
       {required this.numeroVendeur,
       required this.prix,
       required this.nom,
+      required this.username,
       required this.video_title,
       required this.Category,
       required this.likes,
@@ -34,6 +35,7 @@ class Video {
   Video.fromJson(Map<dynamic, dynamic> json)
       : numeroVendeur = json['numeroVendeur'],
         nom = json['nom'],
+        username = json['username'],
         profile = json['profile'],
         video_title = json['video_title'],
         Category = json['Category'],
@@ -47,6 +49,7 @@ class Video {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['numeroVendeur'] = this.numeroVendeur;
     data['nom'] = this.nom;
+    data['username'] = this.username;
     data['profile'] = this.profile;
     data['video_title'] = this.video_title;
     data['Category'] = this.Category;
@@ -64,6 +67,7 @@ class Video {
     return Video(
       numeroVendeur: snapshot['numeroVendeur'],
       nom: snapshot['nom'],
+      username: snapshot['username'],
       profile: snapshot['profile'],
       likes: snapshot['likes'],
       video_title: snapshot['video_title'],
