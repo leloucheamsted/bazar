@@ -1,3 +1,4 @@
+import 'package:bazar/TestFlutter/feed_screen.dart';
 import 'package:bazar/main.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
 import 'package:bazar/screens/home_screen.dart';
@@ -5,6 +6,7 @@ import 'package:bazar/screens/orders_screen.dart';
 import 'package:bazar/screens/otp/otp1.dart';
 import 'package:bazar/screens/profile_screen.dart';
 import 'package:bazar/screens/search_screen.dart';
+import 'package:bazar/widgets/testFire.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';

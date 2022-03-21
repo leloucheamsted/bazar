@@ -6,7 +6,7 @@ import 'package:bazar/config/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getwidget/components/avatar/gf_avatar.dart';
-// import 'package:video_player/video_player.dart';
+//import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 
 class VideoPlayerItem extends StatefulWidget {
@@ -21,7 +21,7 @@ class VideoPlayerItem extends StatefulWidget {
 }
 
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
-  late CachedVideoPlayerController videoPlayerController;
+  late VideoPlayerController videoPlayerController;
 
   @override
   bool get wantKeepAlive => true;
@@ -29,19 +29,19 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   @override
   void initState() {
     super.initState();
-    videoPlayerController =
-        CachedVideoPlayerController.network(widget.element.url)
-          ..initialize().then((value) {
-            videoPlayerController.play();
-            videoPlayerController.setVolume(1);
-            videoPlayerController.setLooping(true);
-          });
+    videoPlayerController = VideoPlayerController.network(widget.element.url)
+      ..initialize().then((value) {
+        videoPlayerController.play();
+        videoPlayerController.setVolume(1);
+        videoPlayerController.setLooping(true);
+      });
   }
 
   @override
   void dispose() {
-    super.dispose();
+    videoPlayerController.pause();
     videoPlayerController.dispose();
+    super.dispose();
   }
 
   @override
@@ -73,7 +73,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                   maxWidth: double.infinity,
                   child: AspectRatio(
                       aspectRatio: videoPlayerController.value.aspectRatio,
-                      child: CachedVideoPlayer(videoPlayerController)),
+                      child: VideoPlayer(videoPlayerController)),
                 ),
               ),
             ),
@@ -111,7 +111,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                                     ),
                                   ),
                                   Text(
-                                    widget.element.nom,
+                                    widget.element.username,
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "Prompt_Medium",
@@ -256,7 +256,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         backgroundColor: Colors.transparent,
         builder: (BuildContext bc) {
           return Container(
-            height: MediaQuery.of(context).size.height * .30,
+            height: MediaQuery.of(context).size.height * .43,
             padding: const EdgeInsets.all(20.0),
             decoration: const BoxDecoration(
               color: Palette.colorLight,
@@ -269,50 +269,74 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
               child: Column(
                 children: [
                   Text(
-                    'Welcome to basic',
+                    'Product details',
                     style: TextStyle(
                       fontFamily: 'Prompt_Bold',
                       fontSize: 24.0,
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    'Experience a new way of shopping with short videos feed. Just swipe for new items and if you found the one you like, tap buy now button to purchase it.',
-                    style: TextStyle(
-                      fontFamily: 'Prompt_Regular',
-                      fontSize: 18.0,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Text(
+                        widget.element.details,
+                        style: TextStyle(
+                          fontFamily: 'Prompt_Regular',
+                          fontSize: 18.0,
+                        ),
+                      ),
                     ),
                   ),
-                  Spacer(
-                    flex: 3,
+                  SizedBox(
+                    height: 10,
+                  ),
+
+                  // quantity of product
+                  Row(
+                    children: [
+                      Text(
+                        'InStock: ',
+                        style: TextStyle(
+                          fontFamily: 'Prompt_Regular',
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      Text(
+                        widget.element.quantite,
+                        style: TextStyle(
+                          fontFamily: 'Prompt_Regular',
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      Text(
+                        ' articles',
+                        style: TextStyle(
+                          fontFamily: 'Prompt_Regular',
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
-                    height: 40.0,
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 50.0,
                     width: double.infinity,
-                    child: RaisedButton(
-                      textColor: Colors.white,
-                      color: Palette.primaryColor,
+                    child: OutlineButton(
+                      textColor: Palette.secondColor,
+                      color: Palette.secondColor,
                       child: Text(
-                        "Start",
+                        "Close",
                         style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: 'Prompt_Medium',
                         ),
                       ),
                       onPressed: () async {
-                        // await availableCameras().then((value) => Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => CameraScreen(
-                        //           cameras: value,
-                        //         ),
-                        //       ),
-                        //     ));
-                        //  Fermerture du popup
-                        // Navigator.of(context).pop();
-                        // Get.to(
-                        //   CameraScreen(cameras),
-                        // );
+                        Navigator.of(context).pop();
                       },
                       shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(15.0),

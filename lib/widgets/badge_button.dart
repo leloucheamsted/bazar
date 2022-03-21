@@ -22,11 +22,6 @@ class BadgeButton extends StatelessWidget {
       child: Stack(
         children: [
           SvgPicture.asset(iconImage),
-          // AssetImage(iconImage),
-          //  color: color,
-          //  size: iconSize,
-
-          // icon: Icon(IconData(0xf500, fontFamily: 'fal')),
           Positioned(
             right: 4,
             top: 0,

@@ -1,52 +1,74 @@
-import 'package:bazar/Services/service_video.dart';
+import 'package:cached_video_player/cached_video_player.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:stacked/stacked.dart';
-// import 'package:video_player/video_player.dart';
-import 'package:cached_video_player/cached_video_player.dart';
+
+import '../data/video.dart';
 
 class FeedViewModel extends BaseViewModel {
-  CachedVideoPlayerController? controller;
-
-  VideoService? videoSource;
+  VideoPlayerController? controller;
+  List<Video> videos = [];
 
   int prevVideo = 0;
   int actualScreen = 0;
+
   FeedViewModel() {
-    videoSource = VideoService();
+    load();
+    notifyListeners();
+  }
+
+  void load() async {
+    videos = await getVideoList();
+    await videos[0].loadController();
+    videos[0].controller!.play();
+    notifyListeners();
+  }
+
+  Future<List<Video>> getVideoList() async {
+    var videoList = <Video>[];
+    var videos = (await FirebaseFirestore.instance.collection("Videos").get());
+
+    videos.docs.forEach((element) {
+      Video video = Video.fromJson(element.data());
+      videoList.add(video);
+    });
+    notifyListeners();
+    return videoList;
   }
 
   changeVideo(index) async {
-    if (videoSource!.listVideos[index].controller == null) {
-      await videoSource!.listVideos[index].loadController();
+    if (videos[prevVideo].controller != null)
+      videos[prevVideo].controller!.pause();
+
+    if (videos[index].controller == null) {
+      await videos[index].loadController();
     }
-    videoSource!.listVideos[index].controller!.play();
-    //videoSource.listVideos[prevVideo].controller.removeListener(() {});
-
-    if (videoSource!.listVideos[prevVideo].controller != null)
-      videoSource!.listVideos[prevVideo].controller!.pause();
-
+    videos[index].controller!.play();
     prevVideo = index;
+    if (prevVideo + 1 < videos.length) {
+      await videos[prevVideo + 1].loadController();
+    }
     notifyListeners();
 
     print(index);
   }
 
   void loadVideo(int index) async {
-    if (videoSource!.listVideos.length > index) {
-      await videoSource!.listVideos[index].loadController();
-      videoSource!.listVideos[index].controller?.play();
-      print('index');
+    if (videos.length > index) {
+      await videos[index].loadController();
+      videos[index].controller?.play();
+
       notifyListeners();
     }
   }
 
-  // void setActualScreen(index) {
-  //   actualScreen = index;
-  //   if (index == 0) {
-  //     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-  //   } else {
-  //     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-  //   }
-  //   notifyListeners();
-  // }
+  void setActualScreen(index) {
+    actualScreen = index;
+    if (index == 0) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    }
+    notifyListeners();
+  }
 }

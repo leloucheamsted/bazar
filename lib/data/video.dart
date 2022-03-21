@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-// import 'package:video_player/video_player.dart';
+//import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 
 class Video {
@@ -16,13 +16,14 @@ class Video {
   String details;
   String nom;
   String profile;
-
-  CachedVideoPlayerController? controller;
+  String username;
+  VideoPlayerController? controller;
 
   Video(
       {required this.numeroVendeur,
       required this.prix,
       required this.nom,
+      required this.username,
       required this.video_title,
       required this.Category,
       required this.likes,
@@ -34,6 +35,7 @@ class Video {
   Video.fromJson(Map<dynamic, dynamic> json)
       : numeroVendeur = json['numeroVendeur'],
         nom = json['nom'],
+        username = json['username'],
         profile = json['profile'],
         video_title = json['video_title'],
         Category = json['Category'],
@@ -47,6 +49,7 @@ class Video {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['numeroVendeur'] = this.numeroVendeur;
     data['nom'] = this.nom;
+    data['username'] = this.username;
     data['profile'] = this.profile;
     data['video_title'] = this.video_title;
     data['Category'] = this.Category;
@@ -64,6 +67,7 @@ class Video {
     return Video(
       numeroVendeur: snapshot['numeroVendeur'],
       nom: snapshot['nom'],
+      username: snapshot['username'],
       profile: snapshot['profile'],
       likes: snapshot['likes'],
       video_title: snapshot['video_title'],
@@ -77,7 +81,7 @@ class Video {
   }
 
   Future<Null> loadController() async {
-    controller = CachedVideoPlayerController.network(url);
+    controller = VideoPlayerController.network(url);
     await controller
         ?.initialize()
         .then((value) => debugPrint('Controller Initialiszed!!'));

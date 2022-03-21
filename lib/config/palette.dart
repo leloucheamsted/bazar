@@ -11,4 +11,5 @@ class Palette {
   static const Color iconColor = Color.fromRGBO(74, 74, 74, 1);
   static const Color secondColor = Color.fromRGBO(117, 117, 117, 1);
   static const Color colorInput = Color.fromRGBO(238, 238, 238, 1);
+  static const Color disable = Color.fromRGBO(204, 221, 254, 1);
 }

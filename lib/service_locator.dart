@@ -8,7 +8,6 @@ import 'package:stacked_services/stacked_services.dart';
 import 'Services/feef_videoModel.dart';
 
 final locator = GetIt.instance;
-final loc = GetIt.instance;
 void setup() {
-  locator.registerSingleton<VideoModel>(VideoModel());
+  locator.registerSingleton<FeedViewModel>(FeedViewModel());
 }

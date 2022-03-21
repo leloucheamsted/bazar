@@ -29,13 +29,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_bloc: any
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   cached_network_image: ^3.2.0
   material_design_icons_flutter: 5.0.6595
   pinput: ^2.0.2
+  file_picker: ^4.5.1
   firebase_auth: ^3.3.5
   firebase_core: ^1.11.0
   image_picker: ^0.8.4+10
@@ -49,18 +50,20 @@ dependencies:
   get_it: ^7.2.0
   flutter_svg: ^1.0.3
   getwidget: ^2.0.4
-  #flutter_ffmpeg: ^0.4.2
-  provider: ^6.0.2
+  uuid: ^3.0.4
+  path_provider: ^2.0.3
+  # flutter_ffmpeg: ^0.4.2
+  # provider: ^6.0.2
   flutter_ffmpeg: ^0.4.2
-  path: ^1.8.1
+  # path: ^1.8.1
   firebase_database: ^9.0.8
-  cached_video_player: ^1.0.3
+  cached_video_player: ^2.0.0-dev.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
   shared_preferences: ^2.0.13
   measured_size: ^1.0.0
-  #video_player: ^2.2.19
+  # video_player: ^2.2.19
   expandable: ^5.0.1
   carousel_slider: ^4.0.0
   get: ^4.6.1
@@ -115,6 +118,8 @@ flutter:
     - assets/details.svg
     - assets/french.svg
     - assets/search.svg
+    - assets/plus.svg
+    - assets/expand.svg
 
   fonts:
     - family: Prompt_Regular

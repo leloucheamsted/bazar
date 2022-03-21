@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
-// import 'package:video_player/video_player.dart';
+//import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 
 class FielModelFire extends BaseViewModel {
-  CachedVideoPlayerController? controller;
+  VideoPlayerController? controller;
 
   ServiceFire? videoSource;
 
@@ -48,7 +48,7 @@ class FielModelFire extends BaseViewModel {
   }
 
   loadfirst(String url) async {
-    controller = CachedVideoPlayerController.network(url);
+    controller = VideoPlayerController.network(url);
     await controller
         ?.initialize()
         .then((value) => debugPrint('Controller Initialiszed!!'));

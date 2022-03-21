@@ -5,7 +5,7 @@ import 'package:bazar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:stacked/stacked.dart';
-// import 'package:video_player/video_player.dart';
+//import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -19,82 +19,71 @@ class TestFire extends StatefulWidget {
 }
 
 class _TestFireState extends State<TestFire> {
-//   TestFire({Key? key}) : super(key: key);
   final locator = GetIt.instance;
-  final fielModelFire = GetIt.instance<FielModelFire>();
+  final feedViewModel = GetIt.instance<FeedViewModel>();
 
   @override
   void initState() {
-    fielModelFire.loadVideo(0);
-    fielModelFire.loadVideo(1);
+    feedViewModel.loadVideo(0);
+    feedViewModel.loadVideo(1);
+    feedViewModel.setInitialised(true);
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<FielModelFire>.reactive(
-        disposeViewModel: false,
-        onModelReady: (viewModel) => viewModel.loadVideo(0),
-        builder: (context, model, child) => videoScreen(),
-        viewModelBuilder: () => FielModelFire());
+    return ViewModelBuilder<FeedViewModel>.reactive(
+      disposeViewModel: false,
+      builder: (context, model, child) => videoScreen(),
+      viewModelBuilder: () => feedViewModel,
+    );
   }
 
   Widget videoScreen() {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Stack(
-        children: [
-          Obx(() {
-            return Stack(
-              children: [
-                Container(
-                  height: size.height,
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [
-                          Colors.grey,
-                          Colors.white,
+    return Stack(
+      children: [
+        // Container(
+        //   height: size.height,
+        //   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //   decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //         colors: [
+        //           Colors.grey,
+        //           Colors.white,
 
-                          Colors.white,
-                          Colors.grey,
-                          //add more colors for gradient
-                        ],
-                        begin:
-                            Alignment.topCenter, //begin of the gradient color
-                        end: Alignment.bottomCenter, //end of the gradient color
-                        stops: [0, 0.2, 0.5, 0.8] //stops for individual color
-                        //set the stops number equal to numbers of color
-                        ),
-                  ),
-                ),
-                CarouselSlider.builder(
-                  itemCount: fielModelFire.videoSource?.videoList.length,
-                  itemBuilder:
-                      (BuildContext context, int itemIndex, int pageViewIndex) {
-                    itemIndex = itemIndex %
-                        (fielModelFire.videoSource!.videoList.length);
-                    return videoCard(
-                        fielModelFire.videoSource!.videoList[itemIndex]);
-                  },
-                  options: CarouselOptions(
-                    viewportFraction: 1,
-                    initialPage: 0,
-                    height: size.height,
-                    enableInfiniteScroll: false,
-                    reverse: false,
-                    autoPlay: false,
-                    enlargeCenterPage: true,
-                    //  onPageChanged: callbackFunction,
-                    scrollDirection: Axis.vertical,
-                  ),
-                ),
-              ],
-            );
-          }),
-        ],
-      ),
+        //           Colors.white,
+        //           Colors.grey,
+        //           //add more colors for gradient
+        //         ],
+        //         begin: Alignment.topCenter, //begin of the gradient color
+        //         end: Alignment.bottomCenter, //end of the gradient color
+        //         stops: [0, 0.2, 0.5, 0.8] //stops for individual color
+        //         //set the stops number equal to numbers of color
+        //         ),
+        //   ),
+        // ),
+        CarouselSlider.builder(
+          itemCount: feedViewModel.videos.length,
+          itemBuilder:
+              (BuildContext context, int itemIndex, int pageViewIndex) {
+            itemIndex = itemIndex % (feedViewModel.videos.length);
+            return videoCard(feedViewModel.videos[itemIndex]);
+          },
+          options: CarouselOptions(
+            viewportFraction: 1,
+            initialPage: 0,
+            height: size.height,
+            enableInfiniteScroll: false,
+            reverse: false,
+            autoPlay: false,
+            enlargeCenterPage: true,
+            //  onPageChanged: callbackFunction,
+            scrollDirection: Axis.vertical,
+          ),
+        ),
+      ],
     );
   }
 
@@ -116,7 +105,7 @@ class _TestFireState extends State<TestFire> {
                   child: SizedBox(
                     width: video.controller?.value.size.width ?? 0,
                     height: video.controller?.value.size.height ?? 0,
-                    child: CachedVideoPlayer(video.controller!),
+                    child: VideoPlayer(video.controller!),
                   ),
                 )),
               )
@@ -135,7 +124,7 @@ class _TestFireState extends State<TestFire> {
 
   @override
   void dispose() {
-    fielModelFire.controller?.dispose();
+    //feedViewModel.con?.dispose();
     super.dispose();
   }
 }

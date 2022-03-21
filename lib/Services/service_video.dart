@@ -2,6 +2,7 @@ import 'package:bazar/constants.dart';
 import 'package:bazar/data/demo_data.dart';
 import 'package:bazar/data/video.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -11,12 +12,13 @@ class VideoService {
   List<Video> listVideos = <Video>[];
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
+
   VideoService() {
     load();
   }
   void load() async {
     listVideos = await getVideoList();
-    listVideos[0].loadController();
+    // listVideos[0].loadController();
   }
 
   Future<List<Video>> getVideoList() async {
@@ -39,6 +41,19 @@ class VideoService {
     });
 
     return videoList;
+  }
+
+  Future<List<String>> getCategories() async {
+    List<String> list = [];
+    await FirebaseFirestore.instance
+        .collection('Categories_Produits')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        list = doc["List"];
+      });
+    });
+    return list;
   }
 
   Future<Null> addDemoData() async {

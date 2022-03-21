@@ -8,7 +8,7 @@ import 'package:stacked/stacked.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 
 class VideoModel extends ChangeNotifier {
-  CachedVideoPlayerController? controller;
+  VideoPlayerController? controller;
 
   ServiceFire? videoSource;
 
@@ -46,7 +46,7 @@ class VideoModel extends ChangeNotifier {
   }
 
   loadfirst(String url) async {
-    controller = CachedVideoPlayerController.network(url);
+    controller = VideoPlayerController.network(url);
     await controller
         ?.initialize()
         .then((value) => debugPrint('Controller Initialiszed!!'));
