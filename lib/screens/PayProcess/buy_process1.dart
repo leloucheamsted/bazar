@@ -133,7 +133,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
 
               // Details du produit
               Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                   child: Column(
                     children: [
                       SizedBox(
@@ -211,28 +211,31 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                               size: 20,
                             ),
                           ),
-                          Spacer(),
+
                           // Nombre de pieces
-                          GestureDetector(
-                            onTap: () {
-                              AddPopup(context);
-                            },
-                            child: Expanded(
-                              child: Container(
-                                child: Center(
-                                  child: Text(
-                                    NbrePiece.toString(),
-                                    style: TextStyle(
-                                      color: Palette.colorText,
-                                      fontSize: 20.0,
-                                      fontFamily: 'Prompt_Regular',
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                AddPopup(context);
+                              },
+                              child: Expanded(
+                                child: Container(
+                                  color: Palette.colorInput,
+                                  child: Center(
+                                    child: Text(
+                                      NbrePiece.toString(),
+                                      style: TextStyle(
+                                        color: Palette.colorText,
+                                        fontSize: 20.0,
+                                        fontFamily: 'Prompt_Regular',
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          Spacer(),
+
                           // Boutton Pour ajoute
                           GestureDetector(
                             onTap: () {
@@ -292,7 +295,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
           ),
         ),
         Container(
-          margin: const EdgeInsets.fromLTRB(8, 0, 8, 30),
+          margin: const EdgeInsets.fromLTRB(15, 0, 15, 30),
           height: 30,
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -303,8 +306,31 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                   fontSize: 24,
                 )),
             Row(
-              children: [Text('2000'), Text('FCFA')],
-            )
+              children: [
+                //  Prix du peoduits
+                Text(
+                  "2000",
+                  style: TextStyle(
+                    fontFamily: "Prompt_SemiBold",
+                    fontWeight: FontWeight.w600,
+                    color: Palette.colorText,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  'FCFA',
+                  style: TextStyle(
+                    fontFamily: "Prompt_SemiBold",
+                    fontWeight: FontWeight.w600,
+                    color: Palette.colorInput,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
           ]),
         ),
         Container(
@@ -514,7 +540,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                 child: Text(
                                   'Shipping address',
                                   textAlign: TextAlign.center,
@@ -532,6 +558,32 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                   SizedBox(
                     height: 5,
                   ),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
+                    padding: const EdgeInsets.all(8.0),
+                    height: 50,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Palette.colorInput,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextFormField(
+                      // onChanged: _onChanged,
+                      //  controller: nametextController,
+                      autocorrect: false,
+                      textAlign: TextAlign.start,
+                      focusNode: FocusNode(),
+                      validator: (value) {},
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontFamily: 'Prompt_Regular',
+                      ),
+                      decoration: InputDecoration.collapsed(
+                        hintText: 'Search for a city',
+                        hintStyle: TextStyle(color: Palette.colorgray),
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: ListView.builder(
                         itemCount: pointlist.length,
@@ -547,23 +599,36 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                             }),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
-                              child: Container(
-                                padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                                alignment: Alignment.centerLeft,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Palette.colorInput,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Text(pointlist[index],
+                              child:  Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                          height: 50,
+                          alignment: Alignment.topLeft,
+                          decoration: BoxDecoration(
+                            color: Palette.colorInput,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    choiceStreet,
                                     style: TextStyle(
-                                        fontFamily: "Prompt_Medium",
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: Palette.colorText)),
-                              ),
+                                      fontFamily: "Prompt_Regular",
+                                      fontSize: 18,
+                                      color: Palette.colorgray,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                    onTap: (() => PopupListCategoris()),
+                                    child: SvgPicture.asset('assets/plus.svg')),
+                              ],
                             ),
-                          );
+                            ),
+                          )
                         }),
                   )
                 ],

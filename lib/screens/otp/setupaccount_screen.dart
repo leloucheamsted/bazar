@@ -150,6 +150,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   ),
                 ),
               ),
+
               SizedBox(
                 height: 8,
               ),
