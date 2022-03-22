@@ -68,50 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Column(
       children: [
-        // Padding(
-        //   padding: const EdgeInsets.fromLTRB(2.0, 40, 2, 0),
-        //   child: Row(
-        //     children: [
-        //       Padding(
-        //         padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 0),
-        //         child: Text(
-        //           ' Explore',
-        //           style: TextStyle(
-        //             fontFamily: "Prompt_SemiBold",
-        //             fontWeight: FontWeight.w600,
-        //             color: Palette.colorText,
-        //             fontSize: 25,
-        //           ),
-        //         ),
-        //       ),
-        //       Spacer(),
-        //       // InkWell(
-        //       //     borderRadius: BorderRadius.circular(30),
-        //       //     // When the user taps the button, show a snackbar.
-        //       //     onTap: () {},
-        //       //     child: SvgPicture.asset('assets/userShow.svg')),
-
-        //       Button(
-        //           iconImage: 'assets/userShow.svg',
-        //           //iconSize: 30,
-        //           onPressed: () {}),
-        //       Button(
-        //           iconImage: 'assets/chrono.svg',
-        //           // iconSize: 30,
-        //           onPressed: () {}),
-        //     ],
-        //   ),
-        // ),
-
         Expanded(
           child: Stack(
             children: [
               Container(
                 color: Colors.black,
               ),
-              //  FeedScreen(),
+              FeedScreen(),
               //TestFire(),
-              TestProvider(),
+              //TestProvider(),
             ],
           ),
         ),

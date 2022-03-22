@@ -138,8 +138,8 @@ class _NavScreenState extends State<NavScreen> {
                         minWidth: 40,
                         onPressed: () {
                           setState(() {
-                            SearchPopup(
-                                context); // if user taps on this dashboard tab will be active
+                            SearchPopup(context);
+                            // if user taps on this dashboard tab will be active
                           });
                         },
                         child: Column(
@@ -169,9 +169,17 @@ class _NavScreenState extends State<NavScreen> {
                       ),
                       MaterialButton(
                         minWidth: 40,
-                        onPressed: () {
-                          setState(() {
-                            WelcomePopup(context);
+                        onPressed: () async {
+                          setState(() async {
+                            await availableCameras()
+                                .then((value) => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraScreen(
+                                          cameras: value,
+                                        ),
+                                      ),
+                                    ));
                           });
                         },
                         child: Expanded(
@@ -325,14 +333,16 @@ class _NavScreenState extends State<NavScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        await availableCameras().then((value) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CameraScreen(
-                                  cameras: value,
-                                ),
-                              ),
-                            ));
+                        MaterialPageRoute(
+                            builder: (context) => EnterNumberScreen());
+                        // await availableCameras().then((value) => Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => CameraScreen(
+                        //           cameras: value,
+                        //         ),
+                        //       ),
+                        //     ));
                         //  Fermerture du popup
                         // Navigator.of(context).pop();
                         // Get.to(
@@ -397,6 +407,7 @@ class _NavScreenState extends State<NavScreen> {
                         padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                         child: InkWell(
                           onTap: () async {
+                            Navigator.of(context).pop();
                             // Allez a l'onglet 2
                             currentScreen = await SearchScreen();
                             currentTab = 1;

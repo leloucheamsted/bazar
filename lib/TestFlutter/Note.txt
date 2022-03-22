@@ -1,0 +1,65 @@
+ XFile videopath = _cameraController
+                                              .stopVideoRecording() as XFile;
+                                          !iscamerafront
+                                              ? await _flutterFFmpeg
+                                                  .execute(
+                                                      "-i ${videopath.path} -vf hflip -c:a copy $outPath")
+                                                  .then((returnCode) => print(
+                                                      "Return code $returnCode"))
+                                              : null;
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (builder) =>
+                                                      VideoViewPage(
+                                                        path: !iscamerafront
+                                                            ? videopath.path
+                                                            : outPath,
+                                                      )));
+
+
+
+
+      XFile videopath = _cameraController
+                                        .stopVideoRecording() as XFile;
+                                    !iscamerafront
+                                        ? await _flutterFFmpeg
+                                            .execute(
+                                                "-i ${videopath.path} -vf hflip -c:a copy $outPath")
+                                            .then((returnCode) => print(
+                                                "Return code $returnCode"))
+                                        : null;
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (builder) => VideoViewPage(
+                                                  path: !iscamerafront
+                                                      ? videopath.path
+                                                      : outPath,
+                                                )));
+                                    setState(() {
+                                      isRecoring = false;
+                                    });
+
+
+
+
+   XFile videopath = await _cameraController
+                                      .stopVideoRecording();
+                                  !iscamerafront
+                                      ? await _flutterFFmpeg
+                                          .execute(
+                                              "-i ${videopath.path} -vf hflip -c:a copy $outPath")
+                                          .then((returnCode) =>
+                                              print("Return code $returnCode"))
+                                      : null;
+
+                                  startTimer(false);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (builder) => VideoViewPage(
+                                                path: iscamerafront
+                                                    ? videopath.path
+                                                    : outPath,
+                                              )));
