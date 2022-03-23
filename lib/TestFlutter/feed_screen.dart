@@ -163,16 +163,6 @@ class _FeedScreenState extends State<FeedScreen> {
                               child: VideoPlayer(video.controller!)),
                         ),
                       ),
-                      // child: SizedBox.expand(
-
-                      //     child: FittedBox(
-                      //   fit: BoxFit.cover,
-                      //   child: SizedBox(
-                      //     width: video.controller?.value.size.width ?? 0,
-                      //     height: video.controller?.value.size.height ?? 0,
-                      //     child: VideoPlayer(video.controller!),
-                      //   ),
-                      // )),
                     ),
                   )
                 : Container(
@@ -345,7 +335,9 @@ class _FeedScreenState extends State<FeedScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BuyProcessOne()));
+                                    builder: (context) => BuyProcessOne(
+                                          video: video,
+                                        )));
                           },
                           child: Text(
                             'Buy Now',

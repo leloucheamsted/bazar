@@ -3,6 +3,7 @@ import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/data/video.dart';
 import 'package:bazar/widgets/circle_button.dart';
+import 'package:bazar/widgets/item_ville.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:convert';
 
 class BuyProcessOne extends StatefulWidget {
-  const BuyProcessOne({Key? key}) : super(key: key);
+  final Video video;
+  const BuyProcessOne({required this.video, Key? key}) : super(key: key);
 
   @override
   _BuyProcessOneState createState() => _BuyProcessOneState();
@@ -28,25 +30,25 @@ TextEditingController textPriceController =
 TextEditingController nbreController =
     TextEditingController(); // input quantity
 String choiceStreet = "Shipping Address"; // string categoriex of product
-String price = "";
+int price = 0;
 String? details;
 int NbrePiece = 01;
 bool PopCatShow = false;
-List<String> catList = <String>[];
 
 List<String> pointlist = <String>[];
+String ville = "";
 
 class _BuyProcessOneState extends State<BuyProcessOne> {
   String? _chosenValue;
   List<String> list = <String>[];
   getdata() async {
     await FirebaseFirestore.instance
-        .collection("Categories_Produits")
-        .doc('fN0wAauWilUfslhBQGA3')
+        .collection("Ville")
+        .doc('0JLnCiTjqF8ZcbOAs20E')
         .get()
         .then((value) {
       setState(() {
-        pointlist = List.from(value.data()!["List"]);
+        pointlist = List.from(value.data()!["Liste_ville"]);
         print(pointlist.length);
       });
     });
@@ -58,6 +60,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
     setState(() {
       PopCatShow = false;
       NbrePiece = 01;
+      price = int.parse(widget.video.prix) * NbrePiece;
       choiceStreet = "Shipping Address";
     });
     // TODO: implement initState
@@ -66,6 +69,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
 
   @override
   Widget build(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         systemNavigationBarColor: Palette.colorLight,
         systemNavigationBarIconBrightness: Brightness.light,
@@ -113,7 +117,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                             'New order',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 25.0,
                               fontFamily: 'Prompt_Bold',
                               color: Palette.colorLight,
                             ),
@@ -146,37 +150,20 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                             color: Palette.colorInput,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Stack(children: [
-                            TextFormField(
-                              controller: detailsController,
-                              //  focusNode: focusNode,
-                              textAlignVertical: TextAlignVertical.center,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 5,
-                              minLines: 1,
-                              style: TextStyle(
-                                  color: Palette.colorText,
-                                  fontFamily: "Prompt_Regular",
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 22),
-                              onChanged: (value) {
-                                setState(() {
-                                  details = detailsController.text;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Détails de l'article",
-                                hintStyle: TextStyle(
-                                    color: Colors.grey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SingleChildScrollView(
+                              child: Text(
+                                widget.video.details ?? "Unknow",
+                                style: TextStyle(
+                                    color: Palette.colorText,
                                     fontFamily: "Prompt_Regular",
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 22),
                               ),
                             ),
-                          ]),
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -203,6 +190,8 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                               } else {
                                 setState(() {
                                   NbrePiece -= 1;
+                                  price =
+                                      int.parse(widget.video.prix) * NbrePiece;
                                 });
                               }
                             },
@@ -241,6 +230,8 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                             onTap: () {
                               setState(() {
                                 NbrePiece += 1;
+                                price =
+                                    int.parse(widget.video.prix) * NbrePiece;
                               });
                             },
                             child: Icon(Icons.add),
@@ -277,7 +268,9 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                                     style: TextStyle(
                                       fontFamily: "Prompt_Regular",
                                       fontSize: 18,
-                                      color: Palette.colorgray,
+                                      color: choiceStreet == "Shipping Address"
+                                          ? Palette.colorgray
+                                          : Palette.colorText,
                                     ),
                                   ),
                                 ),
@@ -309,7 +302,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
               children: [
                 //  Prix du peoduits
                 Text(
-                  "2000",
+                  price.toString(),
                   style: TextStyle(
                     fontFamily: "Prompt_SemiBold",
                     fontWeight: FontWeight.w600,
@@ -334,7 +327,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
           ]),
         ),
         Container(
-            color: details != "" && choiceStreet != "Categories"
+            color: details != "" && choiceStreet != "Shipping Address"
                 ? Palette.primaryColor
                 : Palette.disable,
             width: MediaQuery.of(context).size.width,
@@ -345,7 +338,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      details != "" && choiceStreet != "Categories"
+                      details != "" && choiceStreet != "Shipping Address"
                           ? uploadStorage()
                           : null;
                     },
@@ -369,12 +362,14 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                 Positioned(
                   child: InkWell(
                     onTap: () {
-                      uploadStorage();
+                      details != "" && choiceStreet != "Shipping Address"
+                          ? uploadStorage()
+                          : null;
                       print("lelocueh");
                     },
                     borderRadius: BorderRadius.circular(30),
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.fromLTRB(10.0, 10, 10, 15),
                       child: SvgPicture.asset('assets/next.svg'),
                     ),
                     // onPressed: () {},
@@ -422,6 +417,8 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
   // Popup dajout de quantite
 
   void AddPopup(context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -478,7 +475,8 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                         child: InkWell(
                           onTap: () async {
                             // Allez a l'onglet 2
-                            FocusScope.of(context).unfocus();
+                            Navigator.of(context).pop();
+                            currentFocus.unfocus();
                           },
                           borderRadius: BorderRadius.circular(30),
                           child: Padding(
@@ -513,11 +511,8 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
               child: Column(
                 children: [
                   Container(
-                    height: 40,
-                    color: Palette.primaryColor,
-                  ),
-                  Container(
-                    height: 50,
+                    alignment: Alignment.bottomCenter,
+                    height: 80,
                     color: Palette.primaryColor,
                     child: Padding(
                       padding: const EdgeInsets.all(8),
@@ -556,34 +551,39 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                     ),
                   ),
                   SizedBox(
-                    height: 5,
+                    height: 20,
                   ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
-                    padding: const EdgeInsets.all(8.0),
-                    height: 50,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Palette.colorInput,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: TextFormField(
-                      // onChanged: _onChanged,
-                      //  controller: nametextController,
-                      autocorrect: false,
-                      textAlign: TextAlign.start,
-                      focusNode: FocusNode(),
-                      validator: (value) {},
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontFamily: 'Prompt_Regular',
-                      ),
-                      decoration: InputDecoration.collapsed(
-                        hintText: 'Search for a city',
-                        hintStyle: TextStyle(color: Palette.colorgray),
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   height: 50,
+                  //   alignment: Alignment.center,
+                  //   decoration: BoxDecoration(
+                  //     color: Palette.colorInput,
+                  //     borderRadius: BorderRadius.circular(20),
+                  //   ),
+                  //   child: TextFormField(
+                  //     // onChanged: _onChanged,
+                  //     //  controller: nametextController,
+                  //     autocorrect: false,
+                  //     textAlign: TextAlign.start,
+                  //     focusNode: FocusNode(),
+                  //     onChanged: (value) {
+                  //       setState(() {
+                  //         ville = value;
+                  //       });
+                  //     },
+                  //     //validator: (value) {},
+                  //     style: TextStyle(
+                  //       fontSize: 20.0,
+                  //       fontFamily: 'Prompt_Regular',
+                  //     ),
+                  //     decoration: InputDecoration.collapsed(
+                  //       hintText: 'Search for a city',
+                  //       hintStyle: TextStyle(color: Palette.colorgray),
+                  //     ),
+                  //   ),
+                  // ),
                   Expanded(
                     child: ListView.builder(
                         itemCount: pointlist.length,
@@ -597,38 +597,10 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                                 Navigator.of(context).pop(); // Close popup
                               });
                             }),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
-                              child:  Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          height: 50,
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            color: Palette.colorInput,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    choiceStreet,
-                                    style: TextStyle(
-                                      fontFamily: "Prompt_Regular",
-                                      fontSize: 18,
-                                      color: Palette.colorgray,
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                    onTap: (() => PopupListCategoris()),
-                                    child: SvgPicture.asset('assets/plus.svg')),
-                              ],
-                            ),
-                            ),
-                          )
+                            child: ItemVille(
+                                ville: pointlist[index],
+                                Pop: PopupListCategoris),
+                          );
                         }),
                   )
                 ],

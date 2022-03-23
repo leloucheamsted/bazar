@@ -226,7 +226,7 @@ class _NavScreenState extends State<NavScreen> {
                               height: 10.0,
                             ),
                             Text(
-                              'Orders',
+                              'Ordres',
                               style: TextStyle(
                                 fontFamily: 'Prompt_Medium',
                                 color: currentTab == 2
