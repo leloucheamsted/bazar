@@ -31,13 +31,13 @@ class _NavScreenState extends State<NavScreen> {
 
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
-    HomeScreen(),
+    FeedScreen(),
     SearchScreen(),
     OrdersScreen(),
     ProfileScreen(),
   ]; // to store nested tabs
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = HomeScreen(); // Our first view in viewport
+  Widget currentScreen = FeedScreen(); // Our first view in viewport
 
   //  Verifier si c'est la premiere fois que l'utilisateur install l'application
   Future<void> _incrementCounter() async {
@@ -70,21 +70,28 @@ class _NavScreenState extends State<NavScreen> {
         index: currentTab,
         children: screens,
       ),
-
-      // floatingActionButton: FloatingActionButton(
-
-      //   backgroundColor: Palette.primaryColor,
-      //   foregroundColor: Colors.transparent,
-      //   child: ImageIcon(
-      //     AssetImage('assets/nav_icons/add.png'),
-      //     size: 30.0,
-      //     color: Palette.colorLight,
-      //   ),
-      //   onPressed: () {
-      //     WelcomePopup(context);
-      //   },
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Palette.primaryColor,
+        foregroundColor: Colors.transparent,
+        child: ImageIcon(
+          AssetImage('assets/nav_icons/add.png'),
+          size: 30.0,
+          color: Palette.colorLight,
+        ),
+        onPressed: () {
+          setState(() async {
+            await availableCameras().then((value) => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                      cameras: value,
+                    ),
+                  ),
+                ));
+          });
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         //shape: CircularNotchedRectangle(),
         notchMargin: 10,
@@ -105,7 +112,7 @@ class _NavScreenState extends State<NavScreen> {
                         onPressed: () {
                           setState(() {
                             currentScreen =
-                                HomeScreen(); // if user taps on this dashboard tab will be active
+                                FeedScreen(); // if user taps on this dashboard tab will be active
                             currentTab = 0;
                           });
                         },
@@ -167,34 +174,34 @@ class _NavScreenState extends State<NavScreen> {
                           ],
                         ),
                       ),
-                      MaterialButton(
-                        minWidth: 40,
-                        onPressed: () async {
-                          setState(() async {
-                            await availableCameras()
-                                .then((value) => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CameraScreen(
-                                          cameras: value,
-                                        ),
-                                      ),
-                                    ));
-                          });
-                        },
-                        child: Expanded(
-                          child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              child: ImageIcon(
-                                AssetImage('assets/nav_icons/add.png'),
-                                size: 30,
-                                color: Palette.primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // MaterialButton(
+                      //   minWidth: 40,
+                      //   onPressed: () async {
+                      //     setState(() async {
+                      //       await availableCameras()
+                      //           .then((value) => Navigator.push(
+                      //                 context,
+                      //                 MaterialPageRoute(
+                      //                   builder: (context) => CameraScreen(
+                      //                     cameras: value,
+                      //                   ),
+                      //                 ),
+                      //               ));
+                      //     });
+                      //   },
+                      //   child: Expanded(
+                      //     child: Center(
+                      //       child: Container(
+                      //         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      //         child: ImageIcon(
+                      //           AssetImage('assets/nav_icons/add.png'),
+                      //           size: 30,
+                      //           color: Palette.primaryColor,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
 

@@ -51,9 +51,6 @@ class _FeedScreenState extends State<FeedScreen> {
 
   Widget videoScreen() {
     return Scaffold(
-      // backgroundColor: GetIt.instance<FeedViewModel>().actualScreen == 0
-      //     ? Colors.black
-      //     : Colors.white,
       body: feedVideos(),
     );
   }
@@ -99,7 +96,8 @@ class _FeedScreenState extends State<FeedScreen> {
               itemBuilder:
                   (BuildContext context, int itemIndex, int pageViewIndex) {
                 itemIndex = itemIndex % (feedViewModel.videos.length);
-                return videoCard(feedViewModel.videos[itemIndex]);
+                return Text(feedViewModel.videos[itemIndex].nom);
+                //return videoCard(feedViewModel.videos[itemIndex]);
               },
               options: CarouselOptions(
                 viewportFraction: 1,

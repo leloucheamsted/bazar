@@ -39,15 +39,27 @@ class _CameraScreenState extends State<CameraScreen> {
   double transform = 0;
   late Timer _timer;
   int _start = 15;
+  bool duration = false;
   String NoRecordIcon = "assets/elipse2.svg";
   String RecordIcon = "assets/elipse3.svg";
 
   @override
   void initState() {
     super.initState();
+    setState(() {});
     _cameraController =
         CameraController(cameras![0], ResolutionPreset.veryHigh);
     cameraValue = _cameraController.initialize();
+  }
+
+  void xxx() async {
+    if (_start == 0) {
+      XFile videopath = await _cameraController.stopVideoRecording();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (builder) => VideoViewPage(path: videopath.path)));
+    }
   }
 
   void startTime() {
@@ -59,11 +71,18 @@ class _CameraScreenState extends State<CameraScreen> {
           timer.cancel();
           setState(() {
             _start = 15;
+            isRecoring = !isRecoring;
+            duration = false;
           });
+          XFile videopath = await _cameraController.stopVideoRecording();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (builder) => VideoViewPage(path: videopath.path)));
         });
       } else {
         setState(() {
-          _start--;
+          duration ? _start-- : null;
         });
       }
     });
@@ -281,12 +300,19 @@ class _CameraScreenState extends State<CameraScreen> {
                             GestureDetector(
                               onTap: (() async {
                                 if (isRecoring == false) {
-                                  isRecoring = !isRecoring;
+                                  setState(() {
+                                    duration = !duration;
+                                    isRecoring = !isRecoring;
+                                  });
+                                  startTime();
+
                                   await _cameraController.startVideoRecording();
                                 } else {
-                                  _timer.cancel();
-                                  isRecoring = !isRecoring;
-                                  _start = 15;
+                                  setState(() {
+                                    duration = false;
+                                    isRecoring = false;
+                                    _start = 15;
+                                  });
                                   XFile videopath = await _cameraController
                                       .stopVideoRecording();
                                   Navigator.push(
@@ -294,31 +320,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                       MaterialPageRoute(
                                           builder: (builder) => VideoViewPage(
                                               path: videopath.path)));
+                                  _timer.cancel();
                                 }
-                                const oneSec = const Duration(seconds: 1);
-                                _timer = new Timer.periodic(oneSec,
-                                    (Timer timer) async {
-                                  if (_start == 0) {
-                                    setState(() {
-                                      setState(() {
-                                        _start = 15;
-                                      });
-                                      timer.cancel();
-                                      isRecoring = false;
-                                    });
-                                    XFile videopath = await _cameraController
-                                        .stopVideoRecording();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (builder) => VideoViewPage(
-                                                path: videopath.path)));
-                                  } else {
-                                    setState(() {
-                                      _start--;
-                                    });
-                                  }
-                                });
                               }),
                               // onLongPressUp: (() async {
                               //   isRecoring = !isRecoring;
