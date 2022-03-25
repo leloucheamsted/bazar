@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bazar/screens/PayProcess/buy_process1.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_video_player/cached_video_player.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +38,7 @@ class _FeedScreenState extends State<FeedScreen> {
     setState(() {
       position = 0;
     });
+
     super.initState();
   }
 
@@ -56,6 +58,9 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Widget feedVideos() {
+    if (kDebugMode) {
+      print(feedViewModel.videos.length.toString());
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
       child: Stack(
@@ -96,8 +101,8 @@ class _FeedScreenState extends State<FeedScreen> {
               itemBuilder:
                   (BuildContext context, int itemIndex, int pageViewIndex) {
                 itemIndex = itemIndex % (feedViewModel.videos.length);
-                return Text(feedViewModel.videos[itemIndex].nom);
-                //return videoCard(feedViewModel.videos[itemIndex]);
+                // return Text(feedViewModel.videos[itemIndex].nom);
+                return videoCard(feedViewModel.videos[itemIndex]);
               },
               options: CarouselOptions(
                 viewportFraction: 1,
@@ -204,7 +209,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    video.nom ?? "Unknow",
+                                    video.nom,
                                     style: TextStyle(
                                       fontFamily: "Prompt_Medium",
                                       letterSpacing: 1,
@@ -214,7 +219,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                     ),
                                   ),
                                   Text(
-                                    video.username ?? "Unknow",
+                                    video.username,
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "Prompt_Medium",
@@ -300,7 +305,7 @@ class _FeedScreenState extends State<FeedScreen> {
                           children: [
                             //  Prix du peoduits
                             Text(
-                              video.prix ?? "0",
+                              video.prix,
                               style: TextStyle(
                                 fontFamily: "Prompt_SemiBold",
                                 fontWeight: FontWeight.w600,

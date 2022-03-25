@@ -47,17 +47,17 @@ class Video {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['numeroVendeur'] = this.numeroVendeur;
-    data['nom'] = this.nom;
-    data['username'] = this.username;
-    data['profile'] = this.profile;
-    data['video_title'] = this.video_title;
-    data['Category'] = this.Category;
-    data['quantite'] = this.quantite;
-    data['likes'] = this.likes;
-    data['details'] = this.details;
-    data['prix'] = this.prix;
-    data['url'] = this.url;
+    data['numeroVendeur'] = numeroVendeur;
+    data['nom'] = nom;
+    data['username'] = username;
+    data['profile'] = profile;
+    data['video_title'] = video_title;
+    data['Category'] = Category;
+    data['quantite'] = quantite;
+    data['likes'] = likes;
+    data['details'] = details;
+    data['prix'] = prix;
+    data['url'] = url;
     return data;
   }
 
@@ -80,7 +80,7 @@ class Video {
     );
   }
 
-  Future<Null> loadController() async {
+  Future<void> loadController() async {
     controller = VideoPlayerController.network(url);
     await controller
         ?.initialize()

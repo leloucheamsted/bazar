@@ -75,8 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.black,
               ),
               FeedScreen(),
-              //TestFire(),
-              //TestProvider(),
             ],
           ),
         ),

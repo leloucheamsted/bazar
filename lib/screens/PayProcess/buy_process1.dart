@@ -153,7 +153,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                             padding: const EdgeInsets.all(8.0),
                             child: SingleChildScrollView(
                               child: Text(
-                                widget.video.details ?? "Unknow",
+                                widget.video.details,
                                 style: TextStyle(
                                     color: Palette.colorText,
                                     fontFamily: "Prompt_Regular",

@@ -76,286 +76,291 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
 
     return Scaffold(
       backgroundColor: Palette.colorLight,
-      body: Column(children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(8, 40, 8, 0),
-          child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(30),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Icon(
-                            Icons.arrow_back_outlined,
-                            color: Palette.colorText,
-                          ),
-                        ),
-                        // onPressed: () {},
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 18, 0),
-                          child: Text(
-                            'Details',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 30.0,
-                              fontFamily: 'Prompt_Bold',
+      body: Stack(children: [
+        Column(children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(8, 40, 8, 0),
+            child: Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          onTap: () {},
+                          borderRadius: BorderRadius.circular(30),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Icon(
+                              Icons.arrow_back_outlined,
                               color: Palette.colorText,
                             ),
                           ),
+                          // onPressed: () {},
                         ),
-                      ),
-                      SizedBox(
-                        width: 30,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 18, 0),
+                            child: Text(
+                              'Details',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 30.0,
+                                fontFamily: 'Prompt_Bold',
+                                color: Palette.colorText,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
 
-                  // Details du produit
+                    // Details du produit
 
-                  SizedBox(
-                    height: 150,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      // height: 200,
-                      alignment: Alignment.topLeft,
-                      decoration: BoxDecoration(
-                        color: Palette.colorgray,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Stack(children: [
-                        TextFormField(
-                          controller: detailsController,
-                          //  focusNode: focusNode,
-                          textAlignVertical: TextAlignVertical.center,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 5,
-                          minLines: 1,
-                          style: TextStyle(
-                              color: Palette.colorText,
-                              fontFamily: "Prompt_Regular",
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 22),
-                          onChanged: (value) {
-                            setState(() {
-                              details = detailsController.text;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Détails de l'article",
-                            hintStyle: TextStyle(
-                                color: Colors.grey,
+                    SizedBox(
+                      height: 150,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        // height: 200,
+                        alignment: Alignment.topLeft,
+                        decoration: BoxDecoration(
+                          color: Palette.colorgray,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Stack(children: [
+                          TextFormField(
+                            controller: detailsController,
+                            //  focusNode: focusNode,
+                            textAlignVertical: TextAlignVertical.center,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 5,
+                            minLines: 1,
+                            style: TextStyle(
+                                color: Palette.colorText,
                                 fontFamily: "Prompt_Regular",
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.normal,
                                 fontSize: 22),
+                            onChanged: (value) {
+                              setState(() {
+                                details = detailsController.text;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Détails de l'article",
+                              hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: "Prompt_Regular",
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 22),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          PopCatShow = !PopCatShow;
+                        });
+
+                        PopupListCategoris();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        height: 50,
+                        alignment: Alignment.topLeft,
+                        decoration: BoxDecoration(
+                          color: Palette.colorgray,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  choiceCategory,
+                                  style: TextStyle(
+                                    fontFamily: "Prompt_Regular",
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                    color: Palette.colorText,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                  onTap: (() => PopupListCategoris()),
+                                  child: SvgPicture.asset('assets/plus.svg')),
+                            ],
                           ),
                         ),
-                      ]),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
 
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        PopCatShow = !PopCatShow;
-                      });
-
-                      PopupListCategoris();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8),
                       height: 50,
                       alignment: Alignment.topLeft,
                       decoration: BoxDecoration(
                         color: Palette.colorgray,
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                choiceCategory,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
+                              child: TextField(
+                                controller: textPriceController,
+                                autofocus: false,
+                                inputFormatters: <TextInputFormatter>[
+                                  // PhoneNumberFormatter(),
+                                  LengthLimitingTextInputFormatter(9),
+                                  FilteringTextInputFormatter.allow(RegExp(
+                                    "[^,.-]",
+                                  )),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    price = textPriceController.text;
+                                  });
+                                },
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.start,
                                 style: TextStyle(
-                                  fontFamily: "Prompt_Regular",
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Prompt_Regular',
+                                ),
+                                decoration: InputDecoration.collapsed(
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    hintText: 'Item price'),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              'FCFA',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "Prompt_Regular",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 12,
+                    ),
+                    // Prix et Nombre de piece
+
+                    //  Prix du produit
+
+                    //  Nombres de pieces du produits
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      height: 50,
+                      alignment: Alignment.topLeft,
+                      decoration: BoxDecoration(
+                        color: Palette.colorgray,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(children: [
+                        // Bouton de soustraction
+                        GestureDetector(
+                          onTap: () {
+                            if (NbrePiece == 1) {
+                            } else {
+                              setState(() {
+                                NbrePiece -= 1;
+                              });
+                            }
+                          },
+                          child: Icon(
+                            Icons.horizontal_rule,
+                            size: 20,
+                          ),
+                        ),
+                        Spacer(),
+                        // Nombre de pieces
+                        GestureDetector(
+                          onTap: () {
+                            SearchPopup(context);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width - 100,
+                            child: Center(
+                              child: Text(
+                                NbrePiece.toString(),
+                                style: TextStyle(
                                   color: Palette.colorText,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Prompt_Regular',
                                 ),
                               ),
                             ),
-                            GestureDetector(
-                                onTap: (() => PopupListCategoris()),
-                                child: SvgPicture.asset('assets/plus.svg')),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    height: 50,
-                    alignment: Alignment.topLeft,
-                    decoration: BoxDecoration(
-                      color: Palette.colorgray,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
-                            child: TextField(
-                              controller: textPriceController,
-                              autofocus: false,
-                              inputFormatters: <TextInputFormatter>[
-                                // PhoneNumberFormatter(),
-                                LengthLimitingTextInputFormatter(9),
-                                FilteringTextInputFormatter.allow(RegExp(
-                                  "[^,.-]",
-                                )),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  price = textPriceController.text;
-                                });
-                              },
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontFamily: 'Prompt_Regular',
-                              ),
-                              decoration: InputDecoration.collapsed(
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: 'Item price'),
-                            ),
                           ),
                         ),
-                        Center(
-                          child: Text(
-                            'FCFA',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "Prompt_Regular",
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 12,
-                  ),
-                  // Prix et Nombre de piece
-
-                  //  Prix du produit
-
-                  //  Nombres de pieces du produits
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    height: 50,
-                    alignment: Alignment.topLeft,
-                    decoration: BoxDecoration(
-                      color: Palette.colorgray,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(children: [
-                      // Bouton de soustraction
-                      GestureDetector(
-                        onTap: () {
-                          if (NbrePiece == 1) {
-                          } else {
+                        Spacer(),
+                        // Boutton Pour ajoute
+                        GestureDetector(
+                          onTap: () {
                             setState(() {
-                              NbrePiece -= 1;
+                              NbrePiece += 1;
                             });
-                          }
-                        },
-                        child: Icon(
-                          Icons.horizontal_rule,
-                          size: 20,
+                          },
+                          child: Icon(Icons.add),
                         ),
-                      ),
-                      Spacer(),
-                      // Nombre de pieces
-                      GestureDetector(
-                        onTap: () {
-                          AddPopup(context);
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 100,
-                          child: Center(
-                            child: Text(
-                              NbrePiece.toString(),
-                              style: TextStyle(
-                                color: Palette.colorText,
-                                fontSize: 20.0,
-                                fontFamily: 'Prompt_Regular',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Spacer(),
-                      // Boutton Pour ajoute
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            NbrePiece += 1;
-                          });
-                        },
-                        child: Icon(Icons.add),
-                      ),
-                    ]),
-                  ),
-                  Text(
-                    '*Tap to enter amount in stock manually',
-                    style: TextStyle(
-                        fontFamily: "Prompt_Regular",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: Palette.secondColor),
-                  ),
-                ],
+                      ]),
+                    ),
+                    Text(
+                      '*Tap to enter amount in stock manually',
+                      style: TextStyle(
+                          fontFamily: "Prompt_Regular",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: Palette.secondColor),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Container(
+        ]),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
             color:
                 details != "" && price != "" && choiceCategory != "Categories"
                     ? Palette.primaryColor
                     : Palette.disable,
             width: MediaQuery.of(context).size.width,
             height: 60,
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
             child: Row(
               children: [
                 Expanded(
@@ -368,7 +373,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                           : null;
                     },
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(35.0, 0, 0, 0),
                       child: Center(
                         child: Text(
                           'Publish',
@@ -384,11 +389,15 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                     ),
                   ),
                 ),
-                Positioned(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                   child: InkWell(
                     onTap: () {
-                      uploadStorage();
-                      print("lelocueh");
+                      details != "" &&
+                              price != "" &&
+                              choiceCategory != "Categories"
+                          ? uploadStorage()
+                          : null;
                     },
                     borderRadius: BorderRadius.circular(30),
                     child: Padding(
@@ -397,9 +406,11 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                     ),
                     // onPressed: () {},
                   ),
-                ),
+                )
               ],
-            )),
+            ),
+          ),
+        ),
       ]),
     );
   }
@@ -437,9 +448,8 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
     }
   }
 
-  // Popup dajout de quantite
-
-  void AddPopup(context) {
+  //  Popup Search
+  void SearchPopup(context) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -455,46 +465,42 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                       bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: Row(
                     children: [
-                      Container(
-                        height: 50,
-                        margin: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-                        padding: const EdgeInsets.all(8.0),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Palette.colorgray,
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: TextField(
-                          controller: nbreController,
-                          autofocus: true,
-                          keyboardType: TextInputType.number,
-                          textAlignVertical: TextAlignVertical.center,
-                          style: TextStyle(
-                              color: Palette.colorText,
-                              fontFamily: "Prompt_Regular",
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 22),
-                          onChanged: (value) {
-                            NbrePiece = int.parse(nbreController.text);
-                          },
-                          decoration: new InputDecoration.collapsed(
-                            hintText: 'Enter quantity in stock',
-                            hintStyle: TextStyle(
-                              fontFamily: "Prompt_Regular",
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                              color: Color.fromRGBO(117, 117, 117, 1),
+                      Expanded(
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Palette.colorgray,
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: TextField(
+                            autofocus: true,
+                            controller: nbreController,
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: new InputDecoration.collapsed(
+                              hintText: 'Enter quantity in stock',
+                              hintStyle: TextStyle(
+                                fontFamily: "Prompt_Regular",
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: Color.fromRGBO(117, 117, 117, 1),
+                              ),
                             ),
+                            onChanged: (value) {
+                              setState(() {
+                                NbrePiece = int.parse(nbreController.text);
+                              });
+                            },
                           ),
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                         child: InkWell(
                           onTap: () async {
-                            // Allez a l'onglet 2
+                            Navigator.of(context).pop();
                             FocusScope.of(context).unfocus();
                           },
                           borderRadius: BorderRadius.circular(30),
