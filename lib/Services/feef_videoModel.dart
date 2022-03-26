@@ -21,6 +21,7 @@ class FeedViewModel extends BaseViewModel {
     videos = await getVideoList();
     await videos[0].loadController();
     videos[0].controller!.play();
+    print(videos.length);
     notifyListeners();
   }
 

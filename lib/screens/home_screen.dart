@@ -109,9 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 color: Colors.black,
               ),
-              //  FeedScreen(),
-              //TestFire(),
-              TestProvider(),
+              FeedScreen(),
+              // TestFire(),
+              //TestProvider(),
             ],
           ),
         ),

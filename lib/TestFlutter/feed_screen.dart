@@ -10,6 +10,7 @@ import 'package:get_it/get_it.dart';
 import 'package:stacked/stacked.dart';
 
 import '../Services/feef_videoModel.dart';
+import '../Services/fiel_model_fire.dart';
 import '../data/video.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -28,6 +29,7 @@ class _FeedScreenState extends State<FeedScreen> {
     feedViewModel.loadVideo(0);
     feedViewModel.loadVideo(1);
     feedViewModel.setInitialised(true);
+    print(feedViewModel.videos.length.toString());
     setState(() {
       position = 0;
     });
@@ -136,8 +138,8 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget videoCard(Video video) {
     @override
     void dispose() {
-      feedViewModel.videos[position].controller?.dispose();
-      feedViewModel.videos[position].controller?.pause();
+      //  feedViewModel.videoSource!.listVideos[position].controller?.dispose();
+      // feedViewModel.videos[position].controller?.pause();
       video.controller!.pause();
       video.controller!.dispose();
       super.dispose();

@@ -9,28 +9,27 @@ import 'package:cached_video_player/cached_video_player.dart';
 
 class FielModelFire extends BaseViewModel {
   VideoPlayerController? controller;
-
-  ServiceFire? videoSource;
+  VideoService? videoSource;
 
   int prevVideo = 0;
 
   int actualScreen = 0;
   FielModelFire() {
-    videoSource = ServiceFire();
+    videoSource = VideoService();
     loadfirst;
 
     //videoSource!.videoList[0].loadController();
   }
 
   changeVideo(index) async {
-    if (videoSource!.videoList[index].controller == null) {
-      await videoSource!.videoList[index].loadController();
+    if (videoSource!.listVideos[index].controller == null) {
+      await videoSource!.listVideos[index].loadController();
     }
-    videoSource!.videoList[index].controller!.play();
+    videoSource!.listVideos[index].controller!.play();
     //videoSource.listVideos[prevVideo].controller.removeListener(() {});
 
-    if (videoSource!.videoList[prevVideo].controller != null)
-      videoSource!.videoList[prevVideo].controller!.pause();
+    if (videoSource!.listVideos[prevVideo].controller != null)
+      videoSource!.listVideos[prevVideo].controller!.pause();
 
     prevVideo = index;
     notifyListeners();
@@ -39,9 +38,9 @@ class FielModelFire extends BaseViewModel {
   }
 
   loadVideo(int index) async {
-    if (videoSource!.videoList.length > index) {
-      await videoSource!.videoList[index].loadController();
-      videoSource!.videoList[index].controller?.play();
+    if (videoSource!.listVideos.length > index) {
+      await videoSource!.listVideos[index].loadController();
+      videoSource!.listVideos[index].controller?.play();
       print('index');
       notifyListeners();
     }

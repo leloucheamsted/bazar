@@ -43,19 +43,6 @@ class VideoService {
     return videoList;
   }
 
-  Future<List<String>> getCategories() async {
-    List<String> list = [];
-    await FirebaseFirestore.instance
-        .collection('Categories_Produits')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        list = doc["List"];
-      });
-    });
-    return list;
-  }
-
   Future<Null> addDemoData() async {
     for (var video in data) {
       await FirebaseFirestore.instance.collection("Videos").add(video);

@@ -20,7 +20,7 @@ class TestFire extends StatefulWidget {
 
 class _TestFireState extends State<TestFire> {
   final locator = GetIt.instance;
-  final feedViewModel = GetIt.instance<FeedViewModel>();
+  final feedViewModel = GetIt.instance<FielModelFire>();
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _TestFireState extends State<TestFire> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<FeedViewModel>.reactive(
+    return ViewModelBuilder<FielModelFire>.reactive(
       disposeViewModel: false,
       builder: (context, model, child) => videoScreen(),
       viewModelBuilder: () => feedViewModel,
@@ -44,32 +44,13 @@ class _TestFireState extends State<TestFire> {
     final size = MediaQuery.of(context).size;
     return Stack(
       children: [
-        // Container(
-        //   height: size.height,
-        //   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-        //   decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //         colors: [
-        //           Colors.grey,
-        //           Colors.white,
-
-        //           Colors.white,
-        //           Colors.grey,
-        //           //add more colors for gradient
-        //         ],
-        //         begin: Alignment.topCenter, //begin of the gradient color
-        //         end: Alignment.bottomCenter, //end of the gradient color
-        //         stops: [0, 0.2, 0.5, 0.8] //stops for individual color
-        //         //set the stops number equal to numbers of color
-        //         ),
-        //   ),
-        // ),
         CarouselSlider.builder(
-          itemCount: feedViewModel.videos.length,
+          itemCount: feedViewModel.videoSource!.listVideos.length,
           itemBuilder:
               (BuildContext context, int itemIndex, int pageViewIndex) {
-            itemIndex = itemIndex % (feedViewModel.videos.length);
-            return videoCard(feedViewModel.videos[itemIndex]);
+            itemIndex =
+                itemIndex % (feedViewModel.videoSource!.listVideos.length);
+            return videoCard(feedViewModel.videoSource!.listVideos[itemIndex]);
           },
           options: CarouselOptions(
             viewportFraction: 1,
