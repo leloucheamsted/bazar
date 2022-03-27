@@ -6,7 +6,7 @@ import 'package:stacked/stacked.dart';
 import '../data/video.dart';
 
 class FeedViewModel extends BaseViewModel {
-  VideoPlayerController? controller;
+  //VideoPlayerController? controller;
   List<Video> videos = [];
 
   int prevVideo = 0;
@@ -21,13 +21,13 @@ class FeedViewModel extends BaseViewModel {
     videos = await getVideoList();
     await videos[0].loadController();
     videos[0].controller!.play();
-    print(videos.length);
+    // print(videos.length);
     notifyListeners();
   }
 
   Future<List<Video>> getVideoList() async {
     var videoList = <Video>[];
-    var videos = (await FirebaseFirestore.instance.collection("Videos").get());
+    var videos = (await FirebaseFirestore.instance.collection('Videos').get());
 
     videos.docs.forEach((element) {
       Video video = Video.fromJson(element.data());

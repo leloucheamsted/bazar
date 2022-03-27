@@ -31,13 +31,13 @@ class _NavScreenState extends State<NavScreen> {
 
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
-    HomeScreen(),
+    FeedScreen(),
     SearchScreen(),
     OrdersScreen(),
     ProfileScreen(),
   ]; // to store nested tabs
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = HomeScreen(); // Our first view in viewport
+  Widget currentScreen = FeedScreen(); // Our first view in viewport
 
   //  Verifier si c'est la premiere fois que l'utilisateur install l'application
   Future<void> _incrementCounter() async {
@@ -70,9 +70,7 @@ class _NavScreenState extends State<NavScreen> {
         index: currentTab,
         children: screens,
       ),
-
       // floatingActionButton: FloatingActionButton(
-
       //   backgroundColor: Palette.primaryColor,
       //   foregroundColor: Colors.transparent,
       //   child: ImageIcon(
@@ -81,7 +79,16 @@ class _NavScreenState extends State<NavScreen> {
       //     color: Palette.colorLight,
       //   ),
       //   onPressed: () {
-      //     WelcomePopup(context);
+      //     setState(() async {
+      //       await availableCameras().then((value) => Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => CameraScreen(
+      //                 cameras: value,
+      //               ),
+      //             ),
+      //           ));
+      //     });
       //   },
       // ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -94,178 +101,157 @@ class _NavScreenState extends State<NavScreen> {
           child: Column(
             children: [
               SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      MaterialButton(
-                        minWidth: 40,
-                        onPressed: () {
-                          setState(() {
-                            currentScreen =
-                                HomeScreen(); // if user taps on this dashboard tab will be active
-                            currentTab = 0;
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            ImageIcon(
-                              AssetImage('assets/nav_icons/home.png'),
-                              size: 20.0,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() {
+                          currentScreen =
+                              FeedScreen(); // if user taps on this dashboard tab will be active
+                          currentTab = 0;
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          ImageIcon(
+                            AssetImage('assets/nav_icons/home.png'),
+                            size: 20.0,
+                            color: currentTab == 0
+                                ? Palette.primaryColor
+                                : Palette.colorgray,
+                          ),
+                          Divider(
+                            height: 10.0,
+                          ),
+                          Text(
+                            'Home',
+                            style: TextStyle(
+                              fontFamily: 'Prompt_Medium',
                               color: currentTab == 0
                                   ? Palette.primaryColor
                                   : Palette.colorgray,
                             ),
-                            Divider(
-                              height: 10.0,
-                            ),
-                            Text(
-                              'Home',
-                              style: TextStyle(
-                                fontFamily: 'Prompt_Medium',
-                                color: currentTab == 0
-                                    ? Palette.primaryColor
-                                    : Palette.colorgray,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      MaterialButton(
-                        minWidth: 40,
-                        onPressed: () {
-                          setState(() {
-                            SearchPopup(
-                                context); // if user taps on this dashboard tab will be active
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            ImageIcon(
-                              AssetImage('assets/nav_icons/search.png'),
-                              size: 20.0,
+                    ),
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() async {
+                          await availableCameras()
+                              .then((value) => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CameraScreen(
+                                        cameras: value,
+                                      ),
+                                    ),
+                                  ));
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SvgPicture.asset(
+                            'assets/nav_icons/add.svg',
+                            height: 20,
+                            width: 20,
+                            color: currentTab == 1
+                                ? Palette.primaryColor
+                                : Palette.colorgray,
+                          ),
+                          Divider(
+                            height: 10.0,
+                          ),
+                          Text(
+                            'Sell',
+                            style: TextStyle(
+                              fontFamily: 'Prompt_Medium',
                               color: currentTab == 1
                                   ? Palette.primaryColor
                                   : Palette.colorgray,
                             ),
-                            Divider(
-                              height: 10.0,
-                            ),
-                            Text(
-                              'Search',
-                              style: TextStyle(
-                                fontFamily: 'Prompt_Medium',
-                                color: currentTab == 1
-                                    ? Palette.primaryColor
-                                    : Palette.colorgray,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      MaterialButton(
-                        minWidth: 40,
-                        onPressed: () {
-                          setState(() {
-                            WelcomePopup(context);
-                          });
-                        },
-                        child: Expanded(
-                          child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              child: ImageIcon(
-                                AssetImage('assets/nav_icons/add.png'),
-                                size: 30,
-                                color: Palette.primaryColor,
-                              ),
-                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-
-                  // Right Tab bar icons
-
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      MaterialButton(
-                        minWidth: 40,
-                        onPressed: () {
-                          setState(() {
-                            currentScreen =
-                                OrdersScreen(); // if user taps on this dashboard tab will be active
-                            currentTab = 2;
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            ImageIcon(
-                              AssetImage('assets/nav_icons/orders.png'),
-                              size: 20.0,
+                    ),
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() {
+                          currentScreen =
+                              OrdersScreen(); // if user taps on this dashboard tab will be active
+                          currentTab = 2;
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          ImageIcon(
+                            AssetImage('assets/nav_icons/orders.png'),
+                            size: 20.0,
+                            color: currentTab == 2
+                                ? Palette.primaryColor
+                                : Palette.colorgray,
+                          ),
+                          Divider(
+                            height: 10.0,
+                          ),
+                          Text(
+                            'Ordres',
+                            style: TextStyle(
+                              fontFamily: 'Prompt_Medium',
                               color: currentTab == 2
                                   ? Palette.primaryColor
                                   : Palette.colorgray,
                             ),
-                            Divider(
-                              height: 10.0,
-                            ),
-                            Text(
-                              'Orders',
-                              style: TextStyle(
-                                fontFamily: 'Prompt_Medium',
-                                color: currentTab == 2
-                                    ? Palette.primaryColor
-                                    : Palette.colorgray,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      MaterialButton(
-                        minWidth: 40,
-                        onPressed: () {
-                          setState(() {
-                            currentScreen =
-                                ProfileScreen(); // if user taps on this dashboard tab will be active
-                            currentTab = 3;
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            ImageIcon(
-                              AssetImage('assets/nav_icons/profile.png'),
-                              size: 20.0,
+                    ),
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() {
+                          currentScreen =
+                              ProfileScreen(); // if user taps on this dashboard tab will be active
+                          currentTab = 3;
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          ImageIcon(
+                            AssetImage('assets/nav_icons/profile.png'),
+                            size: 20.0,
+                            color: currentTab == 3
+                                ? Palette.primaryColor
+                                : Palette.colorgray,
+                          ),
+                          Divider(
+                            height: 10.0,
+                          ),
+                          Text(
+                            'Profile',
+                            style: TextStyle(
+                              fontFamily: 'Prompt_Medium',
                               color: currentTab == 3
                                   ? Palette.primaryColor
                                   : Palette.colorgray,
                             ),
-                            Divider(
-                              height: 10.0,
-                            ),
-                            Text(
-                              'Profile',
-                              style: TextStyle(
-                                fontFamily: 'Prompt_Medium',
-                                color: currentTab == 3
-                                    ? Palette.primaryColor
-                                    : Palette.colorgray,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
-                ],
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -325,14 +311,16 @@ class _NavScreenState extends State<NavScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        await availableCameras().then((value) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CameraScreen(
-                                  cameras: value,
-                                ),
-                              ),
-                            ));
+                        MaterialPageRoute(
+                            builder: (context) => EnterNumberScreen());
+                        // await availableCameras().then((value) => Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => CameraScreen(
+                        //           cameras: value,
+                        //         ),
+                        //       ),
+                        //     ));
                         //  Fermerture du popup
                         // Navigator.of(context).pop();
                         // Get.to(
@@ -397,6 +385,7 @@ class _NavScreenState extends State<NavScreen> {
                         padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                         child: InkWell(
                           onTap: () async {
+                            Navigator.of(context).pop();
                             // Allez a l'onglet 2
                             currentScreen = await SearchScreen();
                             currentTab = 1;

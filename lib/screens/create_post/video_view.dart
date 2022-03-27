@@ -134,7 +134,7 @@ class _VideoViewPageState extends State<VideoViewPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (builder) => AddDetailsScreen(
-                                          // path: widget.path,
+                                            path: widget.path,
                                           )));
                             },
                             child: Center(
@@ -221,7 +221,7 @@ class _VideoViewPageState extends State<VideoViewPage> {
                       context,
                       MaterialPageRoute(
                           builder: (builder) => AddDetailsScreen(
-                              //  path: widget.path,
+                                path: widget.path,
                               )));
                 },
                 child: Padding(

@@ -52,19 +52,16 @@ dependencies:
   getwidget: ^2.0.4
   uuid: ^3.0.4
   path_provider: ^2.0.3
-  # flutter_ffmpeg: ^0.4.2
-  # provider: ^6.0.2
+  flutter_video_compress: ^0.3.7+8
   flutter_ffmpeg: ^0.4.2
-  # path: ^1.8.1
   firebase_database: ^9.0.8
   cached_video_player: ^2.0.0-dev.1
+  visibility_detector: ^0.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
   shared_preferences: ^2.0.13
   measured_size: ^1.0.0
-  # video_player: ^2.2.19
-  expandable: ^5.0.1
   carousel_slider: ^4.0.0
   get: ^4.6.1
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -92,7 +89,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/nav_icons/home.png
-    - assets/nav_icons/add.png
+    - assets/nav_icons/add.svg
     - assets/nav_icons/orders.png
     - assets/nav_icons/profile.png
     - assets/nav_icons/search.png
@@ -120,6 +117,7 @@ flutter:
     - assets/search.svg
     - assets/plus.svg
     - assets/expand.svg
+    - assets/close.svg
 
   fonts:
     - family: Prompt_Regular

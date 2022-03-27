@@ -56,8 +56,9 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
             'name': nametextController.text,
             'username': pseudocontroller.text, // John Doe
             'number': Get.arguments, // Stokes and Sons
-            'followers': <String>[],
-            'following': <String>[],
+            'followers': [],
+            'following': [],
+            'publication':[],
           })
           .then((value) => {
                 Navigator.of(context)
@@ -150,6 +151,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   ),
                 ),
               ),
+
               SizedBox(
                 height: 8,
               ),

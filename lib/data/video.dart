@@ -48,7 +48,7 @@ class Video {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['numeroVendeur'] = this.numeroVendeur;
-    data['nom'] = this.nom;
+    data['nom'] = nom;
     data['username'] = this.username;
     data['profile'] = this.profile;
     data['video_title'] = this.video_title;
@@ -80,7 +80,7 @@ class Video {
     );
   }
 
-  Future<Null> loadController() async {
+  Future<void> loadController() async {
     controller = VideoPlayerController.network(url);
     await controller
         ?.initialize()

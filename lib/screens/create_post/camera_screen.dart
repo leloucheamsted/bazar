@@ -9,6 +9,7 @@ import 'package:bazar/screens/create_post/video_view.dart';
 import 'package:bazar/widgets/button.dart';
 import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,6 +19,7 @@ import 'package:image/image.dart' as img;
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+ import 'package:flutter_video_compress/flutter_video_compress.dart';
 
 class CameraScreen extends StatefulWidget {
   List<CameraDescription>? cameras;
@@ -28,6 +30,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   late CameraController _cameraController;
   late Future<void> cameraValue;
   bool isRecoring = false;
@@ -38,15 +41,53 @@ class _CameraScreenState extends State<CameraScreen> {
   double transform = 0;
   late Timer _timer;
   int _start = 15;
+  bool duration = false;
   String NoRecordIcon = "assets/elipse2.svg";
   String RecordIcon = "assets/elipse3.svg";
+  final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
 
   @override
   void initState() {
     super.initState();
-    _cameraController =
-        CameraController(cameras![0], ResolutionPreset.veryHigh);
+    setState(() {});
+    _cameraController = CameraController(cameras![0], ResolutionPreset.medium);
     cameraValue = _cameraController.initialize();
+  }
+
+  void xxx() async {
+    if (_start == 0) {
+      XFile videopath = await _cameraController.stopVideoRecording();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (builder) => VideoViewPage(path: videopath.path)));
+    }
+  }
+
+  void startTime() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(oneSec, (Timer timer) async {
+      //  await _cameraController.startVideoRecording();
+      if (_start == 0) {
+        setState(() async {
+          timer.cancel();
+          setState(() {
+            _start = 15;
+            isRecoring = !isRecoring;
+            duration = false;
+          });
+          XFile videopath = await _cameraController.stopVideoRecording();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (builder) => VideoViewPage(path: videopath.path)));
+        });
+      } else {
+        setState(() {
+          duration ? _start-- : null;
+        });
+      }
+    });
   }
 
   @override
@@ -82,6 +123,7 @@ class _CameraScreenState extends State<CameraScreen> {
         return false;
       },
       child: Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           body: Stack(alignment: FractionalOffset.center, children: <Widget>[
             FutureBuilder(
@@ -90,9 +132,6 @@ class _CameraScreenState extends State<CameraScreen> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return OverflowBox(
                       maxWidth: double.infinity,
-
-                      // maxWidth: MediaQuery.of(context).size.width,
-                      // maxHeight: MediaQuery.of(context).size.height,
                       child: AspectRatio(
                           aspectRatio: 1 / _cameraController.value.aspectRatio,
                           child: CameraPreview(_cameraController)),
@@ -201,6 +240,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       padding: EdgeInsets.fromLTRB(8, 20, 0, 0),
                       child: GestureDetector(
                         onTap: () async {
+                          const oneSec = const Duration(seconds: 1);
                           FilePickerResult? result =
                               await FilePicker.platform.pickFiles(
                             type: FileType.video,
@@ -258,106 +298,77 @@ class _CameraScreenState extends State<CameraScreen> {
                             ),
                             // ElevatedButton(onPressed: (), ON child: Text('BOUTTON'),),
                             GestureDetector(
-                              onTap: () async {
+                              onTap: (() async {
                                 var id = Uuid().v4();
-
-                                final FlutterFFmpeg _flutterFFmpeg =
-                                    FlutterFFmpeg();
                                 final Directory _appDocDir =
                                     await getApplicationDocumentsDirectory();
                                 final dir = _appDocDir.path;
                                 final outPath = "$dir/$id.mp4";
                                 if (isRecoring == false) {
                                   setState(() {
-                                    isRecoring = true;
-                                    _start = 15;
+                                    duration = !duration;
+                                    isRecoring = !isRecoring;
                                   });
+                                  startTime();
                                   await _cameraController.startVideoRecording();
-                                  const oneSec = const Duration(seconds: 1);
-                                  _timer = new Timer.periodic(
-                                    oneSec,
-                                    (Timer timer) => setState(
-                                      () async {
-                                        if (_start < 1) {
-                                          timer.cancel();
-                                          _start = 15;
-                                          XFile videopath = _cameraController
-                                              .stopVideoRecording() as XFile;
-                                          !iscamerafront
-                                              ? await _flutterFFmpeg
-                                                  .execute(
-                                                      "-i ${videopath.path} -vf hflip -c:a copy $outPath")
-                                                  .then((returnCode) => print(
-                                                      "Return code $returnCode"))
-                                              : null;
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (builder) =>
-                                                      VideoViewPage(
-                                                        path: !iscamerafront
-                                                            ? videopath.path
-                                                            : outPath,
-                                                      )));
-                                          setState(() {
-                                            isRecoring = false;
-                                          });
-                                        } else {
-                                          setState(() async {
-                                            _start = _start - 1;
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  );
-                                  if (_start == 0) {
-                                    XFile videopath = _cameraController
-                                        .stopVideoRecording() as XFile;
-                                    !iscamerafront
-                                        ? await _flutterFFmpeg
-                                            .execute(
-                                                "-i ${videopath.path} -vf hflip -c:a copy $outPath")
-                                            .then((returnCode) => print(
-                                                "Return code $returnCode"))
-                                        : null;
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (builder) => VideoViewPage(
-                                                  path: !iscamerafront
-                                                      ? videopath.path
-                                                      : outPath,
-                                                )));
-                                    setState(() {
-                                      isRecoring = false;
-                                    });
-                                  }
                                 } else {
                                   setState(() {
+                                    duration = false;
                                     isRecoring = false;
                                     _start = 15;
                                   });
                                   XFile videopath = await _cameraController
                                       .stopVideoRecording();
                                   !iscamerafront
-                                      ? await _flutterFFmpeg
-                                          .execute(
-                                              "-i ${videopath.path} -vf hflip -c:a copy $outPath")
-                                          .then((returnCode) =>
-                                              print("Return code $returnCode"))
-                                      : null;
+                                      ? {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(new SnackBar(
+                                            // behavior: SnackBarBehavior.floating,
+                                            backgroundColor:
+                                                Palette.primaryColor,
 
-                                  startTimer(false);
+                                            duration: new Duration(seconds: 4),
+                                            content: new Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                new Text(
+                                                  "Processing your capture",
+                                                  style: TextStyle(
+                                                      color: Palette.colorLight,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontFamily:
+                                                          'Prompt_Regular'),
+                                                ),
+                                                new SvgPicture.asset(
+                                                  'assets/close.svg',
+                                                  color: Palette.colorLight,
+                                                ),
+                                              ],
+                                            ),
+                                          )),
+                                          
+                                          await _flutterFFmpeg
+                                              .execute(
+                                                  "-i ${videopath.path} -vf hflip -c:a copy $outPath")
+                                              .then(
+                                                (returnCode) => print(
+                                                    "Return code $returnCode"),
+                                              ),
+                                        }
+                                      : null;
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (builder) => VideoViewPage(
-                                                path: iscamerafront
-                                                    ? videopath.path
-                                                    : outPath,
-                                              )));
+                                              path: iscamerafront
+                                                  ? videopath.path
+                                                  : outPath)));
+                                  _timer.cancel();
                                 }
-                              },
+                              }),
                               child: AbsorbPointer(
                                 child: Stack(
                                   alignment: Alignment.center,
@@ -382,6 +393,24 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ])),
+    );
+  }
+
+  void startTimer(bool exc) {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(
+        () {
+          if (_start < 1 && exc == false || exc == false) {
+            timer.cancel();
+          } else if (exc == true) {
+            setState(() {
+              _start = _start - 1;
+            });
+          }
+        },
+      ),
     );
   }
 
@@ -419,23 +448,5 @@ class _CameraScreenState extends State<CameraScreen> {
         .execute("-i ${file.path} -vf hflip -c:a copy $outPath")
         .then((returnCode) => print("Return code $returnCode"));
     return outPath;
-  }
-
-  void startTimer(bool exc) {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) => setState(
-        () {
-          if (_start < 1 && exc == false) {
-            timer.cancel();
-          } else if (exc == true) {
-            setState(() {
-              _start = _start - 1;
-            });
-          }
-        },
-      ),
-    );
   }
 }

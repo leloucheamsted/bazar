@@ -111,7 +111,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                                     ),
                                   ),
                                   Text(
-                                    widget.element.username,
+                                    'jbij',
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "Prompt_Medium",
