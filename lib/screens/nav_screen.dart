@@ -8,6 +8,7 @@ import 'package:bazar/screens/profile_screen.dart';
 import 'package:bazar/screens/search_screen.dart';
 import 'package:bazar/widgets/testFire.dart';
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -70,28 +71,6 @@ class _NavScreenState extends State<NavScreen> {
         index: currentTab,
         children: screens,
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Palette.primaryColor,
-      //   foregroundColor: Colors.transparent,
-      //   child: ImageIcon(
-      //     AssetImage('assets/nav_icons/add.png'),
-      //     size: 30.0,
-      //     color: Palette.colorLight,
-      //   ),
-      //   onPressed: () {
-      //     setState(() async {
-      //       await availableCameras().then((value) => Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => CameraScreen(
-      //                 cameras: value,
-      //               ),
-      //             ),
-      //           ));
-      //     });
-      //   },
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         //shape: CircularNotchedRectangle(),
         notchMargin: 10,
@@ -143,7 +122,7 @@ class _NavScreenState extends State<NavScreen> {
                     ),
                     MaterialButton(
                       minWidth: 40,
-                      onPressed: () {
+                      onPressed: () async {
                         setState(() async {
                           await availableCameras()
                               .then((value) => Navigator.push(

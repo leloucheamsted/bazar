@@ -46,26 +46,31 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
+    final docUser = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(nametextController.text);
 
     Future addUser() async {
       final prefs = await SharedPreferences.getInstance();
 
-      // Call the user's CollectionReference to add a new user
-      return users
-          .add({
-            'name': nametextController.text,
-            'username': pseudocontroller.text, // John Doe
-            'number': Get.arguments, // Stokes and Sons
-            'followers': [],
-            'following': [],
-            'publication':[],
-          })
+      final user = {
+        'name': 'lelouche',
+        'username': 'vvv', // John Doe
+        'number': '+23456U0850', // Stokes and Sons
+        'followers': [],
+        'following': [],
+        'publication': [],
+      };
+      await docUser
+          .set(user)
           .then((value) => {
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(Navigator.defaultRouteName)),
                 print("User Added")
               })
           .catchError((error) => print("Failed to add user: $error"));
+
+      // Call the user's CollectionReference to add a new user
     }
 
     return Scaffold(

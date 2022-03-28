@@ -87,284 +87,279 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
       body: Stack(children: [
         Column(children: [
           Container(
-            height:40,
+            height: 40,
             color: Palette.primaryColor,
           ),
           Container(
-                child: Column(
-                  children: [
-                    Container(
-                      color:Palette.primaryColor,      
-                  child:   Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(30),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Icon(
-                              Icons.arrow_back_outlined,
+            child: Column(
+              children: [
+                Container(
+                  color: Palette.primaryColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: () {},
+                        borderRadius: BorderRadius.circular(30),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Icon(
+                            Icons.arrow_back_outlined,
+                            color: Palette.colorLight,
+                          ),
+                        ),
+                        // onPressed: () {},
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 18, 0),
+                          child: Text(
+                            'Details',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 30.0,
+                              fontFamily: 'Prompt_Bold',
                               color: Palette.colorLight,
                             ),
                           ),
-                          // onPressed: () {},
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 18, 0),
-                            child: Text(
-                              'Details',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 30.0,
-                                fontFamily: 'Prompt_Bold',
-                                color: Palette.colorLight,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                    ],
+                  ),
                 ),
-                    SizedBox(
-                      height: 15,
-                    ),
+                SizedBox(
+                  height: 15,
+                ),
 
-                    // Details du produit
-                    Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 0, 1, 15),
-                            child: 
-                    SizedBox(
-                      height: 150,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                        // height: 200,
-                        alignment: Alignment.topLeft,
-                        decoration: BoxDecoration(
-                          color: Palette.colorgray,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Stack(children: [
-                          TextFormField(
-                            controller: detailsController,
-                            //  focusNode: focusNode,
-                            textAlignVertical: TextAlignVertical.center,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: 5,
-                            minLines: 1,
-                            style: TextStyle(
-                                color: Palette.colorText,
+                // Details du produit
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 1, 15),
+                  child: SizedBox(
+                    height: 150,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      // height: 200,
+                      alignment: Alignment.topLeft,
+                      decoration: BoxDecoration(
+                        color: Palette.colorgray,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Stack(children: [
+                        TextFormField(
+                          controller: detailsController,
+                          //  focusNode: focusNode,
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                          minLines: 1,
+                          style: TextStyle(
+                              color: Palette.colorText,
+                              fontFamily: "Prompt_Regular",
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 22),
+                          onChanged: (value) {
+                            setState(() {
+                              details = detailsController.text;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Détails de l'article",
+                            hintStyle: TextStyle(
+                                color: Colors.grey,
                                 fontFamily: "Prompt_Regular",
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.normal,
                                 fontSize: 22),
-                            onChanged: (value) {
-                              setState(() {
-                                details = detailsController.text;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Détails de l'article",
-                              hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontFamily: "Prompt_Regular",
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 22),
-                            ),
                           ),
-                        ]),
-                      ),
-                    ),
-                    ),
-                  
-                     Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 0, 8, 15),
-                            child: 
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          PopCatShow = !PopCatShow;
-                        });
-
-                        PopupListCategoris();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                        height: 50,
-                        alignment: Alignment.topLeft,
-                        decoration: BoxDecoration(
-                          color: Palette.colorgray,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  choiceCategory,
-                                  style: TextStyle(
-                                    fontFamily: "Prompt_Regular",
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w400,
-                                    color: Palette.colorText,
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                  onTap: (() => PopupListCategoris()),
-                                  child: SvgPicture.asset('assets/plus.svg')),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                     ),
-                   
-                     Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 0, 1, 15),
-                            child: 
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      height: 50,
-                      alignment: Alignment.topLeft,
-                      decoration: BoxDecoration(
-                        color: Palette.colorgray,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
-                              child: TextField(
-                                controller: textPriceController,
-                                autofocus: false,
-                                inputFormatters: <TextInputFormatter>[
-                                  // PhoneNumberFormatter(),
-                                  LengthLimitingTextInputFormatter(9),
-                                  FilteringTextInputFormatter.allow(RegExp(
-                                    "[^,.-]",
-                                  )),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    price = textPriceController.text;
-                                  });
-                                },
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontFamily: 'Prompt_Regular',
-                                ),
-                                decoration: InputDecoration.collapsed(
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    hintText: 'Item price'),
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: Text(
-                              'FCFA',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: "Prompt_Regular",
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                     ),
-                 
-                    // Prix et Nombre de piece
-
-                    //  Prix du produit
-
-                    //  Nombres de pieces du produits
-                     Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 0, 1, 15),
-                            child: 
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      height: 50,
-                      alignment: Alignment.topLeft,
-                      decoration: BoxDecoration(
-                        color: Palette.colorgray,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(children: [
-                        // Bouton de soustraction
-                        GestureDetector(
-                          onTap: () {
-                            if (NbrePiece == 1) {
-                            } else {
-                              setState(() {
-                                NbrePiece -= 1;
-                              });
-                            }
-                          },
-                          child: Icon(
-                            Icons.horizontal_rule,
-                            size: 20,
-                          ),
-                        ),
-                        Spacer(),
-                        // Nombre de pieces
-                        GestureDetector(
-                          onTap: () {
-                            SearchPopup(context);
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width - 100,
-                            child: Center(
-                              child: Text(
-                                NbrePiece.toString(),
-                                style: TextStyle(
-                                  color: Palette.colorText,
-                                  fontSize: 20.0,
-                                  fontFamily: 'Prompt_Regular',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                        // Boutton Pour ajoute
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              NbrePiece += 1;
-                            });
-                          },
-                          child: Icon(Icons.add),
                         ),
                       ]),
                     ),
-                     ),
-                    Text(
-                      '*Tap to enter amount in stock manually',
-                      style: TextStyle(
-                          fontFamily: "Prompt_Regular",
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: Palette.secondColor),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-          
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 8, 15),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        PopCatShow = !PopCatShow;
+                      });
+
+                      PopupListCategoris();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      height: 50,
+                      alignment: Alignment.topLeft,
+                      decoration: BoxDecoration(
+                        color: Palette.colorgray,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                choiceCategory,
+                                style: TextStyle(
+                                  fontFamily: "Prompt_Regular",
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                  color: Palette.colorText,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                                onTap: (() => PopupListCategoris()),
+                                child: SvgPicture.asset('assets/plus.svg')),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 1, 15),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    height: 50,
+                    alignment: Alignment.topLeft,
+                    decoration: BoxDecoration(
+                      color: Palette.colorgray,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
+                            child: TextField(
+                              controller: textPriceController,
+                              autofocus: false,
+                              inputFormatters: <TextInputFormatter>[
+                                // PhoneNumberFormatter(),
+                                LengthLimitingTextInputFormatter(9),
+                                FilteringTextInputFormatter.allow(RegExp(
+                                  "[^,.-]",
+                                )),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  price = textPriceController.text;
+                                });
+                              },
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontFamily: 'Prompt_Regular',
+                              ),
+                              decoration: InputDecoration.collapsed(
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  hintText: 'Item price'),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            'FCFA',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: "Prompt_Regular",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Prix et Nombre de piece
+
+                //  Prix du produit
+
+                //  Nombres de pieces du produits
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 1, 15),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    height: 50,
+                    alignment: Alignment.topLeft,
+                    decoration: BoxDecoration(
+                      color: Palette.colorgray,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(children: [
+                      // Bouton de soustraction
+                      GestureDetector(
+                        onTap: () {
+                          if (NbrePiece == 1) {
+                          } else {
+                            setState(() {
+                              NbrePiece -= 1;
+                            });
+                          }
+                        },
+                        child: Icon(
+                          Icons.horizontal_rule,
+                          size: 20,
+                        ),
+                      ),
+                      Spacer(),
+                      // Nombre de pieces
+                      GestureDetector(
+                        onTap: () {
+                          SearchPopup(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 100,
+                          child: Center(
+                            child: Text(
+                              NbrePiece.toString(),
+                              style: TextStyle(
+                                color: Palette.colorText,
+                                fontSize: 20.0,
+                                fontFamily: 'Prompt_Regular',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      // Boutton Pour ajoute
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            NbrePiece += 1;
+                          });
+                        },
+                        child: Icon(Icons.add),
+                      ),
+                    ]),
+                  ),
+                ),
+                Text(
+                  '*Tap to enter amount in stock manually',
+                  style: TextStyle(
+                      fontFamily: "Prompt_Regular",
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Palette.secondColor),
+                ),
+              ],
+            ),
+          ),
         ]),
         Align(
           alignment: Alignment.bottomCenter,
@@ -410,9 +405,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                       details != "" &&
                               price != "" &&
                               choiceCategory != "Categories"
-                          ? {
-                             saveData()
-                            }
+                          ? {saveData()}
                           : null;
                     },
                     borderRadius: BorderRadius.circular(30),
@@ -443,18 +436,18 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
     await _flutterFFmpeg
         .execute('-i ${widget.path} -vf fps=5,scale=450:-1 -t 3 $outPath');
     try {
-      await storage.ref('videos/$widget.path').putFile(
+      await storage.ref('videos/lelouche').putFile(
             File(widget.path),
           );
       String downloadURL = await firebase_storage.FirebaseStorage.instance
-          .ref('videos/$widget.path')
+          .ref('videos/lelouche')
           .getDownloadURL();
       debugPrint(outPath);
-      await storage.ref('Gif/$outPath').putFile(
+      await storage.ref('Gif/lelouche').putFile(
             File(outPath),
           );
       String downloadGifURL = await firebase_storage.FirebaseStorage.instance
-          .ref('Gif/$outPath')
+          .ref('Gif/lelouche')
           .getDownloadURL();
       var data = [
         {
@@ -474,40 +467,46 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
         }
       ];
       await FirebaseFirestore.instance.collection("Videos").add(data.first);
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc('lelouche')
+          .update({
+        'publication': FieldValue.arrayUnion([downloadGifURL])
+      });
     } catch (e) {
       print(e);
     }
   }
 
   Future<void> saveData() async {
-      Navigator.of(context)
-                 .popUntil(ModalRoute.withName(Navigator.defaultRouteName));
+    Navigator.of(context)
+        .popUntil(ModalRoute.withName(Navigator.defaultRouteName));
     ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
       // behavior: SnackBarBehavior.floating,
       backgroundColor: Palette.primaryColor,
- behavior: SnackBarBehavior.floating,
-  margin: EdgeInsets.only(bottom: 0.0),
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.only(bottom: 0.0),
       duration: new Duration(seconds: 6),
-      content:
-      Container(
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          new Text(
-            "Publishing your video",
-            style: TextStyle(
-                color: Palette.colorLight,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Prompt_Regular'),
-          ),
-          new SvgPicture.asset(
-            'assets/close.svg',
-            color: Palette.colorLight,
-          ),
-        ],
+      content: Container(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            new Text(
+              "Publishing your video",
+              style: TextStyle(
+                  color: Palette.colorLight,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Prompt_Regular'),
+            ),
+            new SvgPicture.asset(
+              'assets/close.svg',
+              color: Palette.colorLight,
+            ),
+          ],
+        ),
       ),
-    ),
     ));
+    uploadStorage();
 //  uploadStorage().whenComplete(() =>
 //                                 Navigator.of(context)
 //                     .popUntil(ModalRoute.withName(Navigator.defaultRouteName)));
