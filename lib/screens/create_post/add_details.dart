@@ -13,7 +13,6 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:convert';
-import 'package:flutter_video_compress/flutter_video_compress.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -42,7 +41,6 @@ VideoService? service;
 List<String> pointlist = <String>[];
 final firebase_storage.FirebaseStorage storage =
     firebase_storage.FirebaseStorage.instance;
-final _flutterVideoCompress = FlutterVideoCompress();
 
 class _AddDetailsScreenState extends State<AddDetailsScreen> {
   String? _chosenValue;

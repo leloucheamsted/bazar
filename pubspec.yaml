@@ -52,7 +52,6 @@ dependencies:
   getwidget: ^2.0.4
   uuid: ^3.0.4
   path_provider: ^2.0.3
-  flutter_video_compress: ^0.3.7+8
   flutter_ffmpeg: ^0.4.2
   firebase_database: ^9.0.8
   cached_video_player: ^2.0.0-dev.1

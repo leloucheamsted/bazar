@@ -19,7 +19,6 @@ import 'package:image/image.dart' as img;
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
- import 'package:flutter_video_compress/flutter_video_compress.dart';
 
 class CameraScreen extends StatefulWidget {
   List<CameraDescription>? cameras;
