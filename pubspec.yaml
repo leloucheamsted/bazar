@@ -117,6 +117,11 @@ flutter:
     - assets/plus.svg
     - assets/expand.svg
     - assets/close.svg
+    - assets/settings.svg
+    - assets/mtnMoney.svg
+    - assets/orangeMoney.svg
+    - assets/mtn.png
+    - assets/orange.png
 
   fonts:
     - family: Prompt_Regular

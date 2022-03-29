@@ -13,4 +13,6 @@ class Palette {
   static const Color colorInput = Color.fromRGBO(238, 238, 238, 1);
   static const Color disable = Color.fromRGBO(204, 221, 254, 1);
   static const Color loadingColor = Color.fromRGBO(241, 241, 241, 1);
+  static const Color colorError = Color.fromRGBO(212, 67, 51, 1);
+  static const Color colorPayBar = Color.fromRGBO(223, 226, 230, 1);
 }

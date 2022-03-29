@@ -11,20 +11,6 @@ class HomeTest extends StatefulWidget {
 }
 
 class _HomeTestState extends State<HomeTest> {
-  // final locator = GetIt.instance;
-  // final feedViewModel = GetIt.instance<FeedViewModel>();
-  // @override
-  // void initState() {
-  //   setState(() {
-  //     feedViewModel.loadVideo(0);
-  //     feedViewModel.loadVideo(1);
-  //   });
-  //   feedViewModel.loadVideo(0);
-  //   feedViewModel.loadVideo(1);
-
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(

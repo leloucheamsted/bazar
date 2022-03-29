@@ -4,7 +4,7 @@ import 'package:bazar/screens/create_post/camera_screen.dart';
 import 'package:bazar/screens/home_screen.dart';
 import 'package:bazar/screens/orders_screen.dart';
 import 'package:bazar/screens/otp/otp1.dart';
-import 'package:bazar/screens/profile_screen.dart';
+import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:bazar/screens/search_screen.dart';
 import 'package:bazar/widgets/testFire.dart';
 import 'package:camera/camera.dart';
@@ -72,7 +72,7 @@ class _NavScreenState extends State<NavScreen> {
         children: screens,
       ),
       bottomNavigationBar: BottomAppBar(
-        //shape: CircularNotchedRectangle(),
+        shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
           height: 60,
@@ -123,17 +123,14 @@ class _NavScreenState extends State<NavScreen> {
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () async {
-                        setState(() async {
-                          await availableCameras()
-                              .then((value) => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => CameraScreen(
-                                        cameras: value,
-                                      ),
-                                    ),
-                                  ));
-                        });
+                        await availableCameras().then((value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CameraScreen(
+                                  cameras: value,
+                                ),
+                              ),
+                            ));
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

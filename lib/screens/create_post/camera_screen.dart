@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:ui';
 import 'dart:async';
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/main.dart';
@@ -14,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'dart:math' as math;
 import 'package:image/image.dart' as img;
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,6 +46,9 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
+    _timer = Timer(Duration(milliseconds: 500), () {
+      // SOMETHING
+    });
     setState(() {});
     _cameraController = CameraController(cameras![0], ResolutionPreset.medium);
     cameraValue = _cameraController.initialize();
@@ -348,7 +349,6 @@ class _CameraScreenState extends State<CameraScreen> {
                                               ],
                                             ),
                                           )),
-                                          
                                           await _flutterFFmpeg
                                               .execute(
                                                   "-i ${videopath.path} -vf hflip -c:a copy $outPath")

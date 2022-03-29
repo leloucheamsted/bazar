@@ -81,6 +81,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
         statusBarColor: Palette.colorLight));
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Palette.colorLight,
       body: Stack(children: [
         Column(children: [

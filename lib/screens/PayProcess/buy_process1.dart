@@ -1,19 +1,21 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/data/video.dart';
 import 'package:bazar/widgets/circle_button.dart';
 import 'package:bazar/widgets/item_ville.dart';
+import 'package:bazar/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'dart:convert';
 
 class BuyProcessOne extends StatefulWidget {
   final Video video;
@@ -77,306 +79,383 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
         statusBarColor: Palette.primaryColor));
 
     return Scaffold(
-      resizeToAvoidBottomInset:
-          false, // Pour empecher le debordemnent de la page a l'affiche du cla
+      resizeToAvoidBottomInset: false,
       backgroundColor: Palette.colorLight,
-      body: Column(children: [
-        Expanded(
-          child: Align(
-            alignment: Alignment.center,
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                child: Container(
-                  height: 40,
-                  color: Palette.primaryColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5.0, 0, 0, 0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          borderRadius: BorderRadius.circular(30),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Icon(
-                              Icons.arrow_back_outlined,
-                              color: Palette.colorLight,
-                            ),
-                          ),
-                          // onPressed: () {},
+      body: Stack(
+        children: [
+          Column(children: [
+            Topbar(title: 'New order', onpressed: () {}),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // DETAILS
+                    SizedBox(
+                      height: 150,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        // height: 200,
+                        alignment: Alignment.topLeft,
+                        decoration: BoxDecoration(
+                          color: Palette.colorInput,
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ),
-                      Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 18, 0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            'New order',
-                            textAlign: TextAlign.center,
+                            widget.video.details,
                             style: TextStyle(
-                              fontSize: 25.0,
-                              fontFamily: 'Prompt_Bold',
-                              color: Palette.colorLight,
-                            ),
+                                color: Palette.colorText,
+                                fontFamily: "Prompt_Regular",
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 22),
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: 30,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
+                    ),
 
-              // Details du produit
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 150,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          // height: 200,
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            color: Palette.colorInput,
-                            borderRadius: BorderRadius.circular(20),
+                    SizedBox(
+                      height: 12,
+                    ),
+
+                    //  Nombres de pieces du produits
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      height: 50,
+                      alignment: Alignment.topLeft,
+                      decoration: BoxDecoration(
+                        color: Palette.colorInput,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(children: [
+                        // Bouton de soustraction
+                        GestureDetector(
+                          onTap: () {
+                            if (NbrePiece == 1) {
+                            } else {
+                              setState(() {
+                                NbrePiece -= 1;
+                                price =
+                                    int.parse(widget.video.prix) * NbrePiece;
+                              });
+                            }
+                          },
+                          child: Icon(
+                            Icons.horizontal_rule,
+                            size: 20,
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SingleChildScrollView(
-                              child: Text(
-                                widget.video.details,
-                                style: TextStyle(
+                        ),
+
+                        //     // Nombre de pieces
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            AddPopup(context);
+                          },
+                          child: Expanded(
+                            child: Container(
+                              color: Palette.colorInput,
+                              child: Center(
+                                child: Text(
+                                  NbrePiece.toString(),
+                                  style: TextStyle(
                                     color: Palette.colorText,
-                                    fontFamily: "Prompt_Regular",
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 22),
+                                    fontSize: 20.0,
+                                    fontFamily: 'Prompt_Regular',
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
+                        Spacer(),
+                        //     // Boutton Pour ajoute
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              NbrePiece += 1;
+                              price = int.parse(widget.video.prix) * NbrePiece;
+                            });
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      ]),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        'Delivery address',
+                        style: TextStyle(
+                            fontFamily: "Prompt_Medium",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Palette.colorText),
                       ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      // Prix et Nombre de piece
+                    ),
 
-                      //  Nombres de pieces du produits
-                      Container(
-                        padding: const EdgeInsets.all(10),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          PopCatShow = !PopCatShow;
+                        });
+
+                        PopupListCategoris();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
                         height: 50,
                         alignment: Alignment.topLeft,
                         decoration: BoxDecoration(
                           color: Palette.colorInput,
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Row(children: [
-                          // Bouton de soustraction
-                          GestureDetector(
-                            onTap: () {
-                              if (NbrePiece == 1) {
-                              } else {
-                                setState(() {
-                                  NbrePiece -= 1;
-                                  price =
-                                      int.parse(widget.video.prix) * NbrePiece;
-                                });
-                              }
-                            },
-                            child: Icon(
-                              Icons.horizontal_rule,
-                              size: 20,
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  choiceStreet,
+                                  style: TextStyle(
+                                    fontFamily: "Prompt_Regular",
+                                    fontSize: 18,
+                                    color: choiceStreet == "Shipping Address"
+                                        ? Palette.colorgray
+                                        : Palette.colorText,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                  onTap: (() => PopupListCategoris()),
+                                  child: SvgPicture.asset('assets/plus.svg')),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        'Choose payment method',
+                        style: TextStyle(
+                            fontFamily: "Prompt_Medium",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Palette.colorText),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          height: 60,
+                          width: 60,
+                          padding: const EdgeInsets.all(5),
+                          foregroundDecoration: BoxDecoration(
+                            color: Colors.grey,
+                            backgroundBlendMode: BlendMode.saturation,
+                          ),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Palette.colorText,
+                          ),
+                          child: Image.asset(
+                            'assets/orange.png',
+                            height: 10,
+                            width: 10,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        GestureDetector(
+                          child: Container(
+                            height: 60,
+                            width: 60,
+                            padding: const EdgeInsets.all(5),
+                            foregroundDecoration: BoxDecoration(
+                              color: Colors.grey,
+                              backgroundBlendMode: BlendMode.saturation,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(254, 202, 24, 1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Image.asset(
+                              'assets/mtn.png',
+                              height: 40,
+                              width: 40,
                             ),
                           ),
+                        ),
+                      ],
+                    ),
 
-                          // Nombre de pieces
+                    SizedBox(
+                      height: 12,
+                    ),
+                    // // // Number
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Palette.colorInput,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: TextFormField(
+                        scrollPadding: EdgeInsets.only(bottom: 40),
+                        keyboardType: TextInputType.number,
+                        // onChanged: _onChanged,
+                        // controller: pseudocontroller,
+                        autocorrect: false,
+
+                        textAlign: TextAlign.start,
+                        validator: (value) {
+                          if (value == "base" || value == "basic") {
+                            return "Username  not valid";
+                          }
+                        },
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontFamily: 'Prompt_Regular',
+                        ),
+                        decoration: InputDecoration.collapsed(
+                          hintText: 'Phone number',
+                          hintStyle: TextStyle(color: Palette.secondColor),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ]),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 120,
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    color: Palette.colorPayBar,
+                    height: 60,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Total to pay',
+                              style: TextStyle(
+                                color: Palette.secondColor,
+                                fontFamily: "Prompt_Medium",
+                                fontSize: 24,
+                              )),
+                          Row(
+                            children: [
+                              //  Prix du peoduits
+                              Text(
+                                price.toString(),
+                                style: TextStyle(
+                                  fontFamily: "Prompt_SemiBold",
+                                  fontWeight: FontWeight.w600,
+                                  color: Palette.colorText,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                'FCFA',
+                                style: TextStyle(
+                                  fontFamily: "Prompt_SemiBold",
+                                  fontWeight: FontWeight.w600,
+                                  color: Palette.colorLight,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ]),
+                  ),
+                  Container(
+                      color: details != "" && choiceStreet != "Shipping Address"
+                          ? Palette.primaryColor
+                          : Palette.disable,
+                      width: double.infinity,
+                      height: 60,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 0),
+                      child: Row(
+                        children: [
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                AddPopup(context);
+                                details != "" &&
+                                        choiceStreet != "Shipping Address"
+                                    ? uploadStorage()
+                                    : null;
                               },
-                              child: Expanded(
-                                child: Container(
-                                  color: Palette.colorInput,
-                                  child: Center(
-                                    child: Text(
-                                      NbrePiece.toString(),
-                                      style: TextStyle(
-                                        color: Palette.colorText,
-                                        fontSize: 20.0,
-                                        fontFamily: 'Prompt_Regular',
-                                      ),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                                child: Center(
+                                  child: Text(
+                                    'Pay now',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.normal,
+                                      fontFamily: "Prompt_Regular",
+                                      color: Palette.colorLight,
+                                      fontSize: 24,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-
-                          // Boutton Pour ajoute
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                NbrePiece += 1;
-                                price =
-                                    int.parse(widget.video.prix) * NbrePiece;
-                              });
-                            },
-                            child: Icon(Icons.add),
-                          ),
-                        ]),
-                      ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            PopCatShow = !PopCatShow;
-                          });
-
-                          PopupListCategoris();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          height: 50,
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            color: Palette.colorInput,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    choiceStreet,
-                                    style: TextStyle(
-                                      fontFamily: "Prompt_Regular",
-                                      fontSize: 18,
-                                      color: choiceStreet == "Shipping Address"
-                                          ? Palette.colorgray
-                                          : Palette.colorText,
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                    onTap: (() => PopupListCategoris()),
-                                    child: SvgPicture.asset('assets/plus.svg')),
-                              ],
+                          Positioned(
+                            child: InkWell(
+                              onTap: () {
+                                details != "" &&
+                                        choiceStreet != "Shipping Address"
+                                    ? uploadStorage()
+                                    : null;
+                                print("lelocueh");
+                              },
+                              borderRadius: BorderRadius.circular(30),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10.0, 10, 15, 15),
+                                child: SvgPicture.asset('assets/next.svg'),
+                              ),
+                              // onPressed: () {},
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ))
-            ]),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.fromLTRB(15, 0, 15, 30),
-          height: 30,
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text('Total to pay',
-                style: TextStyle(
-                  color: Palette.secondColor,
-                  fontFamily: "Prompt_Medium",
-                  fontSize: 24,
-                )),
-            Row(
-              children: [
-                //  Prix du peoduits
-                Text(
-                  price.toString(),
-                  style: TextStyle(
-                    fontFamily: "Prompt_SemiBold",
-                    fontWeight: FontWeight.w600,
-                    color: Palette.colorText,
-                    fontSize: 20,
-                  ),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'FCFA',
-                  style: TextStyle(
-                    fontFamily: "Prompt_SemiBold",
-                    fontWeight: FontWeight.w600,
-                    color: Palette.colorInput,
-                    fontSize: 20,
-                  ),
-                ),
-              ],
+                        ],
+                      )),
+                ],
+              ),
             ),
-          ]),
-        ),
-        Container(
-            color: details != "" && choiceStreet != "Shipping Address"
-                ? Palette.primaryColor
-                : Palette.disable,
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      details != "" && choiceStreet != "Shipping Address"
-                          ? uploadStorage()
-                          : null;
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
-                      child: Center(
-                        child: Text(
-                          'Pay now',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontStyle: FontStyle.normal,
-                            fontFamily: "Prompt_Regular",
-                            color: Palette.colorLight,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  child: InkWell(
-                    onTap: () {
-                      details != "" && choiceStreet != "Shipping Address"
-                          ? uploadStorage()
-                          : null;
-                      print("lelocueh");
-                    },
-                    borderRadius: BorderRadius.circular(30),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10.0, 10, 10, 15),
-                      child: SvgPicture.asset('assets/next.svg'),
-                    ),
-                    // onPressed: () {},
-                  ),
-                ),
-              ],
-            )),
-      ]),
+          )
+        ],
+      ),
     );
   }
 
@@ -560,37 +639,6 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
                   SizedBox(
                     height: 20,
                   ),
-                  // Container(
-                  //   margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
-                  //   padding: const EdgeInsets.all(8.0),
-                  //   height: 50,
-                  //   alignment: Alignment.center,
-                  //   decoration: BoxDecoration(
-                  //     color: Palette.colorInput,
-                  //     borderRadius: BorderRadius.circular(20),
-                  //   ),
-                  //   child: TextFormField(
-                  //     // onChanged: _onChanged,
-                  //     //  controller: nametextController,
-                  //     autocorrect: false,
-                  //     textAlign: TextAlign.start,
-                  //     focusNode: FocusNode(),
-                  //     onChanged: (value) {
-                  //       setState(() {
-                  //         ville = value;
-                  //       });
-                  //     },
-                  //     //validator: (value) {},
-                  //     style: TextStyle(
-                  //       fontSize: 20.0,
-                  //       fontFamily: 'Prompt_Regular',
-                  //     ),
-                  //     decoration: InputDecoration.collapsed(
-                  //       hintText: 'Search for a city',
-                  //       hintStyle: TextStyle(color: Palette.colorgray),
-                  //     ),
-                  //   ),
-                  // ),
                   Expanded(
                     child: ListView.builder(
                         itemCount: pointlist.length,
