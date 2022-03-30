@@ -2,7 +2,7 @@ import 'package:bazar/TestFlutter/feed_screen.dart';
 import 'package:bazar/main.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
 import 'package:bazar/screens/home_screen.dart';
-import 'package:bazar/screens/orders_screen.dart';
+import 'package:bazar/screens/profile/orders/orders_screen.dart';
 import 'package:bazar/screens/otp/otp1.dart';
 import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:bazar/screens/search_screen.dart';
@@ -123,14 +123,15 @@ class _NavScreenState extends State<NavScreen> {
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () async {
-                        await availableCameras().then((value) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CameraScreen(
-                                  cameras: value,
-                                ),
-                              ),
-                            ));
+                        SearchPopup(context);
+                        // await availableCameras().then((value) => Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => CameraScreen(
+                        //           cameras: value,
+                        //         ),
+                        //       ),
+                        //     ));
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -181,7 +182,7 @@ class _NavScreenState extends State<NavScreen> {
                             height: 10.0,
                           ),
                           Text(
-                            'Ordres',
+                            'Operations',
                             style: TextStyle(
                               fontFamily: 'Prompt_Medium',
                               color: currentTab == 2

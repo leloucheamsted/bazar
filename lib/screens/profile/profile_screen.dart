@@ -128,21 +128,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }
 
                 return Expanded(
-                  child: GridView.builder(
-                      itemCount: list!.length,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      primary: false,
-                      gridDelegate:
-                          new SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 9 / 16,
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 1.5,
-                        crossAxisSpacing: 1.5,
-                      ),
-                      itemBuilder: (BuildContext, index) {
-                        return CardGif(urlGif: list![index]);
-                      }),
+                  child: MediaQuery.removeViewPadding(
+                    context: context,
+                    removeTop: true,
+                    child: GridView.builder(
+                        itemCount: list!.length,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        primary: false,
+                        gridDelegate:
+                            new SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 9 / 16,
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 1.5,
+                          crossAxisSpacing: 1.5,
+                        ),
+                        itemBuilder: (BuildContext, index) {
+                          return CardGif(urlGif: list![index]);
+                        }),
+                  ),
                 );
             }
             return Container(

@@ -168,8 +168,9 @@ class _FeedScreenState extends State<FeedScreen> {
                     ),
                   )
                 : Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Palette.loadingColor,
                     child: Center(
                       child: Container(
                         height: 70,
