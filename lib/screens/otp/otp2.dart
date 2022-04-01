@@ -1,3 +1,4 @@
+import 'package:bazar/widgets/countdown.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +15,11 @@ class EnterCodeScreen extends StatefulWidget {
   _EnterCodeScreenState createState() => _EnterCodeScreenState();
 }
 
-class _EnterCodeScreenState extends State<EnterCodeScreen> {
+class _EnterCodeScreenState extends State<EnterCodeScreen>
+    with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   String? _verificationCode;
-  String phone = "+237" + Get.arguments.text.toString();
+  String phone = "+237" + Get.arguments;
   final TextEditingController _pinPutController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
   final BoxDecoration pinPutDecoration = BoxDecoration(
@@ -27,51 +29,59 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
       color: const Color.fromRGBO(126, 203, 224, 1),
     ),
   );
-
+  int _counter = 0;
+  late AnimationController _controller;
+  int levelClock = 120;
   @override
   void initState() {
+    _verifyPhone();
     // TODO: implement initState
     super.initState();
-    _verifyPhone();
+    _controller = AnimationController(
+        vsync: this, duration: Duration(seconds: levelClock));
+
+    _controller.forward();
+
     print(phone);
+  }
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    // _verifyPhone().dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // String number = Get.arguments;
+    String number = Get.arguments.toString();
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: Palette.colorLight,
+        //iconTheme: IconThemeData(color: Palette.colorText),
+        centerTitle: true,
+        title: Text('mokolo',
+            style: TextStyle(
+                fontSize: 40.0,
+                fontFamily: 'Prompt_Bold',
+                color: Palette.primaryColor)),
+      ),
+      backgroundColor: Palette.colorLight,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
         child: Align(
           alignment: Alignment.center,
           child: Column(
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleButton(
-                    icon: Icons.arrow_back_outlined,
-                    iconSize: 20.0,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      'basic',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 40.0,
-                        fontFamily: 'Prompt_Bold',
-                        color: Palette.primaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               Text(
-                '4-digit code',
+                '6-digit code',
                 style: TextStyle(
                   fontSize: 30.0,
                   fontFamily: 'Prompt_Bold',
@@ -118,6 +128,28 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
                   }
                 },
               ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Resend code in ',
+                    style: TextStyle(
+                        fontFamily: "Prompt_Regular",
+                        fontWeight: FontWeight.w400,
+                        fontSize: 18,
+                        color: Palette.colorText),
+                  ),
+                  Countdown(
+                    animation: StepTween(
+                      begin: levelClock, // THIS IS A USER ENTERED NUMBER
+                      end: 0,
+                    ).animate(_controller),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -133,8 +165,8 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
               .signInWithCredential(credential)
               .then((value) async {
             CupertinoAlertDialog(
-              title: Text("Phone Authentication"),
-              content: Text("Phone Number verified!!!"),
+              title: const Text("Phone Authentication"),
+              content: const Text("Phone Number verified!!!"),
               actions: [
                 CupertinoButton(
                     child: Text('Close'),
@@ -158,6 +190,6 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
             _verificationCode = verificationID;
           });
         },
-        timeout: Duration(seconds: 120));
+        timeout: const Duration(seconds: 120));
   }
 }

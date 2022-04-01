@@ -23,7 +23,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
   _onChanged(String value) {
     setState(() {
       length = value.length;
-      if (length == 9) {
+      if (length == 9 && textController.text[0] == "6") {
         status = true;
       } else {
         status = false;
@@ -50,14 +50,14 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(20, 50.0, 20.0, 20.0),
+        padding: EdgeInsets.fromLTRB(20, 40.0, 20.0, 20.0),
         child: Align(
           alignment: Alignment.center,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                'basic',
+                'mokolo',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 40.0,
@@ -91,7 +91,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                       height: 45,
                       width: 80,
                       decoration: BoxDecoration(
-                        color: Palette.colorgray,
+                        color: Palette.colorInput,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -101,13 +101,6 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                         children: <Widget>[
                           SvgPicture.asset('assets/Cameroon.svg'),
                           SvgPicture.asset('assets/drop.svg'),
-                          // Image.asset(
-                          //   'assets/Cameroon.png',
-                          // ),
-                          // ImageIcon(
-                          //   AssetImage(
-                          //     'assets/drop.png',
-                          //   ),
                         ],
                       ),
                     ),
@@ -121,7 +114,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                       height: 45,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Palette.colorgray,
+                        color: Palette.colorInput,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: TextField(
@@ -141,8 +134,8 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                           fontSize: 20.0,
                           fontFamily: 'Prompt_Regular',
                         ),
-                        decoration: InputDecoration.collapsed(
-                            hintText: '6 80 80 80 80'),
+                        decoration:
+                            InputDecoration.collapsed(hintText: '680 80 80 80'),
                       ),
                     ),
                   ),
@@ -170,7 +163,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                       ? () {
                           Get.to(
                             EnterCodeScreen(),
-                            arguments: textController,
+                            arguments: textController.text,
                             transition: Transition.rightToLeft,
                             duration: Duration(seconds: 1),
                           );

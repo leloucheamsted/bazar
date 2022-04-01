@@ -2,6 +2,7 @@ import 'package:bazar/Services/providerModel.dart';
 import 'package:bazar/TestFlutter/feed_screen.dart';
 import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
+import 'package:bazar/screens/otp/otp2.dart';
 import 'package:bazar/service_locator.dart';
 import 'package:bazar/widgets/testProvider.dart';
 import 'package:camera/camera.dart';

@@ -128,14 +128,44 @@ class _VideoViewPageState extends State<VideoViewPage> {
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
-                              _controller.pause();
-                              // _controller.dispose();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (builder) => AddDetailsScreen(
-                                            path: widget.path,
-                                          )));
+                              if (_controller.value.duration >
+                                  const Duration(seconds: 15)) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(new SnackBar(
+                                  // behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Palette.colorError,
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.only(bottom: 0.0),
+                                  duration: new Duration(seconds: 3),
+                                  content: Container(
+                                    child: new Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        new Text(
+                                          "Your video is longer than 15 seconds",
+                                          style: TextStyle(
+                                              color: Palette.colorLight,
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: 'Prompt_Regular'),
+                                        ),
+                                        new SvgPicture.asset(
+                                          'assets/close.svg',
+                                          color: Palette.colorLight,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ));
+                              } else {
+                                _controller.dispose();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (builder) => AddDetailsScreen(
+                                              path: widget.path,
+                                            )));
+                              }
                             },
                             child: Center(
                               child: Text(
@@ -246,8 +276,8 @@ class _VideoViewPageState extends State<VideoViewPage> {
 
   @override
   void dispose() {
-    _controller.pause();
-    // _controller.dispose();
+    //  _controller.pause();
+    _controller.dispose();
     super.dispose();
   }
 }

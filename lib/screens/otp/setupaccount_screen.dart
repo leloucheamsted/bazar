@@ -20,7 +20,8 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   TextEditingController nametextController = TextEditingController();
   TextEditingController pseudocontroller = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
+  late Future<String> nom, pseudo, numero;
+  late int _count;
   bool isValid = false;
   bool visibilityError = false;
   bool visibilitySucces = false;
@@ -46,34 +47,61 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
-    final docUser = FirebaseFirestore.instance
-        .collection('Users')
-        .doc(nametextController.text);
-
     Future addUser() async {
       final prefs = await SharedPreferences.getInstance();
 
       final user = {
-        'name': 'lelouche',
-        'username': 'vvv', // John Doe
-        'number': '+23456U0850', // Stokes and Sons
+        'name': nametextController.text,
+        'username': '@' + pseudocontroller.text,
+        'number': Get.arguments.toString(),
         'followers': [],
         'following': [],
         'publication': [],
+        'balance': 0,
       };
-      await docUser
-          .set(user)
+      await users
+          .add(user)
           .then((value) => {
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(Navigator.defaultRouteName)),
-                print("User Added")
+                setState(() {
+                  nom = prefs
+                      .setString('nom', nametextController.text)
+                      .then((bool success) {
+                    return nametextController.text;
+                  });
+                  pseudo = prefs
+                      .setString('pseudo', '@' + pseudocontroller.text)
+                      .then((bool success) {
+                    return '@' + pseudocontroller.text;
+                  });
+                  numero = prefs
+                      .setString('numero', Get.arguments.toString())
+                      .then((bool success) {
+                    _count = prefs.setInt('count', 1) as int;
+                    return Get.arguments.toString();
+                  });
+                })
               })
           .catchError((error) => print("Failed to add user: $error"));
-
+      print(prefs.getString('pseudo'));
+      print(prefs.getString('nom'));
+      print(prefs.getString('numero'));
       // Call the user's CollectionReference to add a new user
     }
 
     return Scaffold(
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: Palette.colorLight,
+        iconTheme: IconThemeData(color: Palette.colorText),
+        centerTitle: true,
+        title: Text('mokolo',
+            style: TextStyle(
+                fontSize: 40.0,
+                fontFamily: 'Prompt_Bold',
+                color: Palette.primaryColor)),
+      ),
       backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -81,29 +109,6 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
           alignment: Alignment.center,
           child: ListView(
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleButton(
-                    icon: Icons.arrow_back_outlined,
-                    iconSize: 20.0,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      'basic',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 40.0,
-                        fontFamily: 'Prompt_Bold',
-                        color: Palette.primaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               Align(
                 alignment: Alignment.center,
                 child: Text(

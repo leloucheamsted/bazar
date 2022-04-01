@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:bazar/screens/PayProcess/buy_process1.dart';
@@ -16,9 +17,10 @@ import '../Services/fiel_model_fire.dart';
 import '../config/palette.dart';
 import '../data/video.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/button.dart';
 import '../widgets/profile_card.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class FeedScreen extends StatefulWidget {
   FeedScreen({Key? key}) : super(key: key);
@@ -28,6 +30,10 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late Future<int> _counter;
+  late int c;
   final locator = GetIt.instance;
   final feedViewModel = GetIt.instance<FeedViewModel>();
   late int position;
@@ -40,8 +46,22 @@ class _FeedScreenState extends State<FeedScreen> {
     setState(() {
       position = 0;
     });
-
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_UpdateConnectionState);
+    counter();
     super.initState();
+  }
+
+  Future<void> counter() async {
+    final prefs = await SharedPreferences.getInstance();
+    final int counter = (prefs.getInt('count') ?? 0);
+
+    setState(() {
+      _counter = prefs.setInt('count', counter).then((bool success) {
+        return counter;
+      });
+    });
+    c = await _counter;
   }
 
   @override
@@ -64,6 +84,7 @@ class _FeedScreenState extends State<FeedScreen> {
     if (kDebugMode) {
       print(feedViewModel.videos.length.toString());
     }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
       child: Stack(
@@ -219,8 +240,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'dberjk',
-                                    // video.username,
+                                    video.username,
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "Prompt_Medium",
@@ -236,27 +256,27 @@ class _FeedScreenState extends State<FeedScreen> {
                       Row(
                         children: [
                           //  Follow button custom
-                          FlatButton(
-                            minWidth: 15,
-                            onPressed: () {},
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/follow.svg',
-                                  color: Palette.colorLight,
-                                ),
-                                Text(
-                                  'Follow',
-                                  style: TextStyle(
-                                      fontFamily: "Prompt_SemiBold",
-                                      fontWeight: FontWeight.w600,
-                                      color: Palette.colorLight,
-                                      fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // FlatButton(
+                          //   minWidth: 15,
+                          //   onPressed: () {},
+                          //   child: Column(
+                          //     mainAxisAlignment: MainAxisAlignment.center,
+                          //     children: [
+                          //       SvgPicture.asset(
+                          //         'assets/follow.svg',
+                          //         color: Palette.colorLight,
+                          //       ),
+                          //       Text(
+                          //         'Follow',
+                          //         style: TextStyle(
+                          //             fontFamily: "Prompt_SemiBold",
+                          //             fontWeight: FontWeight.w600,
+                          //             color: Palette.colorLight,
+                          //             fontSize: 14),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
 
                           //  End follow button
 
@@ -336,12 +356,16 @@ class _FeedScreenState extends State<FeedScreen> {
                           minWidth: 50,
                           color: Palette.primaryColor,
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BuyProcessOne(
-                                          video: video,
-                                        )));
+                            if (c < 1) {
+                              BuyPopup(context);
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BuyProcessOne(
+                                            video: video,
+                                          )));
+                            }
                           },
                           child: Text(
                             'Buy Now',
@@ -363,8 +387,59 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print("Error Occurred: ${e.toString()} ");
+      return;
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+    return _UpdateConnectionState(result);
+  }
+
+  Future<void> _UpdateConnectionState(ConnectivityResult result) async {
+    if (result == ConnectivityResult.mobile ||
+        result == ConnectivityResult.wifi) {
+      showStatus(result, true);
+    } else {
+      showStatus(result, false);
+    }
+  }
+
+  void showStatus(ConnectivityResult result, bool status) {
+    final snackBar = SnackBar(
+        duration: new Duration(seconds: 4),
+        content: Container(
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              new Text(
+                status
+                    ? "The connection has been re-established"
+                    : "Your network connection has been interrupted",
+                style: TextStyle(
+                    color: Palette.colorLight,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Prompt_Regular'),
+              ),
+              new SvgPicture.asset(
+                'assets/close.svg',
+                color: Palette.colorLight,
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: status ? Palette.primaryColor : Palette.colorError);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   void dispose() {
+    _connectivitySubscription.cancel();
     // feedViewModel.controller!.dispose();
     super.dispose();
   }

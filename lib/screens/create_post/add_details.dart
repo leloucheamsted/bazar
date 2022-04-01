@@ -505,6 +505,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
         ),
       ),
     ));
+
     uploadStorage();
 //  uploadStorage().whenComplete(() =>
 //                                 Navigator.of(context)

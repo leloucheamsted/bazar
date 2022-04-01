@@ -240,13 +240,21 @@ class _CameraScreenState extends State<CameraScreen> {
                       padding: EdgeInsets.fromLTRB(8, 20, 0, 0),
                       child: GestureDetector(
                         onTap: () async {
-                          const oneSec = const Duration(seconds: 1);
                           FilePickerResult? result =
                               await FilePicker.platform.pickFiles(
                             type: FileType.video,
                             allowCompression: false,
                           );
                           if (result != null) {
+                            // Recuperation de 15  sceonde
+                            _flutterFFmpeg
+                                .execute(
+                                    '-i videoplayback.mp4 -ss 00:00:00 -t 00:00:15 -c copy smallfile1.mp4')
+                                .then((value) {
+                              print('Got value ');
+                            }).catchError((error) {
+                              print('Error');
+                            });
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -411,41 +419,5 @@ class _CameraScreenState extends State<CameraScreen> {
         },
       ),
     );
-  }
-
-  void takePhoto(BuildContext context) async {
-    XFile xfile = await _cameraController.takePicture();
-    List<int> imageBytes = await xfile.readAsBytes();
-
-    img.Image? originalImage = img.decodeImage(imageBytes);
-    img.Image fixedImage = img.flipVertical(originalImage!);
-    img.Image fixedImage1 = img.flipVertical(fixedImage);
-    img.Image fixedImage2 = img.flipHorizontal(fixedImage1);
-
-    File file = File(xfile.path);
-
-    File fixedFile = await file.writeAsBytes(
-      img.encodeJpg(fixedImage1),
-      flush: true,
-    );
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (builder) => CameraViewPage(
-                  path: fixedFile.path,
-                )));
-  }
-
-  Future<String> FlipVideo(XFile file) async {
-    var id = Uuid().v4();
-
-    final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
-    final Directory _appDocDir = await getApplicationDocumentsDirectory();
-    final dir = _appDocDir.path;
-    final outPath = "$dir/$id.mp4";
-    await _flutterFFmpeg
-        .execute("-i ${file.path} -vf hflip -c:a copy $outPath")
-        .then((returnCode) => print("Return code $returnCode"));
-    return outPath;
   }
 }

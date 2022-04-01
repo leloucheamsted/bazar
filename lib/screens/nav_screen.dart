@@ -2,7 +2,6 @@ import 'package:bazar/TestFlutter/feed_screen.dart';
 import 'package:bazar/main.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
 import 'package:bazar/screens/home_screen.dart';
-import 'package:bazar/screens/profile/orders/orders_screen.dart';
 import 'package:bazar/screens/otp/otp1.dart';
 import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:bazar/screens/search_screen.dart';
@@ -18,6 +17,7 @@ import '../config/palette.dart';
 import 'package:get/get.dart';
 import '../../config/palette.dart';
 import '../../config/palette.dart';
+import 'orders/orders_screen.dart';
 
 class NavScreen extends StatefulWidget {
   const NavScreen({Key? key}) : super(key: key);
@@ -27,9 +27,11 @@ class NavScreen extends StatefulWidget {
 }
 
 class _NavScreenState extends State<NavScreen> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<int> _counter;
+  // late StreamSubscription _connectionChangeStream;
 
+  // bool isOffline = false;
+  late Future<int> _counter;
+  late int c;
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
     FeedScreen(),
@@ -43,21 +45,35 @@ class _NavScreenState extends State<NavScreen> {
   //  Verifier si c'est la premiere fois que l'utilisateur install l'application
   Future<void> _incrementCounter() async {
     final prefs = await SharedPreferences.getInstance();
-    final int counter = (prefs.getInt('counter') ?? 0) + 1;
+    final int counter = (prefs.getInt('count') ?? 0);
 
     setState(() {
-      _counter = prefs.setInt('counter', counter).then((bool success) {
+      _counter = prefs.setInt('count', counter).then((bool success) {
         return counter;
       });
     });
-    if (counter == 1) {
+    if (counter < 1) {
       WelcomePopup(context);
     }
+  }
+
+  Future<void> counter() async {
+    final prefs = await SharedPreferences.getInstance();
+    final int counter = (prefs.getInt('count') ?? 0);
+
+    setState(() {
+      _counter = prefs.setInt('count', counter).then((bool success) {
+        return counter;
+      });
+    });
+    c = await _counter;
   }
 
   @override
   void initState() {
     super.initState();
+
+    counter();
     Timer(Duration(seconds: 20), () {
       _incrementCounter();
     });
@@ -123,15 +139,23 @@ class _NavScreenState extends State<NavScreen> {
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () async {
-                        SearchPopup(context);
-                        // await availableCameras().then((value) => Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => CameraScreen(
-                        //           cameras: value,
-                        //         ),
-                        //       ),
-                        //     ));
+                        if (c < 1) {
+                          WelcomePopup(context);
+                        } else {
+                          try {
+                            await availableCameras()
+                                .then((value) => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraScreen(
+                                          cameras: value,
+                                        ),
+                                      ),
+                                    ));
+                          } catch (e) {
+                            print(e);
+                          }
+                        }
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -162,11 +186,15 @@ class _NavScreenState extends State<NavScreen> {
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () {
-                        setState(() {
-                          currentScreen =
-                              OrdersScreen(); // if user taps on this dashboard tab will be active
-                          currentTab = 2;
-                        });
+                        if (c < 1) {
+                          WelcomePopup(context);
+                        } else {
+                          setState(() {
+                            currentScreen =
+                                OrdersScreen(); // if user taps on this dashboard tab will be active
+                            currentTab = 2;
+                          });
+                        }
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -196,11 +224,15 @@ class _NavScreenState extends State<NavScreen> {
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () {
-                        setState(() {
-                          currentScreen =
-                              ProfileScreen(); // if user taps on this dashboard tab will be active
-                          currentTab = 3;
-                        });
+                        if (c < 1) {
+                          WelcomePopup(context);
+                        } else {
+                          setState(() {
+                            currentScreen =
+                                ProfileScreen(); // if user taps on this dashboard tab will be active
+                            currentTab = 3;
+                          });
+                        }
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -288,21 +320,10 @@ class _NavScreenState extends State<NavScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        MaterialPageRoute(
-                            builder: (context) => EnterNumberScreen());
-                        // await availableCameras().then((value) => Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => CameraScreen(
-                        //           cameras: value,
-                        //         ),
-                        //       ),
-                        //     ));
-                        //  Fermerture du popup
-                        // Navigator.of(context).pop();
-                        // Get.to(
-                        //   CameraScreen(cameras),
-                        // );
+                        Get.to(EnterNumberScreen(),
+                            transition: Transition.rightToLeftWithFade);
+                        // MaterialPageRoute(
+                        //     builder: (context) => EnterNumberScreen());
                       },
                       shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(15.0),
