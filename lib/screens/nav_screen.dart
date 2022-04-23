@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:bazar/Services/feef_videoModel.dart';
 import 'package:bazar/TestFlutter/feed_screen.dart';
+import 'package:bazar/data/show_pop.dart';
 import 'package:bazar/main.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
 import 'package:bazar/screens/home_screen.dart';
@@ -8,8 +12,10 @@ import 'package:bazar/screens/search_screen.dart';
 import 'package:bazar/widgets/testFire.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,30 +24,32 @@ import 'package:get/get.dart';
 import '../../config/palette.dart';
 import '../../config/palette.dart';
 import 'orders/orders_screen.dart';
+import 'package:provider/provider.dart';
 
 class NavScreen extends StatefulWidget {
   const NavScreen({Key? key}) : super(key: key);
-
   @override
   _NavScreenState createState() => _NavScreenState();
 }
 
 class _NavScreenState extends State<NavScreen> {
-  // late StreamSubscription _connectionChangeStream;
-
-  // bool isOffline = false;
   late Future<int> _counter;
-  late int c;
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
     FeedScreen(),
-    SearchScreen(),
-    OrdersScreen(),
+    const SearchScreen(),
+    new OrdersScreen(
+      onClicked: () {
+        if (kDebugMode) {
+          print("show");
+        }
+      },
+    ),
     ProfileScreen(),
   ]; // to store nested tabs
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = FeedScreen(); // Our first view in viewport
-
+  FeedViewModel feedViewModel = FeedViewModel();
   //  Verifier si c'est la premiere fois que l'utilisateur install l'application
   Future<void> _incrementCounter() async {
     final prefs = await SharedPreferences.getInstance();
@@ -57,7 +65,7 @@ class _NavScreenState extends State<NavScreen> {
     }
   }
 
-  Future<void> counter() async {
+  Future<int> counter() async {
     final prefs = await SharedPreferences.getInstance();
     final int counter = (prefs.getInt('count') ?? 0);
 
@@ -66,14 +74,15 @@ class _NavScreenState extends State<NavScreen> {
         return counter;
       });
     });
-    c = await _counter;
+    return _counter;
   }
 
   @override
   void initState() {
+    //  feedViewModel.getNumber();
     super.initState();
-
     counter();
+
     Timer(Duration(seconds: 20), () {
       _incrementCounter();
     });
@@ -81,7 +90,16 @@ class _NavScreenState extends State<NavScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark, // dark text for status bar
+          statusBarColor: Colors.white));
+    }
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: IndexedStack(
         index: currentTab,
@@ -139,6 +157,7 @@ class _NavScreenState extends State<NavScreen> {
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () async {
+                        int c = await counter();
                         if (c < 1) {
                           WelcomePopup(context);
                         } else {
@@ -185,13 +204,17 @@ class _NavScreenState extends State<NavScreen> {
                     ),
                     MaterialButton(
                       minWidth: 40,
-                      onPressed: () {
+                      onPressed: () async {
+                        int c = await counter();
                         if (c < 1) {
                           WelcomePopup(context);
                         } else {
                           setState(() {
-                            currentScreen =
-                                OrdersScreen(); // if user taps on this dashboard tab will be active
+                            currentScreen = new OrdersScreen(
+                              onClicked: () {
+                                print("clicked");
+                              },
+                            ); // if user taps on this dashboard tab will be active
                             currentTab = 2;
                           });
                         }
@@ -223,7 +246,9 @@ class _NavScreenState extends State<NavScreen> {
                     ),
                     MaterialButton(
                       minWidth: 40,
-                      onPressed: () {
+                      onPressed: () async {
+                        // feedViewModel!.getNumber();
+                        int c = await counter();
                         if (c < 1) {
                           WelcomePopup(context);
                         } else {
@@ -320,10 +345,18 @@ class _NavScreenState extends State<NavScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        Get.to(EnterNumberScreen(),
-                            transition: Transition.rightToLeftWithFade);
-                        // MaterialPageRoute(
-                        //     builder: (context) => EnterNumberScreen());
+                        Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EnterNumberScreen()))
+                            .then((value) {
+                          setState(() {});
+
+                          // Get.to(EnterNumberScreen(),
+                          //     transition: Transition.rightToLeftWithFade);
+                          // MaterialPageRoute(
+                          //     builder: (context) => EnterNumberScreen());
+                        });
                       },
                       shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(15.0),

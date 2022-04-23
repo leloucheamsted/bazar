@@ -1,12 +1,17 @@
 import 'package:bazar/config/palette.dart';
+import 'package:bazar/data/show_pop.dart';
+import 'package:bazar/screens/orders/withdraw.dart';
 import 'package:bazar/widgets/order_item.dart';
 import 'package:bazar/widgets/topbar.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class OrdersScreen extends StatefulWidget {
-  const OrdersScreen({Key? key}) : super(key: key);
+  final Function onClicked;
+  const OrdersScreen({Key? key, required this.onClicked}) : super(key: key);
 
   @override
   _OrdersScreenState createState() => _OrdersScreenState();
@@ -16,7 +21,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
+
       backgroundColor: Colors.white,
       // appBar: AppBar(
       //   shadowColor: Colors.transparent,
@@ -78,7 +84,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
                     InkWell(
                       onTap: () {
-                        Popwidraw(context);
+                        setState(() {
+                          //print("object");
+                          widget.onClicked;
+                        });
+                        // Get.to(const Withdraw(),
+                        //     transition:  Transition);
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
@@ -144,13 +155,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
   void Popwidraw(context) {
     showModalBottomSheet(
         context: context,
-        isDismissible: true,
         isScrollControlled: true,
         builder: (BuildContext bc) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(

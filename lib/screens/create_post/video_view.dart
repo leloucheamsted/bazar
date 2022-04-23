@@ -39,15 +39,16 @@ class _VideoViewPageState extends State<VideoViewPage> {
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.light,
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+          systemNavigationBarColor: Palette.primaryColor,
+          systemNavigationBarDividerColor: Palette.primaryColor,
+          systemNavigationBarIconBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
           statusBarColor: Colors.transparent));
     }
     return WillPopScope(
       onWillPop: () async {
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarIconBrightness: Brightness.dark,
             statusBarIconBrightness:
@@ -75,7 +76,8 @@ class _VideoViewPageState extends State<VideoViewPage> {
                     color: Colors.transparent,
                     width: MediaQuery.of(context).size.width,
                     height: 60,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                     child: Row(
                       children: [
                         Expanded(
@@ -105,7 +107,7 @@ class _VideoViewPageState extends State<VideoViewPage> {
                                   ),
                                   Text(
                                     volume == true ? "Sound on" : "Sound off",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Palette.colorLight,
                                       fontSize: 18,
                                       fontFamily: "Prompt_Regular",
@@ -118,11 +120,12 @@ class _VideoViewPageState extends State<VideoViewPage> {
                         ),
                       ],
                     )),
-                Container(
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
                     color: Palette.primaryColor,
                     width: MediaQuery.of(context).size.width,
                     height: 60,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                     child: Row(
                       children: [
                         Expanded(
@@ -131,25 +134,25 @@ class _VideoViewPageState extends State<VideoViewPage> {
                               if (_controller.value.duration >
                                   const Duration(seconds: 15)) {
                                 ScaffoldMessenger.of(context)
-                                    .showSnackBar(new SnackBar(
+                                    .showSnackBar(SnackBar(
                                   // behavior: SnackBarBehavior.floating,
                                   backgroundColor: Palette.colorError,
                                   behavior: SnackBarBehavior.floating,
-                                  margin: EdgeInsets.only(bottom: 0.0),
-                                  duration: new Duration(seconds: 3),
-                                  content: Container(
-                                    child: new Row(
+                                  margin: const EdgeInsets.only(bottom: 0.0),
+                                  duration: const Duration(seconds: 3),
+                                  content: SizedBox(
+                                    child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        new Text(
+                                        const Text(
                                           "Your video is longer than 15 seconds",
                                           style: TextStyle(
                                               color: Palette.colorLight,
                                               fontWeight: FontWeight.w400,
                                               fontFamily: 'Prompt_Regular'),
                                         ),
-                                        new SvgPicture.asset(
+                                        SvgPicture.asset(
                                           'assets/close.svg',
                                           color: Palette.colorLight,
                                         ),
@@ -158,7 +161,8 @@ class _VideoViewPageState extends State<VideoViewPage> {
                                   ),
                                 ));
                               } else {
-                                _controller.dispose();
+                                _controller.pause();
+                                // _controller.dispose();
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -167,22 +171,39 @@ class _VideoViewPageState extends State<VideoViewPage> {
                                             )));
                               }
                             },
-                            child: Center(
-                              child: Text(
-                                'Next',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontStyle: FontStyle.normal,
-                                  fontFamily: "Prompt_Regular",
-                                  color: Palette.colorLight,
-                                  fontSize: 24,
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(35.0, 0, 0, 0),
+                              child: Center(
+                                child: Text(
+                                  'Next',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.normal,
+                                    fontFamily: "Prompt_Regular",
+                                    color: Palette.colorLight,
+                                    fontSize: 24,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                          child: InkWell(
+                            onTap: () async {},
+                            borderRadius: BorderRadius.circular(30),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SvgPicture.asset('assets/next.svg'),
+                            ),
+                            // onPressed: () {},
+                          ),
+                        )
                       ],
-                    )),
+                    ),
+                  ),
+                ),
               ]),
             ),
             Positioned(
@@ -191,9 +212,10 @@ class _VideoViewPageState extends State<VideoViewPage> {
                   color: Colors.transparent,
                   width: MediaQuery.of(context).size.width,
                   height: 60,
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                   child: Row(
-                    children: [
+                    children: const <Widget>[
                       Expanded(
                         child: Center(
                           child: Text(
@@ -218,15 +240,17 @@ class _VideoViewPageState extends State<VideoViewPage> {
                   padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
                   child: GestureDetector(
                     onTap: () {
-                      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                          systemNavigationBarColor: Colors.transparent,
-                          systemNavigationBarIconBrightness: Brightness.dark,
-                          statusBarIconBrightness:
-                              Brightness.dark, // dark text for status bar
-                          statusBarColor: Colors.transparent));
+                      SystemChrome.setSystemUIOverlayStyle(
+                          const SystemUiOverlayStyle(
+                              systemNavigationBarColor: Colors.transparent,
+                              systemNavigationBarIconBrightness:
+                                  Brightness.dark,
+                              statusBarIconBrightness:
+                                  Brightness.dark, // dark text for status bar
+                              statusBarColor: Palette.primaryColor));
                       Navigator.of(context).pop();
                     },
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       radius: 27,
                       backgroundColor: Colors.transparent,
                       child: Text(
@@ -242,32 +266,6 @@ class _VideoViewPageState extends State<VideoViewPage> {
                     ),
                   ),
                 )),
-            Positioned(
-              bottom: 4,
-              right: 0,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (builder) => AddDetailsScreen(
-                                path: widget.path,
-                              )));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-                  child: CircleAvatar(
-                    radius: 27,
-                    backgroundColor: Colors.transparent,
-                    child: SvgPicture.asset(
-                      'assets/next.svg',
-                      height: 25,
-                      width: 25,
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

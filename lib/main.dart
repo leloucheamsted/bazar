@@ -1,5 +1,6 @@
 import 'package:bazar/Services/providerModel.dart';
 import 'package:bazar/TestFlutter/feed_screen.dart';
+import 'package:bazar/data/show_pop.dart';
 import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
 import 'package:bazar/screens/otp/otp2.dart';
@@ -40,17 +41,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => VideoModel()),
-      ],
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: NavScreen(),
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      home: NavScreen(),
     );
   }
 }

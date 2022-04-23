@@ -1,12 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../../widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 import '../../config/palette.dart';
 // Import the firebase_core and cloud_firestore plugin
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SetupAccountScreen extends StatefulWidget {
@@ -21,10 +20,28 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   TextEditingController pseudocontroller = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   late Future<String> nom, pseudo, numero;
-  late int _count;
+  late String numero1 = Get.arguments.toString();
   bool isValid = false;
   bool visibilityError = false;
   bool visibilitySucces = false;
+
+  @override
+  initState() {
+    super.initState();
+    saveNumber();
+  }
+
+  saveNumber() async {
+    numero1 = Get.arguments.toString();
+    final prefs = await SharedPreferences.getInstance();
+    const key = 'numero';
+    final value = numero1;
+    prefs.setString(key, value);
+    if (kDebugMode) {
+      print('numero:$value');
+    }
+  }
+
   _onChanged(String value) {
     setState(() {
       if (value.length <= 3) {
@@ -47,6 +64,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
+
     Future addUser() async {
       final prefs = await SharedPreferences.getInstance();
 
@@ -75,18 +93,19 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                       .then((bool success) {
                     return '@' + pseudocontroller.text;
                   });
-                  numero = prefs
-                      .setString('numero', Get.arguments.toString())
-                      .then((bool success) {
-                    _count = prefs.setInt('count', 1) as int;
-                    return Get.arguments.toString();
-                  });
                 })
               })
+          // ignore: invalid_return_type_for_catch_error, avoid_print
           .catchError((error) => print("Failed to add user: $error"));
-      print(prefs.getString('pseudo'));
-      print(prefs.getString('nom'));
-      print(prefs.getString('numero'));
+      if (kDebugMode) {
+        print(prefs.getString('pseudo'));
+      }
+      if (kDebugMode) {
+        print(prefs.getString('nom'));
+      }
+      if (kDebugMode) {
+        print(prefs.getString('numero'));
+      }
       // Call the user's CollectionReference to add a new user
     }
 
@@ -94,9 +113,9 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
       appBar: AppBar(
         shadowColor: Colors.transparent,
         backgroundColor: Palette.colorLight,
-        iconTheme: IconThemeData(color: Palette.colorText),
+        iconTheme: const IconThemeData(color: Palette.colorText),
         centerTitle: true,
-        title: Text('mokolo',
+        title: const Text('mokolo',
             style: TextStyle(
                 fontSize: 40.0,
                 fontFamily: 'Prompt_Bold',
@@ -104,12 +123,12 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
       ),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: Align(
           alignment: Alignment.center,
           child: ListView(
             children: [
-              Align(
+              const Align(
                 alignment: Alignment.center,
                 child: Text(
                   'Setup account',
@@ -120,7 +139,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   ),
                 ),
               ),
-              Align(
+              const Align(
                 alignment: Alignment.center,
                 child: Text(
                   'Create a username to get started',
@@ -131,7 +150,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
 
@@ -151,18 +170,18 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   textAlign: TextAlign.start,
                   focusNode: FocusNode(),
                   validator: (value) {},
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20.0,
                     fontFamily: 'Prompt_Regular',
                   ),
-                  decoration: InputDecoration.collapsed(
+                  decoration: const InputDecoration.collapsed(
                     hintText: 'Full name (ex: Ben Biya)',
                     hintStyle: TextStyle(color: Palette.secondColor),
                   ),
                 ),
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
 
@@ -185,22 +204,22 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                       return "Username  not valid";
                     }
                   },
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20.0,
                     fontFamily: 'Prompt_Regular',
                   ),
-                  decoration: InputDecoration.collapsed(
+                  decoration: const InputDecoration.collapsed(
                     hintText: 'username (ex: benbiya)',
                     hintStyle: TextStyle(color: Palette.secondColor),
                   ),
                 ),
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               visibilityError
-                  ? Text(
+                  ? const Text(
                       'Username not available',
                       style: TextStyle(
                         color: Colors.red,
@@ -208,9 +227,9 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                         fontSize: 14,
                       ),
                     )
-                  : new Container(),
+                  : Container(),
               visibilitySucces
-                  ? Text(
+                  ? const Text(
                       'Username available',
                       style: TextStyle(
                         color: Palette.validNameColorStatut,
@@ -218,9 +237,9 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                         fontSize: 14,
                       ),
                     )
-                  : new Container(),
+                  : Container(),
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               SizedBox(
@@ -233,7 +252,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                       : Palette.disableButton,
                   disabledColor: Palette.disableButton,
                   disabledTextColor: Palette.colorLight,
-                  child: Text(
+                  child: const Text(
                     "Valid",
                     style: TextStyle(
                       fontSize: 20.0,
@@ -250,7 +269,9 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                               'username', pseudocontroller.text);
                           await prefs.setString('number', Get.arguments);
                           addUser();
-                          print('$Get.arguments');
+                          if (kDebugMode) {
+                            print('$Get.arguments');
+                          }
                         }
                       : null,
                   //status
@@ -262,8 +283,8 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   //         );
                   //       }
                   //     : null,
-                  shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(15.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
               ),

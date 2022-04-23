@@ -2,13 +2,12 @@ import 'package:cached_video_player/cached_video_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:stacked/stacked.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../data/video.dart';
 
 class FeedViewModel extends BaseViewModel {
   //VideoPlayerController? controller;
   List<Video> videos = [];
-
   int prevVideo = 0;
   int actualScreen = 0;
 
@@ -33,8 +32,9 @@ class FeedViewModel extends BaseViewModel {
       Video video = Video.fromJson(element.data());
       videoList.add(video);
     });
+     return videoList;
     notifyListeners();
-    return videoList;
+   
   }
 
   changeVideo(index) async {
