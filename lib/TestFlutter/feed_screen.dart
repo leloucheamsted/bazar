@@ -42,7 +42,9 @@ class _FeedScreenState extends State<FeedScreen> {
     feedViewModel.loadVideo(0);
     feedViewModel.loadVideo(1);
     feedViewModel.setInitialised(true);
-    print('Nombre de videos' + feedViewModel.videos.length.toString());
+    if (kDebugMode) {
+      print('Nombre de videos' + feedViewModel.videos.length.toString());
+    }
     setState(() {
       position = 0;
     });
@@ -211,7 +213,7 @@ class _FeedScreenState extends State<FeedScreen> {
               children: [
                 Container(
                   padding: const EdgeInsets.only(bottom: 0),
-                  color: Color.fromRGBO(0, 0, 0, 0.4),
+                  color: const Color.fromRGBO(0, 0, 0, 0.4),
                   height: 60,
                   child: Row(
                     children: [

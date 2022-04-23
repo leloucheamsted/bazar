@@ -1,5 +1,6 @@
 import 'package:bazar/screens/profile/setting.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -8,15 +9,30 @@ import '../../widgets/profile_card.dart';
 import 'package:bazar/config/palette.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
-
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
+late String? nom = '', pseudo = '', numero = '';
+
 class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((value) {
+      setState(() {
+        numero = value.getString('numero');
+        nom = value.getString('nom');
+        pseudo = value.getString('pseudo');
+      });
+    });
+    //getNumber();
+  }
+
   DocumentReference docs =
       FirebaseFirestore.instance.collection('collectionPath').doc('lelouche');
   @override
@@ -50,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'FullName',
+                  nom ?? '',
                   style: TextStyle(
                     fontFamily: "Prompt_Regular",
                     fontWeight: FontWeight.w400,
@@ -62,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 10,
                 ),
                 Text(
-                  'username',
+                  pseudo ?? 'Unknow',
                   style: TextStyle(
                     fontFamily: "Prompt_SemiBold",
                     fontWeight: FontWeight.w400,

@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/screens/otp/otp2.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -50,13 +51,13 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(20, 40.0, 20.0, 20.0),
+        padding: const EdgeInsets.fromLTRB(20, 40.0, 20.0, 20.0),
         child: Align(
           alignment: Alignment.center,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'mokolo',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -65,7 +66,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                   color: Palette.primaryColor,
                 ),
               ),
-              Text(
+              const Text(
                 'Phone number',
                 style: TextStyle(
                   fontSize: 30.0,
@@ -73,7 +74,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                   color: Palette.colorText,
                 ),
               ),
-              Text(
+              const Text(
                 'Enter your phone number to get started',
                 style: TextStyle(
                   fontSize: 18.0,
@@ -81,7 +82,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                   color: Colors.grey,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -105,7 +106,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Expanded(
@@ -130,18 +131,18 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                         onChanged: _onChanged,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.start,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20.0,
                           fontFamily: 'Prompt_Regular',
                         ),
-                        decoration:
-                            InputDecoration.collapsed(hintText: '680 80 80 80'),
+                        decoration: const InputDecoration.collapsed(
+                            hintText: '680 80 80 80'),
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               SizedBox(
@@ -152,7 +153,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                   color: Palette.primaryColor,
                   disabledColor: Palette.disableButton,
                   disabledTextColor: Palette.colorLight,
-                  child: Text(
+                  child: const Text(
                     "Next",
                     style: TextStyle(
                       fontSize: 20.0,
@@ -162,22 +163,22 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                   onPressed: status
                       ? () {
                           Get.to(
-                            EnterCodeScreen(),
+                            const EnterCodeScreen(),
                             arguments: textController.text,
                             transition: Transition.rightToLeft,
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                           );
                         }
                       : null,
-                  shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(15.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20.0,
               ),
-              Text(
+              const Text(
                 'By using the app you agree to bazar’s privacy policy and terms and conditions.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
