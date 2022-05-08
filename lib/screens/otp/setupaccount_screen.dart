@@ -1,9 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 import '../../config/palette.dart';
 // Import the firebase_core and cloud_firestore plugin
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,13 +22,17 @@ class SetupAccountScreen extends StatefulWidget {
 class _SetupAccountScreenState extends State<SetupAccountScreen> {
   TextEditingController nametextController = TextEditingController();
   TextEditingController pseudocontroller = TextEditingController();
+  TextEditingController whatsappcontroller = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  late Future<String> nom, pseudo, numero;
+  late Future<String> nom, pseudo, numero, whatsappNumber,uid,counter;
   late String numero1 = Get.arguments.toString();
+  String uuid = const Uuid().v4();
   bool isValid = false;
+  bool isValidName = false;
   bool visibilityError = false;
   bool visibilitySucces = false;
-
+  int length = 0;
+  bool status = false;
   @override
   initState() {
     super.initState();
@@ -36,13 +44,39 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
     final prefs = await SharedPreferences.getInstance();
     const key = 'numero';
     final value = numero1;
+
     prefs.setString(key, value);
     if (kDebugMode) {
       print('numero:$value');
     }
   }
 
-  _onChanged(String value) {
+  _onChanged_number(String value) {
+    setState(() {
+      length = value.length;
+      if (length == 9 && whatsappcontroller.text[0] == "6") {
+        status = true;
+      } else {
+        status = false;
+      }
+    });
+  }
+
+  _onChanged_name(String value) {
+    setState(() {
+      if (value.length > 2) {
+        isValidName = true;
+        if (kDebugMode) {
+          print(nametextController.text);
+          print(isValidName);
+        }
+      } else {
+        isValidName = false;
+      }
+    });
+  }
+
+  _onChanged_username(String value) {
     setState(() {
       if (value.length <= 3) {
         isValid = false;
@@ -63,11 +97,10 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+    DocumentReference users = FirebaseFirestore.instance.collection('Users').doc(uuid);
 
     Future addUser() async {
       final prefs = await SharedPreferences.getInstance();
-
       final user = {
         'name': nametextController.text,
         'username': '@' + pseudocontroller.text,
@@ -76,37 +109,18 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
         'following': [],
         'publication': [],
         'balance': 0,
+        'whatsapp': "+237"+ whatsappcontroller.text,
+        'uuid': uuid,
+        'avatarUrl': 'https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/Group%20121.jpg?alt=media&token=aaa44834-ecd2-40f4-a19a-e1ee949433d6'
       };
       await users
-          .add(user)
+          .set(user)
           .then((value) => {
-                Navigator.of(context)
+                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(Navigator.defaultRouteName)),
-                setState(() {
-                  nom = prefs
-                      .setString('nom', nametextController.text)
-                      .then((bool success) {
-                    return nametextController.text;
-                  });
-                  pseudo = prefs
-                      .setString('pseudo', '@' + pseudocontroller.text)
-                      .then((bool success) {
-                    return '@' + pseudocontroller.text;
-                  });
-                })
               })
           // ignore: invalid_return_type_for_catch_error, avoid_print
           .catchError((error) => print("Failed to add user: $error"));
-      if (kDebugMode) {
-        print(prefs.getString('pseudo'));
-      }
-      if (kDebugMode) {
-        print(prefs.getString('nom'));
-      }
-      if (kDebugMode) {
-        print(prefs.getString('numero'));
-      }
-      // Call the user's CollectionReference to add a new user
     }
 
     return Scaffold(
@@ -160,16 +174,17 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                 height: 50,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Palette.colorgray,
+                  color: Palette.colorInput,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: TextFormField(
-                  // onChanged: _onChanged,
+                  // onChanged: _onChanged_name,
                   controller: nametextController,
                   autocorrect: false,
                   textAlign: TextAlign.start,
-                  focusNode: FocusNode(),
-                  validator: (value) {},
+                  // focusNode: FocusNode(),
+                  onChanged: _onChanged_name,
+                  // validator: (value) {},
                   style: const TextStyle(
                     fontSize: 20.0,
                     fontFamily: 'Prompt_Regular',
@@ -191,11 +206,11 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                 height: 50,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Palette.colorgray,
+                  color: Palette.colorInput,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: TextFormField(
-                  onChanged: _onChanged,
+                  onChanged: _onChanged_username,
                   controller: pseudocontroller,
                   autocorrect: false,
                   textAlign: TextAlign.start,
@@ -238,7 +253,64 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                       ),
                     )
                   : Container(),
-
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    child: Container(
+                      height: 45,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: Palette.colorInput,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SvgPicture.asset('assets/Cameroon.svg'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      height: 45,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Palette.colorInput,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: TextField(
+                        controller: whatsappcontroller,
+                        inputFormatters: <TextInputFormatter>[
+                          // PhoneNumberFormatter(),
+                          LengthLimitingTextInputFormatter(9),
+                          FilteringTextInputFormatter.allow(RegExp(
+                            "[^,.-]",
+                          )),
+                        ],
+                        onChanged: _onChanged_number,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          fontFamily: 'Prompt_Regular',
+                        ),
+                        decoration: const InputDecoration.collapsed(
+                            hintText: 'whatsapp number'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -247,7 +319,10 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                 width: double.infinity,
                 child: RaisedButton(
                   textColor: Colors.white,
-                  color: isValid && visibilitySucces
+                  color: isValid &&
+                          visibilitySucces &&
+                          status == true &&
+                          isValidName == true
                       ? Palette.primaryColor
                       : Palette.disableButton,
                   disabledColor: Palette.disableButton,
@@ -259,19 +334,35 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                       fontFamily: 'Prompt_Medium',
                     ),
                   ),
-                  onPressed: isValid && visibilitySucces
+                  onPressed: isValid &&
+                          visibilitySucces &&
+                          status == true &&
+                          isValidName == true
                       ? () async {
-                          FocusScope.of(context).unfocus();
-                          final prefs = await SharedPreferences.getInstance();
-                          await prefs.setString(
-                              'name', nametextController.text);
-                          await prefs.setString(
-                              'username', pseudocontroller.text);
-                          await prefs.setString('number', Get.arguments);
+                    final prefs = await SharedPreferences.getInstance();
+                    FocusScope.of(context).unfocus();
                           addUser();
-                          if (kDebugMode) {
-                            print('$Get.arguments');
-                          }
+                          nom = prefs
+                              .setString('nom', nametextController.text)
+                              .then((bool success) {
+                            return nametextController.text;
+                          });
+                          pseudo = prefs
+                              .setString('pseudo', '@' + pseudocontroller.text)
+                              .then((bool success) {
+                            return '@' + pseudocontroller.text;
+                          });
+                          whatsappNumber = prefs
+                              .setString('whatsapp', whatsappcontroller.text)
+                              .then((bool success) {
+                            return whatsappcontroller.text;
+                          });
+                          uid=prefs.setString('uuid', uuid).then((bool success){
+                            return uid;
+                          });
+                    counter=prefs.setString('counter', "1").then((bool success){
+                      return counter;
+                    });
                         }
                       : null,
                   //status
@@ -294,9 +385,5 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
       ),
     );
   }
-
-// GO NEXT FOCUS
-
-// Add Users in Firebase
-
 }
+

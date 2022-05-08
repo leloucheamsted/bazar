@@ -1,18 +1,24 @@
+import 'dart:developer';
+import 'package:provider/provider.dart';
+
+import 'package:bazar/Services/user.dart';
 import 'package:bazar/screens/profile/setting.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:stacked_services/stacked_services.dart';
-import '../../widgets/button.dart';
-import '../../widgets/profile_card.dart';
+// import 'package:stacked_services/stacked_services.dart';
+// import '../../widgets/button.dart';
+// import '../../widgets/profile_card.dart';
 import 'package:bazar/config/palette.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import '../../widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final bool isUser;
+  const ProfileScreen({required this.isUser, Key? key}) : super(key: key);
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -20,8 +26,14 @@ class ProfileScreen extends StatefulWidget {
 late String? nom = '', pseudo = '', numero = '';
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  //late Stream dataList;
   @override
   void initState() {
+    // dataList = FirebaseFirestore.instance
+    //     .collection('collection')
+    //     .where('name', isEqualTo: 'lelouche')
+    //     .orderBy('name')
+    //     .snapshots();
     super.initState();
     SharedPreferences.getInstance().then((value) {
       setState(() {
@@ -32,7 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
     //getNumber();
   }
-
   DocumentReference docs =
       FirebaseFirestore.instance.collection('collectionPath').doc('lelouche');
   @override
@@ -49,16 +60,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               height: 90,
               width: 90,
-              decoration: BoxDecoration(
+              decoration:  BoxDecoration(
                 color: Palette.colorInput,
                 image: DecorationImage(
                     image: NetworkImage(
-                        'https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/cabraule.jpg?alt=media&token=d43ea864-6f86-4b6f-b2cd-385ffb65b7b5'),
+                        context.watch<User>().imgUrl
+                    ),
                     fit: BoxFit.cover),
                 shape: BoxShape.circle,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Column(
@@ -66,20 +78,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  nom ?? '',
-                  style: TextStyle(
+                  context.watch<User>().name?? '',
+                  style: const TextStyle(
                     fontFamily: "Prompt_Regular",
                     fontWeight: FontWeight.w400,
                     fontSize: 18,
                     color: Color.fromRGBO(22, 23, 34, 1),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Text(
-                  pseudo ?? 'Unknow',
-                  style: TextStyle(
+                  context.watch<User>().username ?? '',
+                  style: const TextStyle(
                     fontFamily: "Prompt_SemiBold",
                     fontWeight: FontWeight.w400,
                     fontSize: 18,
@@ -88,58 +100,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            Spacer(),
-            InkWell(
-              onTap: (() {
-                print('click');
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsProfile()));
-              }),
-              borderRadius: BorderRadius.circular(30),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(17),
-                      color: Palette.primaryColor,
-                    ),
-                    child:
-                        Center(child: SvgPicture.asset('assets/settings.svg'))),
-              ),
-              // onPressed: () {},
-            )
+            const Spacer(),
+            if (widget.isUser)
+              InkWell(
+                onTap: (() {
+                  print('click');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SettingsProfile(
+
+                          )));
+                }),
+                borderRadius: BorderRadius.circular(30),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(17),
+                        color: Palette.primaryColor,
+                      ),
+                      child: Center(
+                          child: SvgPicture.asset('assets/settings.svg'))),
+                ),
+                // onPressed: () {},
+              )
           ]),
         ),
 
         // Dividor
-        Divider(),
+        const Divider(),
 
 // Liste de publication
         StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
-              .collection("Users")
-              .doc('lelouche')
+              .collection("Users").doc("e0CPkvCtazKCgTUAWP1U")
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return new Text(
+              return  Text(
                   'Error in receiving trip list publication: ${snapshot.error}');
             }
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return new Text('Not connected to the Stream or null');
+                return const Text('Not connected to the Stream or null');
 
               case ConnectionState.waiting:
-                return new Text('Awaiting for interaction');
+                return const Text('Awaiting for interaction');
 
               case ConnectionState.active:
-                print("Stream has started but not finished");
-                var totalPublishCount = 0;
+                if (kDebugMode) {
+                  print("Stream has started but not finished");
+                }
 
-                List<String>? list;
+               List<String>? list;
                 if (snapshot.hasData) {
-                  list = List<dynamic>.from(snapshot.data!['publication'])
+                 list = List<dynamic>.from(snapshot.data!['publication'])
                       .cast<String>();
                 }
 
@@ -153,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         shrinkWrap: true,
                         primary: false,
                         gridDelegate:
-                            new SliverGridDelegateWithFixedCrossAxisCount(
+                        const  SliverGridDelegateWithFixedCrossAxisCount(
                           childAspectRatio: 9 / 16,
                           crossAxisCount: 3,
                           mainAxisSpacing: 1.5,
@@ -165,12 +182,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 );
             }
-            return Container(
-              child: new Text("No trip publication found."),
+            return const  SizedBox(
+              child:  Text("No trip publication found."),
             );
           },
         )
       ]),
+
     );
   }
 }
+

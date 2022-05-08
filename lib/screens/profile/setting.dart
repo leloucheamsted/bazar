@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/screens/profile/edit_profile.dart';
-import 'package:bazar/widgets/item_ville.dart';
 import 'package:bazar/widgets/widgets.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+
+import '../../Services/user.dart';
 
 class SettingsProfile extends StatelessWidget {
   const SettingsProfile({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class SettingsProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
           statusBarColor: Palette.primaryColor));
@@ -24,7 +25,7 @@ class SettingsProfile extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         Navigator.of(context).pop();
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarIconBrightness: Brightness.dark,
             statusBarIconBrightness:
@@ -34,22 +35,26 @@ class SettingsProfile extends StatelessWidget {
         return false;
       },
       child: Scaffold(
+        appBar: AppBar(
+          shadowColor: Colors.transparent,
+          backgroundColor: Palette.primaryColor,
+          centerTitle: true,
+          title: const Text(
+            'Settings',
+            style: TextStyle(
+              fontFamily: "Prompt_SemiBold",
+              fontWeight: FontWeight.w600,
+              fontSize: 22,
+              color: Palette.colorLight,
+            ),
+          ),
+        ),
+        resizeToAvoidBottomInset: true,
         backgroundColor: Palette.colorLight,
-        body: Container(
+        body: SizedBox(
           child: Column(
             children: [
-              Topbar(
-                  title: 'Settings',
-                  onpressed: () {
-                    if (Platform.isAndroid) {
-                      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                          systemNavigationBarIconBrightness: Brightness.dark,
-                          statusBarIconBrightness:
-                              Brightness.dark, // dark text for status bar
-                          statusBarColor: Colors.transparent));
-                    }
-                    Navigator.of(context).pop();
-                  }),
+
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                 child: SingleChildScrollView(
@@ -58,7 +63,7 @@ class SettingsProfile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Profile
-                      Container(
+                      const SizedBox(
                         width: double.infinity,
                         child: Text(
                           'Profile',
@@ -81,24 +86,27 @@ class SettingsProfile extends StatelessWidget {
                               ItemSettings(
                                   settings: 'Edit my profile',
                                   Pop: () {
-                                    Get.to(EditProfile(),
+                                    Get.to(  const EditProfile(),
+
                                         transition:
                                             Transition.rightToLeftWithFade);
                                   }),
                               ItemSettings(
                                   settings: 'Share profile',
                                   Pop: () {
-                                    print('object');
+                                    if (kDebugMode) {
+                                      print('object');
+                                    }
                                   }),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
                       // Settings
-                      Container(
+                      const SizedBox(
                         width: double.infinity,
                         child: Text(
                           'Settings',

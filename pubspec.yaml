@@ -35,6 +35,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   cached_network_image: ^3.2.0
   material_design_icons_flutter: 5.0.6595
+  rx_shared_preferences: ^2.3.0
   pinput: ^2.0.2
   file_picker: ^4.5.1
   firebase_auth: ^3.3.5
@@ -50,13 +51,14 @@ dependencies:
   get_it: ^7.2.0
   flutter_svg: ^1.0.3
   getwidget: ^2.0.4
-  uuid: ^3.0.4
   path_provider: ^2.0.3
+  uuid: 3.0.6
   flutter_ffmpeg: ^0.4.2
   firebase_database: ^9.0.8
   cached_video_player: ^2.0.0-dev.1
   visibility_detector: ^0.2.2
   connectivity_plus: ^2.2.1
+  url_launcher: ^6.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -123,6 +125,7 @@ flutter:
     - assets/orangeMoney.svg
     - assets/mtn.png
     - assets/orange.png
+    - assets/loadingscreen.jpg
 
   fonts:
     - family: Prompt_Regular

@@ -142,6 +142,7 @@ class _EnterNumberScreenState extends State<EnterNumberScreen> {
                   ),
                 ],
               ),
+
               const SizedBox(
                 height: 10,
               ),

@@ -1,29 +1,32 @@
+// ignore_for_file: deprecated_member_use
+// ignore: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
-import 'package:bazar/screens/PayProcess/buy_process1.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:math' as math;
+// import 'package:bazar/screens/PayProcess/buy_process1.dart';
+import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:stacked/stacked.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../Services/feef_videoModel.dart';
-import '../Services/fiel_model_fire.dart';
 import '../config/palette.dart';
 import '../data/video.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/otp/otp1.dart';
 import '../widgets/button.dart';
 import '../widgets/profile_card.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FeedScreen extends StatefulWidget {
-  FeedScreen({Key? key}) : super(key: key);
+  const FeedScreen({Key? key}) : super(key: key);
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -34,6 +37,7 @@ class _FeedScreenState extends State<FeedScreen> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   late Future<int> _counter;
   late int c;
+  late String number;
   final locator = GetIt.instance;
   final feedViewModel = GetIt.instance<FeedViewModel>();
   late int position;
@@ -50,20 +54,20 @@ class _FeedScreenState extends State<FeedScreen> {
     });
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_UpdateConnectionState);
-    counter();
+    selecter();
     super.initState();
   }
 
-  Future<void> counter() async {
-    final prefs = await SharedPreferences.getInstance();
-    final int counter = (prefs.getInt('count') ?? 0);
-
-    setState(() {
-      _counter = prefs.setInt('count', counter).then((bool success) {
-        return counter;
-      });
-    });
-    c = await _counter;
+  selecter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    c = prefs.getInt('_counter') ?? 0;
+    numero = prefs.getString('numero') ?? "";
+    if (c == 0) {
+      // await prefs.setInt('counter', 1);
+      // return FirstPage();
+    } else {
+      //return SecondPage();
+    }
   }
 
   @override
@@ -87,61 +91,64 @@ class _FeedScreenState extends State<FeedScreen> {
       print(feedViewModel.videos.length.toString());
     }
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4.0, 0, 2, 0),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 0),
-                  child: Text(
-                    ' Explore',
-                    style: TextStyle(
-                      fontFamily: "Prompt_SemiBold",
-                      fontWeight: FontWeight.w600,
-                      color: Palette.colorText,
-                      fontSize: 25,
+    return Scaffold(
+      backgroundColor: Palette.colorLight,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 0, 2, 0),
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+                    child: Text(
+                      ' Explore',
+                      style: TextStyle(
+                        fontFamily: "Prompt_SemiBold",
+                        fontWeight: FontWeight.w600,
+                        color: Palette.colorText,
+                        fontSize: 25,
+                      ),
                     ),
                   ),
-                ),
-                Spacer(),
-                Button(
-                    iconImage: 'assets/chrono.svg',
-                    // iconSize: 30,
-                    onPressed: () {}),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-            child: CarouselSlider.builder(
-              itemCount: feedViewModel.videos.length,
-              itemBuilder:
-                  (BuildContext context, int itemIndex, int pageViewIndex) {
-                itemIndex = itemIndex % (feedViewModel.videos.length);
-                // return Text(feedViewModel.videos[itemIndex].nom);
-                return videoCard(feedViewModel.videos[itemIndex]);
-              },
-              options: CarouselOptions(
-                viewportFraction: 1,
-                initialPage: 0,
-                height: MediaQuery.of(context).size.height,
-                enableInfiniteScroll: false,
-                reverse: false,
-                autoPlay: false,
-                enlargeCenterPage: true,
-                onPageChanged: (index, reason) {
-                  index = index % (feedViewModel.videos.length);
-                  feedViewModel.changeVideo(index);
-                },
-                scrollDirection: Axis.vertical,
+                  const Spacer(),
+                  Button(
+                      iconImage: 'assets/chrono.svg',
+                      // iconSize: 30,
+                      onPressed: () {}),
+                ],
               ),
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+              child: CarouselSlider.builder(
+                itemCount: feedViewModel.videos.length,
+                itemBuilder:
+                    (BuildContext context, int itemIndex, int pageViewIndex) {
+                  itemIndex = itemIndex % (feedViewModel.videos.length);
+                  // return Text(feedViewModel.videos[itemIndex].nom);
+                  return videoCard(feedViewModel.videos[itemIndex]);
+                },
+                options: CarouselOptions(
+                  viewportFraction: 1,
+                  initialPage: 0,
+                  height: MediaQuery.of(context).size.height,
+                  enableInfiniteScroll: false,
+                  reverse: false,
+                  autoPlay: false,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    index = index % (feedViewModel.videos.length);
+                    feedViewModel.changeVideo(index);
+                  },
+                  scrollDirection: Axis.vertical,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -155,7 +162,7 @@ class _FeedScreenState extends State<FeedScreen> {
           children: [
             video.controller != null
                 ? VisibilityDetector(
-                    key: Key("unique key"),
+                    key: const Key("unique key"),
                     onVisibilityChanged: (VisibilityInfo info) {
                       debugPrint(
                           "${info.visibleFraction} of my widget is visible");
@@ -193,17 +200,25 @@ class _FeedScreenState extends State<FeedScreen> {
                 : Container(
                     width: double.infinity,
                     height: double.infinity,
-                    color: Palette.loadingColor,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/loadingscreen.jpg"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // decoration:const BoxDecoration(
+                    //   gradient: LinearGradient(colors: [Color.fromRGBO(219, 219, 219, 0.05),Color.fromRGBO(230, 230, 230, 1)],stops: [0,1],transform: GradientRotation(3*math.pi / 2),)
+                    // ),
                     child: Center(
                       child: Container(
                         height: 70,
                         width: 70,
-                        color: Palette.loadingColor,
-                        child: Center(
+                        // color: Palette.loadingColor,
+                        child: const Center(
                             child: CircularProgressIndicator(
-                          backgroundColor: Colors.grey,
-                          valueColor: new AlwaysStoppedAnimation<Color>(
-                              Colors.blueAccent),
+                          backgroundColor: Colors.transparent,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.blueAccent),
                         )),
                       ),
                     ),
@@ -219,41 +234,46 @@ class _FeedScreenState extends State<FeedScreen> {
                     children: [
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              ProfileAvatar(imgUrl: video.profile),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Column(
+                            padding: const EdgeInsets.all(8),
+                            child: GestureDetector(
+                              onTap: (){
+                                ProfileUser(context);
+                              },
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    video.nom,
-                                    style: TextStyle(
-                                      fontFamily: "Prompt_Medium",
-                                      letterSpacing: 1,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                      color: Palette.colorLight,
-                                    ),
+                                  ProfileAvatar(imgUrl: video.profile),
+                                  const SizedBox(
+                                    width: 5,
                                   ),
-                                  Text(
-                                    video.username,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: "Prompt_Medium",
-                                      color: Palette.colorLight,
-                                    ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        video.nom,
+                                        style: const TextStyle(
+                                          fontFamily: "Prompt_Medium",
+                                          letterSpacing: 1,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18,
+                                          color: Palette.colorLight,
+                                        ),
+                                      ),
+                                      Text(
+                                        video.username,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: "Prompt_Medium",
+                                          color: Palette.colorLight,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
+                            )),
                       ),
                       Row(
                         children: [
@@ -286,7 +306,8 @@ class _FeedScreenState extends State<FeedScreen> {
                           FlatButton(
                             minWidth: 15,
                             onPressed: () {
-                              DetailsPopup(video.details, video.quantite);
+                              DetailsPopup(video.details, video.quantite,
+                                  video.numeroVendeur);
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -295,7 +316,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                   'assets/details.svg',
                                   color: Palette.colorLight,
                                 ),
-                                Text(
+                                const Text(
                                   'details',
                                   style: TextStyle(
                                       fontFamily: "Prompt_SemiBold",
@@ -317,7 +338,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 // Setion PEIX ET ACHAT
                 Container(
                   padding: const EdgeInsets.only(bottom: 0),
-                  color: Color.fromRGBO(41, 109, 252, 1),
+                  color: const Color.fromRGBO(41, 109, 252, 1),
                   height: 55,
                   child: Row(
                     children: [
@@ -329,17 +350,17 @@ class _FeedScreenState extends State<FeedScreen> {
                             //  Prix du peoduits
                             Text(
                               video.prix,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "Prompt_SemiBold",
                                 fontWeight: FontWeight.w600,
                                 color: Palette.colorLight,
                                 fontSize: 20,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
-                            Text(
+                            const Text(
                               'FCFA',
                               style: TextStyle(
                                 fontFamily: "Prompt_SemiBold",
@@ -357,19 +378,36 @@ class _FeedScreenState extends State<FeedScreen> {
                           height: 55,
                           minWidth: 50,
                           color: Palette.primaryColor,
-                          onPressed: () {
-                            if (c < 1) {
+                          onPressed: () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            String count =  prefs.getString('counter')?? '';
+                            String name= prefs.getString('uuid')?? '';
+                            String uuid= prefs.getString('uuid')?? '';
+                            if(kDebugMode){
+                              print('index');
+                              print(count);
+                              print(name);
+                              print(uuid);
+
+                            }
+                            //  var counter = await _counter;
+                            if (count != "1") {
+                              //  print(counter);
                               BuyPopup(context);
                             } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BuyProcessOne(
-                                            video: video,
-                                          )));
+                              if (kDebugMode) {
+                                print("open whatsapp");
+                              }
+                             // openwhatsapp(video);
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => BuyProcessOne(
+                              //               video: video,
+                              //             )));
                             }
                           },
-                          child: Text(
+                          child: const Text(
                             'Buy Now',
                             style: TextStyle(
                               fontFamily: "Prompt_Medium",
@@ -389,12 +427,41 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
+  ///  Popup Achat du produit
+  Future<void> openwhatsapp(Video video) async {
+    var whatsapp = "+" + video.numeroVendeur;
+    var whatsappURlAndroid =
+        "whatsapp://send?phone=" + whatsapp + "&text=*hello*\n How are you?";
+    var whatappURLIos =
+        "https://wa.me/$whatsapp?text=${Uri.parse("*hello*\n How are you?")}";
+    if (Platform.isIOS) {
+      // for iOS phone only
+      if (await canLaunch(whatappURLIos)) {
+        await launch(whatappURLIos, forceSafariVC: false);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("whatsapp no installed")));
+      }
+    } else {
+      // android , web
+      if (await canLaunch(whatsappURlAndroid)) {
+        await launch(whatsappURlAndroid);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("whatsapp no installed")));
+      }
+    }
+  }
+
+  /// Connection init
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
-      print("Error Occurred: ${e.toString()} ");
+      if (kDebugMode) {
+        print("Error Occurred: ${e.toString()} ");
+      }
       return;
     }
     if (!mounted) {
@@ -403,6 +470,7 @@ class _FeedScreenState extends State<FeedScreen> {
     return _UpdateConnectionState(result);
   }
 
+  // ignore: non_constant_identifier_names
   Future<void> _UpdateConnectionState(ConnectivityResult result) async {
     if (result == ConnectivityResult.mobile ||
         result == ConnectivityResult.wifi) {
@@ -414,21 +482,21 @@ class _FeedScreenState extends State<FeedScreen> {
 
   void showStatus(ConnectivityResult result, bool status) {
     final snackBar = SnackBar(
-        duration: new Duration(seconds: 4),
-        content: Container(
-          child: new Row(
+        duration: const Duration(seconds: 4),
+        content: SizedBox(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              new Text(
+              Text(
                 status
                     ? "The connection has been re-established"
                     : "Your network connection has been interrupted",
-                style: TextStyle(
+                style: const TextStyle(
                     color: Palette.colorLight,
                     fontWeight: FontWeight.w400,
                     fontFamily: 'Prompt_Regular'),
               ),
-              new SvgPicture.asset(
+              SvgPicture.asset(
                 'assets/close.svg',
                 color: Palette.colorLight,
               ),
@@ -447,7 +515,12 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   //  Popup  Details
-  void DetailsPopup(String details, String quantite) {
+  // ignore: non_constant_identifier_names
+  void DetailsPopup(String details, String quantite, String number) {
+    if (kDebugMode) {
+      print(number);
+      print(numero);
+    }
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
@@ -465,35 +538,35 @@ class _FeedScreenState extends State<FeedScreen> {
             child: Center(
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Product details',
                     style: TextStyle(
                       fontFamily: 'Prompt_Bold',
                       fontSize: 24.0,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Text(
                         details,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Prompt_Regular',
                           fontSize: 18.0,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
 
                   // quantity of product
                   Row(
                     children: [
-                      Text(
+                      const Text(
                         'InStock: ',
                         style: TextStyle(
                           fontFamily: 'Prompt_Regular',
@@ -502,12 +575,12 @@ class _FeedScreenState extends State<FeedScreen> {
                       ),
                       Text(
                         quantite,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Prompt_Regular',
                           fontSize: 18.0,
                         ),
                       ),
-                      Text(
+                      const Text(
                         ' articles',
                         style: TextStyle(
                           fontFamily: 'Prompt_Regular',
@@ -516,30 +589,77 @@ class _FeedScreenState extends State<FeedScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   SizedBox(
                     height: 50.0,
                     width: double.infinity,
-                    child: OutlineButton(
-                      textColor: Palette.secondColor,
-                      color: Palette.secondColor,
-                      child: Text(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                            width: 1, color: Palette.secondColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        textStyle: const TextStyle(
+                          color: Palette.secondColor,
+                          // fontSize: 20,
+                        ),
+                        backgroundColor: Palette.colorLight,
+                        padding: const EdgeInsets.all(10),
+                      ),
+                      child: const Text(
                         "Close",
                         style: TextStyle(
                           fontSize: 20.0,
+                          color: Palette.secondColor,
                           fontFamily: 'Prompt_Medium',
                         ),
                       ),
                       onPressed: () async {
                         Navigator.of(context).pop();
                       },
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(15.0),
-                      ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+
+                  /// delete button if is user who had post product
+                  if (number == numero)
+                    SizedBox(
+                      height: 50.0,
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                              width: 0,
+                              color: Color.fromRGBO(254, 240, 240, 1)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          textStyle: const TextStyle(
+                            color: Color.fromRGBO(232, 38, 38, 1),
+                            // fontSize: 20,
+                          ),
+                          backgroundColor:
+                              const Color.fromRGBO(254, 240, 240, 1),
+                          padding: const EdgeInsets.all(10),
+                        ),
+                        child: const Text(
+                          "Delete",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Color.fromRGBO(232, 38, 38, 1),
+                            fontFamily: 'Prompt_Medium',
+                          ),
+                        ),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -548,6 +668,7 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
 // Buy Popup
+  // ignore: non_constant_identifier_names
   void BuyPopup(context) {
     showModalBottomSheet(
         context: context,
@@ -563,25 +684,142 @@ class _FeedScreenState extends State<FeedScreen> {
                 topRight: Radius.circular(30.0),
               ),
             ),
-            child: Center(
-              child: Column(
-                children: [
+            child: Column(
+
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child:
                   Text(
-                    'Welcome to basic',
+                    'Welcome to mokolo',
                     style: TextStyle(
                       fontFamily: 'Prompt_Bold',
                       fontSize: 24.0,
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    'Experience a new way of shopping with short videos feed. Just swipe for new items and if you found the one you like, tap buy now button to purchase it.',
-                    style: TextStyle(
-                      fontFamily: 'Prompt_Regular',
-                      fontSize: 18.0,
+
+                ),
+                const Spacer(),
+                const Text(
+                  '1- Swipe up and down to discover new articles.',
+                  style: TextStyle(
+                    fontFamily: 'Prompt_Regular',
+                    fontSize: 15.0,
+                  ),
+                ),
+                const SizedBox(height: 4,),
+                const Text(
+                  '2- Tap the Buy now button to place your order.',
+                  style: TextStyle(
+                    fontFamily: 'Prompt_Regular',
+                    fontSize: 15.0,
+                  ),
+                ),
+                const SizedBox(height: 4,),
+                const Text(
+                  '3- Enter your shipping details and pay.',
+                  style: TextStyle(
+                    fontFamily: 'Prompt_Regular',
+                    fontSize: 15.0,
+                  ),
+                ),
+                const Spacer(
+                  flex: 3,
+                ),
+                SizedBox(
+                  height: 40.0,
+                  width: double.infinity,
+                  child: RaisedButton(
+                    textColor: Colors.white,
+                    color: Palette.primaryColor,
+                    child: const Text(
+                      "Start",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontFamily: 'Prompt_Medium',
+                      ),
+                    ),
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const EnterNumberScreen())).then((value) {
+                        setState(() {});
+
+                        // Get.to(EnterNumberScreen(),
+                        //     transition: Transition.rightToLeftWithFade);
+                        // MaterialPageRoute(
+                        //     builder: (context) => EnterNumberScreen());
+                      });
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
                     ),
                   ),
-                  Spacer(
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  // ignore: non_constant_identifier_names
+  void ProfileUser(context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext bc) {
+          return Container(
+            height: MediaQuery.of(context).size.height * .30,
+            padding: const EdgeInsets.all(20.0),
+            decoration: const BoxDecoration(
+              color: Palette.colorLight,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
+            ),
+              child: Column(
+
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child:
+                     Text(
+                      'Welcome to mokolo',
+                      style: TextStyle(
+                        fontFamily: 'Prompt_Bold',
+                        fontSize: 24.0,
+                      ),
+                    ),
+
+                  ),
+                  const Spacer(),
+                  const Text(
+                    '1- Swipe up and down to discover new articles.',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Regular',
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  const SizedBox(height: 4,),
+                  const Text(
+                    '2- Tap the Buy now button to place your order.',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Regular',
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  const SizedBox(height: 4,),
+                  const Text(
+                    '3- Enter your shipping details and pay.',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Regular',
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  const Spacer(
                     flex: 3,
                   ),
                   SizedBox(
@@ -590,7 +828,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     child: RaisedButton(
                       textColor: Colors.white,
                       color: Palette.primaryColor,
-                      child: Text(
+                      child: const Text(
                         "Start",
                         style: TextStyle(
                           fontSize: 20.0,
@@ -598,28 +836,27 @@ class _FeedScreenState extends State<FeedScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        // await availableCameras().then((value) => Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => CameraScreen(
-                        //           cameras: value,
-                        //         ),
-                        //       ),
-                        //     ));
-                        //  Fermerture du popup
-                        // Navigator.of(context).pop();
-                        // Get.to(
-                        //   CameraScreen(cameras),
-                        // );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const EnterNumberScreen())).then((value) {
+                          setState(() {});
+
+                          // Get.to(EnterNumberScreen(),
+                          //     transition: Transition.rightToLeftWithFade);
+                          // MaterialPageRoute(
+                          //     builder: (context) => EnterNumberScreen());
+                        });
                       },
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(15.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
+
           );
         });
   }

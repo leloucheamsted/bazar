@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:bazar/Services/user.dart';
 import 'package:bazar/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../config/palette.dart';
@@ -18,6 +21,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   TextEditingController nametextController = TextEditingController();
   TextEditingController pseudocontroller = TextEditingController();
+  TextEditingController whatsappcontroller =TextEditingController();
   String lastStreet = "Douala";
   String choiceStreet = "Douala";
   String lastUsername = 'lelouche';
@@ -30,9 +34,10 @@ class _EditProfileState extends State<EditProfile> {
 
     setState(() {
       pseudocontroller.text = lastUsername;
-      nametextController.text = lastname;
+      nametextController.text =lastname;
+      whatsappcontroller.text="1234";
       choiceStreet = "Douala";
-      username = lastUsername;
+      username =lastUsername;
     });
 
     getdata();
@@ -49,7 +54,9 @@ class _EditProfileState extends State<EditProfile> {
         .then((value) {
       setState(() {
         pointlist = List.from(value.data()!["Liste_ville"]);
-        print(pointlist.length);
+        if (kDebugMode) {
+          print(pointlist.length);
+        }
       });
     });
   }
@@ -57,22 +64,33 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
           statusBarColor: Palette.primaryColor));
     }
     return Scaffold(
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: Palette.primaryColor,
+        centerTitle: true,
+        title: const Text(
+          'Edit profile',
+          style: TextStyle(
+            fontFamily: "Prompt_SemiBold",
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            color: Palette.colorLight,
+          ),
+        ),
+      ),
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          Container(
+          SizedBox(
               child: Column(
             children: [
-              Topbar(
-                  title: 'Edit profile',
-                  onpressed: () {
-                    Navigator.of(context).pop();
-                  }),
+
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 25, 15, 8),
                 child: SingleChildScrollView(
@@ -94,7 +112,9 @@ class _EditProfileState extends State<EditProfile> {
                           onChanged: (value) {
                             setState(() {
                               username = value;
-                              print(username);
+                              if (kDebugMode) {
+                                print(username);
+                              }
                             });
                           },
                           controller: pseudocontroller,
@@ -102,18 +122,18 @@ class _EditProfileState extends State<EditProfile> {
                           textAlign: TextAlign.start,
                           focusNode: FocusNode(),
                           validator: (value) {},
-                          style: TextStyle(
+                          style:const  TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
                           ),
-                          decoration: InputDecoration.collapsed(
+                          decoration:const InputDecoration.collapsed(
                             hintText: 'Username',
                             hintStyle: TextStyle(color: Palette.colorgray),
                           ),
                         ),
                       ),
 
-                      SizedBox(
+                  const     SizedBox(
                         height: 10,
                       ),
                       // Full Name
@@ -130,7 +150,9 @@ class _EditProfileState extends State<EditProfile> {
                           onChanged: (value) {
                             setState(() {
                               name = value;
-                              print(name);
+                              if (kDebugMode) {
+                                print(name);
+                              }
                             });
                           },
                           controller: nametextController,
@@ -138,17 +160,17 @@ class _EditProfileState extends State<EditProfile> {
                           textAlign: TextAlign.start,
                           focusNode: FocusNode(),
                           validator: (value) {},
-                          style: TextStyle(
+                          style:const  TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
                           ),
-                          decoration: InputDecoration.collapsed(
+                          decoration:const  InputDecoration.collapsed(
                             hintText: 'Full Name',
                             hintStyle: TextStyle(color: Palette.colorgray),
                           ),
                         ),
                       ),
-                      SizedBox(
+                  const     SizedBox(
                         height: 10,
                       ),
 
@@ -163,10 +185,10 @@ class _EditProfileState extends State<EditProfile> {
                           child: Row(
                             children: [
                               SvgPicture.asset('assets/Cameroon.svg'),
-                              SizedBox(
+                            const   SizedBox(
                                 width: 10,
                               ),
-                              Text(
+                           const    Text(
                                 'Cameroon',
                                 style: TextStyle(
                                   fontFamily: "Prompt_Regular",
@@ -175,7 +197,7 @@ class _EditProfileState extends State<EditProfile> {
                                   fontSize: 20,
                                 ),
                               ),
-                              Spacer(),
+                           const    Spacer(),
                               SvgPicture.asset(
                                 'assets/plus.svg',
                                 color: Palette.colorText,
@@ -185,7 +207,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
 
-                      SizedBox(
+                  const     SizedBox(
                         height: 10,
                       ),
                       // City
@@ -205,14 +227,14 @@ class _EditProfileState extends State<EditProfile> {
                               children: [
                                 Text(
                                   choiceStreet,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: "Prompt_Regular",
                                     fontWeight: FontWeight.w500,
                                     color: Palette.colorText,
                                     fontSize: 20,
                                   ),
                                 ),
-                                Spacer(),
+                             const    Spacer(),
                                 SvgPicture.asset(
                                   'assets/plus.svg',
                                   color: Palette.colorText,
@@ -221,6 +243,65 @@ class _EditProfileState extends State<EditProfile> {
                             ),
                           ),
                         ),
+                      ),
+
+                      const     SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            child: Container(
+                              height: 45,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                color: Palette.colorInput,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SvgPicture.asset('assets/Cameroon.svg'),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              height: 45,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Palette.colorInput,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: TextField(
+                                controller: whatsappcontroller,
+                                inputFormatters: <TextInputFormatter>[
+                                  // PhoneNumberFormatter(),
+                                  LengthLimitingTextInputFormatter(9),
+                                  FilteringTextInputFormatter.allow(RegExp(
+                                    "[^,.-]",
+                                  )),
+                                ],
+                               // onChanged: _onChanged_number,
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                  fontSize: 20.0,
+                                  fontFamily: 'Prompt_Regular',
+                                ),
+                                decoration: const InputDecoration.collapsed(
+                                    hintText: 'whatsapp number'),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -234,40 +315,49 @@ class _EditProfileState extends State<EditProfile> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(15),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
-                child: OutlineButton(
-                  textColor: Palette.colorText,
-                  color: Palette.secondColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    textStyle: const TextStyle(
+                      color: Palette.colorLight,
+                      fontSize: 20,
+                    ),
+                    padding: const EdgeInsets.all(5),
+                  ),
+                  // textColor: Palette.colorText,
+                  // color: Palette.secondColor,
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
                     child: Text(
                       "Edit",
                       style: TextStyle(
                         fontSize: 20.0,
+                        color: Palette.colorText,
                         fontFamily: 'Prompt_Medium',
                       ),
                     ),
                   ),
                   onPressed: () async {
-                    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       // behavior: SnackBarBehavior.floating,
                       backgroundColor: Palette.colorError,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.only(bottom: 0.0),
-                      duration: new Duration(seconds: 6),
-                      content: Container(
-                        child: new Row(
+                      duration: const Duration(seconds: 6),
+                      content: SizedBox(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            new Text(
+                            const Text(
                               "Username not available",
                               style: TextStyle(
                                   color: Palette.colorLight,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'Prompt_Regular'),
                             ),
-                            new SvgPicture.asset(
+                            SvgPicture.asset(
                               'assets/close.svg',
                               color: Palette.colorLight,
                             ),
@@ -277,9 +367,6 @@ class _EditProfileState extends State<EditProfile> {
                     ));
                     updateProfile();
                   },
-                  shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(15.0),
-                  ),
                 ),
               ),
             ),
@@ -290,10 +377,13 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void updateProfile() {
-    print('object');
+    if (kDebugMode) {
+      print('object');
+    }
   }
 
   // Popup List categories
+  // ignore: non_constant_identifier_names
   void PopupListCity() async {
     //  Cat();
 
@@ -313,7 +403,7 @@ class _EditProfileState extends State<EditProfile> {
                       onpressed: () {
                         Navigator.of(context).pop();
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Expanded(
@@ -326,7 +416,9 @@ class _EditProfileState extends State<EditProfile> {
                               Navigator.of(context).pop();
                               setState(() {
                                 choiceStreet = pointlist[index];
-                                print(choiceStreet);
+                                if (kDebugMode) {
+                                  print(choiceStreet);
+                                }
                               });
                             },
                             child: ItemVille(
@@ -334,7 +426,9 @@ class _EditProfileState extends State<EditProfile> {
                                 Pop: () {
                                   setState(() {
                                     choiceStreet = pointlist[index];
-                                    print(choiceStreet);
+                                    if (kDebugMode) {
+                                      print(choiceStreet);
+                                    }
                                     Navigator.of(context).pop(); // Close popup
                                   });
                                 }),

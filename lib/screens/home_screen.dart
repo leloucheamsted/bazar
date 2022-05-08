@@ -5,7 +5,6 @@ import 'package:bazar/config/palette.dart';
 import 'package:bazar/widgets/button.dart';
 import 'package:bazar/widgets/loading_card.dart';
 import 'package:bazar/widgets/testFire.dart';
-import 'package:bazar/widgets/testProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

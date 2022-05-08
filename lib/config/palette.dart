@@ -16,3 +16,4 @@ class Palette {
   static const Color colorError = Color.fromRGBO(212, 67, 51, 1);
   static const Color colorPayBar = Color.fromRGBO(223, 226, 230, 1);
 }
+// linear-gradient(270deg, rgba(219, 219, 219, 0.05) 0%, #E6E6E6 100%);
