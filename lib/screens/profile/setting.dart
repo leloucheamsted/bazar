@@ -7,17 +7,36 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart';
 
 
 import '../../Services/user.dart';
+class SettingsProfile extends StatefulWidget {
 
-class SettingsProfile extends StatelessWidget {
-  const SettingsProfile({Key? key}) : super(key: key);
+  const SettingsProfile({required this.name,required this.username,required this.whatsapp,Key? key}) : super(key: key);
+  final String? name;
+  final String? username;
+  final String whatsapp;
+  @override
+  _SettingsProfileState createState() => _SettingsProfileState();
+}
 
+class _SettingsProfileState extends State<SettingsProfile>{
+ late String name=widget.name!;
+ late String username=widget.username!;
+  @override
+  void initState(){
+
+    if (kDebugMode) {
+      print(widget.name);
+      print(widget.username);
+    }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
           statusBarColor: Palette.primaryColor));
@@ -25,11 +44,11 @@ class SettingsProfile extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         Navigator.of(context).pop();
-        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarIconBrightness: Brightness.dark,
-            statusBarIconBrightness:
-                Brightness.dark, // dark text for status bar
+            statusBarBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.dark, // dark text for status bar
             statusBarColor: Colors.white));
 
         return false;
@@ -86,8 +105,7 @@ class SettingsProfile extends StatelessWidget {
                               ItemSettings(
                                   settings: 'Edit my profile',
                                   Pop: () {
-                                    Get.to(  const EditProfile(),
-
+                                    Get.to(   EditProfile(name:widget.name,username: widget.username,whatsapp: widget.whatsapp,),
                                         transition:
                                             Transition.rightToLeftWithFade);
                                   }),

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 //import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoViewPage extends StatefulWidget {
   const VideoViewPage({Key? key, required this.path}) : super(key: key);
@@ -63,10 +64,22 @@ class _VideoViewPageState extends State<VideoViewPage> {
             OverflowBox(
               maxWidth: double.infinity,
               child: _controller.value.isInitialized
-                  ? AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
-                    )
+                  ? VisibilityDetector(
+                key: const Key("unique key"),
+                onVisibilityChanged: (VisibilityInfo info) {
+                  debugPrint(
+                      "${info.visibleFraction} of my widget is visible");
+                  if (info.visibleFraction == 0) {
+                    _controller?.pause();
+                  } else {
+                    _controller?.play();
+                  }
+                },
+                    child: AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
+                      ),
+                  )
                   : Container(),
             ),
             Positioned(

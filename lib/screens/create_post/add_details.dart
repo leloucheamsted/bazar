@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -14,6 +15,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../Services/user.dart';
 
 class AddDetailsScreen extends StatefulWidget {
   final String path;
@@ -131,7 +134,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         // height: 200,
                         alignment: Alignment.topLeft,
                         decoration: BoxDecoration(
-                          color: Palette.colorgray,
+                          color: Palette.colorInput,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Stack(children: [
@@ -184,7 +187,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         height: 50,
                         alignment: Alignment.topLeft,
                         decoration: BoxDecoration(
-                          color: Palette.colorgray,
+                          color: Palette.colorInput,
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Center(
@@ -220,7 +223,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                       height: 50,
                       alignment: Alignment.topLeft,
                       decoration: BoxDecoration(
-                        color: Palette.colorgray,
+                        color: Palette.colorInput,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(
@@ -260,7 +263,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                               'FCFA',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Colors.grey,
+                                color: Palette.colorInput,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: "Prompt_Regular",
                               ),
@@ -283,7 +286,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                       height: 50,
                       alignment: Alignment.topLeft,
                       decoration: BoxDecoration(
-                        color: Palette.colorgray,
+                        color: Palette.colorInput,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(children: [
@@ -413,8 +416,15 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
 
 // Fonction d'ajout de la video sur firebase et d'ajout de la publication
   Future uploadStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? user = prefs.getString('name');
+    // context.read<User>().getcurentuser();
+    // final prefs = await SharedPreferences.getInstance();
+    // String? user = prefs.getString('name');
+    if(kDebugMode){
+      print(context.read<User>().username);
+      print(context.read<User>().name);
+      print(context.read<User>().whatsapp);
+      print(context.read<User>().uiud);
+    }
     var id = Uuid().v4();
     final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
     final Directory _appDocDir = await getApplicationDocumentsDirectory();
@@ -423,43 +433,51 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
     await _flutterFFmpeg
         .execute('-i ${widget.path} -vf fps=5,scale=450:-1 -t 3 $outPath');
     try {
-      await storage.ref('videos/lelouche').putFile(
+      await storage.ref('videos/$id').putFile(
             File(widget.path),
           );
+      await storage.ref('Gif/$id').putFile(
+        File(outPath),
+      );
       String downloadURL = await firebase_storage.FirebaseStorage.instance
-          .ref('videos/lelouche')
+          .ref('videos/$id')
           .getDownloadURL();
-      debugPrint(outPath);
-      await storage.ref('Gif/lelouche').putFile(
-            File(outPath),
-          );
+      // debugPrint(outPath);
+      //
       String downloadGifURL = await firebase_storage.FirebaseStorage.instance
-          .ref('Gif/lelouche')
+          .ref('Gif/$id')
           .getDownloadURL();
-      var data = [
+      if(kDebugMode){
+        print(downloadGifURL);
+        print(downloadURL);
+      }
+      //
+      final data =
         {
-          "numeroVendeur": '$prefs.getString("number")',
+          "numeroVendeur": context.read<User>().whatsapp,
           "prix": price,
-          "nom": "$prefs.getString('name')",
+          "nom":  context.read<User>().name,
           "video_title": "video_title",
           "Category": choiceCategory,
           "likes": '0',
           "details": details!,
-          "profile":
-              'https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/cabraule.jpg?alt=media&token=d43ea864-6f86-4b6f-b2cd-385ffb65b7b5',
+          "whatsapp":context.read<User>().whatsapp,
+          "profile": context.read<User>().imgUrl,
           "quantite": NbrePiece.toString(),
           "url": downloadURL,
-          "username": "cabraule",
+          "username":  context.read<User>().username,
           'gifUrl': downloadGifURL
-        }
-      ];
-      await FirebaseFirestore.instance.collection("Videos").add(data.first);
+        };
+      await FirebaseFirestore.instance.collection("Videos").doc().set(data);
       await FirebaseFirestore.instance
           .collection('Users')
-          .doc('lelouche')
+          .doc('e0CPkvCtazKCgTUAWP1U')
           .update({
         'publication': FieldValue.arrayUnion([downloadGifURL])
       });
+      if(kDebugMode){
+        print("Your publication has added with succes");
+      }
     } catch (e) {
       if (kDebugMode) {
         print(e);

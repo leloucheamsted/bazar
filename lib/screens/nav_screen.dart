@@ -85,7 +85,7 @@ class _NavScreenState extends State<NavScreen> {
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.dark,
@@ -152,14 +152,14 @@ class _NavScreenState extends State<NavScreen> {
                       minWidth: 40,
                       onPressed: () async {
                         SharedPreferences prefs = await SharedPreferences.getInstance();
-                        int index =  prefs.getInt('_counter')?? 0;
+                        String index =  prefs.getString('counter')?? "0";
                         if(kDebugMode){
                           print('object');
                           print(index);
 
                         }
                        // int c = await counter();
-                        if (index < 1) {
+                        if (index != "1") {
                           WelcomePopup(context);
                         } else {
                           try {

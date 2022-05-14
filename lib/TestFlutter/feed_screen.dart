@@ -41,6 +41,8 @@ class _FeedScreenState extends State<FeedScreen> {
   final locator = GetIt.instance;
   final feedViewModel = GetIt.instance<FeedViewModel>();
   late int position;
+  CarouselController? nextElemnet = CarouselController();
+
   @override
   void initState() {
     feedViewModel.loadVideo(0);
@@ -91,63 +93,89 @@ class _FeedScreenState extends State<FeedScreen> {
       print(feedViewModel.videos.length.toString());
     }
 
-    return Scaffold(
-      backgroundColor: Palette.colorLight,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4.0, 0, 2, 0),
-              child: Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
-                    child: Text(
-                      ' Explore',
-                      style: TextStyle(
-                        fontFamily: "Prompt_SemiBold",
-                        fontWeight: FontWeight.w600,
-                        color: Palette.colorText,
-                        fontSize: 25,
+    return GestureDetector(
+      onPanUpdate: (details) {
+        print("Updated############################");
+      },
+      child: Scaffold(
+        backgroundColor: Palette.colorLight,
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4.0, 0, 2, 0),
+                child: Row(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+                      child: Text(
+                        ' Explore',
+                        style: TextStyle(
+                          fontFamily: "Prompt_SemiBold",
+                          fontWeight: FontWeight.w600,
+                          color: Palette.colorText,
+                          fontSize: 25,
+                        ),
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  Button(
-                      iconImage: 'assets/chrono.svg',
-                      // iconSize: 30,
-                      onPressed: () {}),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-              child: CarouselSlider.builder(
-                itemCount: feedViewModel.videos.length,
-                itemBuilder:
-                    (BuildContext context, int itemIndex, int pageViewIndex) {
-                  itemIndex = itemIndex % (feedViewModel.videos.length);
-                  // return Text(feedViewModel.videos[itemIndex].nom);
-                  return videoCard(feedViewModel.videos[itemIndex]);
-                },
-                options: CarouselOptions(
-                  viewportFraction: 1,
-                  initialPage: 0,
-                  height: MediaQuery.of(context).size.height,
-                  enableInfiniteScroll: false,
-                  reverse: false,
-                  autoPlay: false,
-                  enlargeCenterPage: true,
-                  onPageChanged: (index, reason) {
-                    index = index % (feedViewModel.videos.length);
-                    feedViewModel.changeVideo(index);
-                  },
-                  scrollDirection: Axis.vertical,
+                    const Spacer(),
+                    Button(
+                        iconImage: 'assets/chrono.svg',
+                        // iconSize: 30,
+                        onPressed: () {}),
+                  ],
                 ),
               ),
-            ),
-          ],
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                child: CarouselSlider.builder(
+                  itemCount: feedViewModel.videos.length,
+                  itemBuilder:
+                      (BuildContext context, int itemIndex, int pageViewIndex) {
+                    itemIndex = itemIndex % (feedViewModel.videos.length);
+                    // return Text(feedViewModel.videos[itemIndex].nom);
+                    return GestureDetector(
+                     onVerticalDragUpdate: (details) {
+                       if (details.delta.direction > 0) {
+                         if(pageViewIndex==0){
+
+                         }
+                         else{
+                           nextElemnet?.previousPage(duration:const Duration(milliseconds: 2000),curve: Curves.linearToEaseOut);
+                         }
+                         print("################################");
+                         print(details);
+                       }
+                       else{
+                         nextElemnet?.nextPage(duration:const Duration(milliseconds: 2000),curve: Curves.linearToEaseOut);
+                         feedViewModel.changeVideo(pageViewIndex+1);
+                          // nextElemnet?.animateToPage(pageViewIndex+1,curve: Curves.easeInToLinear);
+
+                       }
+                     },
+                    child: videoCard(feedViewModel.videos[itemIndex]));
+                  },
+                  carouselController: nextElemnet!,
+                  options: CarouselOptions(
+                    viewportFraction: 1,
+                    initialPage: 0,
+                    height: MediaQuery.of(context).size.height,
+                    enableInfiniteScroll: false,
+                    reverse: false,
+                    autoPlay: false,
+                   
+                    enlargeCenterPage: true,
+                    onPageChanged: (index, reason) {
+                      index = index % (feedViewModel.videos.length);
+                      feedViewModel.changeVideo(index);
+                    },
+                    scrollDirection: Axis.vertical,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -431,9 +459,9 @@ class _FeedScreenState extends State<FeedScreen> {
   Future<void> openwhatsapp(Video video) async {
     var whatsapp = "+" + video.numeroVendeur;
     var whatsappURlAndroid =
-        "whatsapp://send?phone=" + whatsapp + "&text=*hello*\n How are you?";
+        "whatsapp://send?phone=" + whatsapp + "&text=Hi, I just saw your article on Mokole app and i am interested in placing an order\n\n\n Bonjour, je viens de voir votre article sur l'application Mokolo et je suis intéressé pour passer une commande";
     var whatappURLIos =
-        "https://wa.me/$whatsapp?text=${Uri.parse("*hello*\n How are you?")}";
+        "https://wa.me/$whatsapp?text=${Uri.parse("Hi, I just saw your article on Mokole app and i am interested in placing an order\n\n\n Bonjour, je viens de voir votre article sur l'application Mokolo et je suis intéressé pour passer une commande")}";
     if (Platform.isIOS) {
       // for iOS phone only
       if (await canLaunch(whatappURLIos)) {

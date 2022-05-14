@@ -8,11 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:get/get.dart';
 import '../../config/palette.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key}) : super(key: key);
+  final String? name;
+  final String? username;
+  final String? whatsapp;
+  const EditProfile({required this.name,required this.username,required this.whatsapp, Key? key}) : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -24,8 +27,9 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController whatsappcontroller =TextEditingController();
   String lastStreet = "Douala";
   String choiceStreet = "Douala";
-  String lastUsername = 'lelouche';
-  String lastname = "amsted";
+  late String lastUsername = widget.name!;
+  late String lastname = widget.username!;
+  late String lastWhatsapp=widget.whatsapp!;
   String name = "";
   String username = "";
   @override
@@ -33,11 +37,13 @@ class _EditProfileState extends State<EditProfile> {
     // TODO: implement initState
 
     setState(() {
+
       pseudocontroller.text = lastUsername;
       nametextController.text =lastname;
-      whatsappcontroller.text="1234";
+      whatsappcontroller.text=lastWhatsapp;
       choiceStreet = "Douala";
-      username =lastUsername;
+      // lastname=context.watch<User>().name;
+      // lastUsername =context.watch<User>().username;
     });
 
     getdata();
@@ -63,6 +69,11 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    setState((){
+      lastUsername=context.watch<User>().username;
+      lastname=context.watch<User>().name;
+    });
+
     if (Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarIconBrightness: Brightness.dark,
@@ -127,7 +138,7 @@ class _EditProfileState extends State<EditProfile> {
                             fontFamily: 'Prompt_Regular',
                           ),
                           decoration:const InputDecoration.collapsed(
-                            hintText: 'Username',
+                            hintText: 'Full Name',
                             hintStyle: TextStyle(color: Palette.colorgray),
                           ),
                         ),
