@@ -40,7 +40,7 @@ class _NavScreenState extends State<NavScreen> {
         }
       },
     ),
-    ProfileScreen(isUser: true),
+    const ProfileScreen(isUser: true),
   ]; // to store nested tabs
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = const FeedScreen(); // Our first view in viewport

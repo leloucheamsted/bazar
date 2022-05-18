@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.dark,
@@ -56,7 +56,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         statusBarColor: Colors.white));
     List<DocumentSnapshot> items;
     return Scaffold(
-      body: Container(
+      body:
+      Container(
         padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
         color: Colors.white,
         child: Column(children: [
@@ -67,15 +68,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 height: 90,
                 width: 90,
-                decoration:  BoxDecoration(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
                   color: Palette.colorInput,
                   image: DecorationImage(
-                      image: NetworkImage(
-                          context.watch<User>().imgUrl
-                      ),
+                      image: NetworkImage(context.watch<User>().imgUrl),
                       fit: BoxFit.cover),
                   shape: BoxShape.circle,
                 ),
+                child: (widget.isUser ==true)! ?
+                    GestureDetector(
+                  onTap: (){
+
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        color: Colors.black12,
+                        alignment: Alignment.center,
+                        height: 20,
+                        width: 100,
+                        child: const Text(
+                          ''
+                          'Edit',
+                          style: TextStyle(
+                              color: Palette.colorLight,
+                              fontFamily: "Prompt_Regular",
+                              fontWeight: FontWeight.w400,
+                              fontSize: 10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ) : null,
               ),
               const SizedBox(
                 width: 20,
@@ -85,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.read<User>().name?? '',
+                    context.read<User>().name ?? '',
                     style: const TextStyle(
                       fontFamily: "Prompt_Regular",
                       fontWeight: FontWeight.w400,
@@ -111,13 +138,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (widget.isUser)
                 InkWell(
                   onTap: (() {
-                    print('click');
+                    if (kDebugMode) {
+                      print('click');
+                    }
 
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SettingsProfile( name: context.watch<User>().name,username: context.watch<User>().username, whatsapp: context.watch<User>().whatsapp,
-                            )));
+                            builder: (context) => SettingsProfile(
+                                  name: context.watch<User>().name,
+                                  username: context.watch<User>().username,
+                                  whatsapp: context.watch<User>().whatsapp,
+                                )));
                   }),
                   borderRadius: BorderRadius.circular(30),
                   child: Padding(
@@ -142,11 +174,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 // Liste de publication
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
-                .collection("Users").doc("e0CPkvCtazKCgTUAWP1U")
+                .collection("Users")
+                .doc("e0CPkvCtazKCgTUAWP1U")
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return  Text(
+                return Text(
                     'Error in receiving trip list publication: ${snapshot.error}');
               }
               switch (snapshot.connectionState) {
@@ -161,9 +194,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     print("Stream has started but not finished");
                   }
 
-                 List<String>? list;
+                  List<String>? list;
                   if (snapshot.hasData) {
-                   list = List<dynamic>.from(snapshot.data!['publication'])
+                    list = List<dynamic>.from(snapshot.data!['publication'])
                         .cast<String>();
                   }
 
@@ -177,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shrinkWrap: true,
                           primary: false,
                           gridDelegate:
-                          const  SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             childAspectRatio: 9 / 16,
                             crossAxisCount: 3,
                             mainAxisSpacing: 1.5,
@@ -189,15 +222,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
               }
-              return const  SizedBox(
-                child:  Text("No trip publication found."),
+              return const SizedBox(
+                child: Text("No trip publication found."),
               );
             },
           )
         ]),
-
       ),
     );
   }
 }
-

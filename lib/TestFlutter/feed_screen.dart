@@ -7,6 +7,7 @@ import 'dart:math' as math;
 // import 'package:bazar/screens/PayProcess/buy_process1.dart';
 import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:cached_video_player/cached_video_player.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +22,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/otp/otp1.dart';
 import '../widgets/button.dart';
+import '../widgets/card_gif.dart';
 import '../widgets/profile_card.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -144,8 +146,11 @@ class _FeedScreenState extends State<FeedScreen> {
                          else{
                            nextElemnet?.previousPage(duration:const Duration(milliseconds: 2000),curve: Curves.linearToEaseOut);
                          }
-                         print("################################");
-                         print(details);
+                         if (kDebugMode) {
+                           print("################################");
+                           print(details);
+
+                         }
                        }
                        else{
                          nextElemnet?.nextPage(duration:const Duration(milliseconds: 2000),curve: Curves.linearToEaseOut);
@@ -265,7 +270,7 @@ class _FeedScreenState extends State<FeedScreen> {
                             padding: const EdgeInsets.all(8),
                             child: GestureDetector(
                               onTap: (){
-                                ProfileUser(context);
+                                profileUser(video);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -695,7 +700,7 @@ class _FeedScreenState extends State<FeedScreen> {
         });
   }
 
-// Buy Popup
+/// Buy Popup
   // ignore: non_constant_identifier_names
   void BuyPopup(context) {
     showModalBottomSheet(
@@ -798,7 +803,8 @@ class _FeedScreenState extends State<FeedScreen> {
         context: context,
         backgroundColor: Colors.transparent,
         builder: (BuildContext bc) {
-          return Container(
+          return
+            Container(
             height: MediaQuery.of(context).size.height * .30,
             padding: const EdgeInsets.all(20.0),
             decoration: const BoxDecoration(
@@ -888,4 +894,142 @@ class _FeedScreenState extends State<FeedScreen> {
           );
         });
   }
+
+
+  /// Widget profile user who is post article
+  void profileUser(Video video) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext bc)
+    {
+      return
+        Container(
+          height: MediaQuery.of(context).size.height*0.8,
+          decoration: const BoxDecoration(
+            color: Palette.colorLight,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              topRight: Radius.circular(15.0),
+            ),
+          ),
+          child: Column(children: [
+
+            /// Top bar
+            Container(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(children: [
+                Container(
+                  height: 90,
+                  width: 90,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    color: Palette.colorInput,
+                    image: DecorationImage(
+                        image: NetworkImage(video.profile),
+                        fit: BoxFit.cover),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      video.nom ?? '',
+                      style: const TextStyle(
+                        fontFamily: "Prompt_Regular",
+                        fontWeight: FontWeight.w400,
+                        fontSize: 18,
+                        color: Color.fromRGBO(22, 23, 34, 1),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      video.username ?? '',
+                      style: const TextStyle(
+                        fontFamily: "Prompt_SemiBold",
+                        fontWeight: FontWeight.w400,
+                        fontSize: 18,
+                        color: Palette.colorText,
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+              ]),
+            ),
+
+            // Dividor
+            const Divider(),
+
+// Liste de publication
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("Users")
+                  .doc("e0CPkvCtazKCgTUAWP1U")
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text(
+                      'Error in receiving trip list publication: ${snapshot
+                          .error}');
+                }
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return const Text('Not connected to the Stream or null');
+
+                  case ConnectionState.waiting:
+                    return const Text('Awaiting for interaction');
+
+                  case ConnectionState.active:
+                    if (kDebugMode) {
+                      print("Stream has started but not finished");
+                    }
+
+                    List<String>? list;
+                    if (snapshot.hasData) {
+                      list = List<dynamic>.from(snapshot.data!['publication'])
+                          .cast<String>();
+                    }
+
+                    return Expanded(
+                      child: MediaQuery.removeViewPadding(
+                        context: context,
+                        removeTop: true,
+                        child: GridView.builder(
+                            itemCount: list!.length,
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            primary: false,
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              childAspectRatio: 9 / 16,
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 1.5,
+                              crossAxisSpacing: 1.5,
+                            ),
+                            itemBuilder: (BuildContext, index) {
+                              return CardGif(urlGif: list![index]);
+                            }),
+                      ),
+                    );
+                }
+                return const SizedBox(
+                  child: Text("No trip publication found."),
+                );
+              },
+            )
+          ]),
+        );
+    });
+}
+
+
 }
