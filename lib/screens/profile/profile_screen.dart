@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.read<User>().name ?? '',
+                    Provider.of<User>(context, listen: true).name ?? '',
                     style: const TextStyle(
                       fontFamily: "Prompt_Regular",
                       fontWeight: FontWeight.w400,
@@ -123,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: 10,
                   ),
                   Text(
-                    context.read<User>().username ?? '',
+                    Provider.of<User>(context, listen: true).username ?? '',
                     style: const TextStyle(
                       fontFamily: "Prompt_SemiBold",
                       fontWeight: FontWeight.w400,
@@ -145,9 +145,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SettingsProfile(
-                                  name: context.watch<User>().name,
-                                  username: context.watch<User>().username,
-                                  whatsapp: context.watch<User>().whatsapp,
+                                  name: context.read<User>().name,
+                                  username: context.read<User>().username,
+                                  whatsapp: context.read<User>().whatsapp,
                                 )));
                   }),
                   borderRadius: BorderRadius.circular(30),
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection("Users")
-                .doc("e0CPkvCtazKCgTUAWP1U")
+                .doc(context.read<User>().uiud)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {

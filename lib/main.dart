@@ -1,4 +1,3 @@
-
 import 'package:bazar/Services/user.dart';
 import 'package:bazar/service_locator.dart';
 import 'package:camera/camera.dart';
@@ -31,14 +30,19 @@ void main() async {
   //   kReleaseMode ? null : const RxSharedPreferencesDefaultLogger(),
   // );
   runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-          create:(_)=> User(name: 'name', imgUrl: 'imgUrl', username: 'username', whatsapp: 'whatsapp',uiud: 'uiud'),
-          )
-        ],
-          child:MyApp(),
-),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => User(
+              name: 'name',
+              imgUrl: 'imgUrl',
+              username: 'username',
+              whatsapp: 'whatsapp',
+              uiud: 'uiud'),
+        )
+      ],
+      child: MyApp(),
+    ),
   );
 }
 
@@ -48,8 +52,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return
-      GetMaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,

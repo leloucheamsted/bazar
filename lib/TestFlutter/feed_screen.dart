@@ -426,8 +426,9 @@ class _FeedScreenState extends State<FeedScreen> {
                               if (kDebugMode) {
                                 print("open whatsapp");
                               }
-                              //  isInstalled();
-                              openwhatsapp(video);
+                              //share();
+                              // isInstalled();
+                              //openwhatsapp(video);
                               // Navigator.push(
                               //     context,
                               //     MaterialPageRoute(
@@ -460,13 +461,22 @@ class _FeedScreenState extends State<FeedScreen> {
     await WhatsappShare.share(
       text: 'Whatsapp share text',
       linkUrl: 'https://flutter.dev/',
-      phone: '911234567890',
+      phone: '+237682421795',
     );
   }
 
   Future<void> isInstalled() async {
+    // verify if whatsapp is installed
     final val = await WhatsappShare.isInstalled();
-    print('Whatsapp is installed: $val');
+
+    if (val == true) {
+      // if whatsapp is install
+      //share content of message
+      share();
+    } else {
+      // else
+      print("whatsapp is not installed");
+    }
   }
 
   ///  Popup Achat du produit

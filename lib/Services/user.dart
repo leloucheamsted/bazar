@@ -1,8 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+
+import '../config/palette.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../config/palette.dart';
 
 class User with ChangeNotifier {
   User(
@@ -73,10 +79,18 @@ class User with ChangeNotifier {
     }
     users
         .doc(uuid)
-        .update(
-            {'name': name, 'username': '@' + username, 'whatsapp': whatsapp})
-        .then((value) => print("User Updated"))
+        .update({
+          'name': name,
+          'username': '@' + username,
+          'whatsapp': "+237" + whatsapp
+        })
+        .then((value) => {
+              print("User Updated"),
+              getcurentuser(),
+            })
         .catchError((error) => print("Failed to update user: $error"));
+    getcurentuser();
+    notifyListeners();
   }
 
   void main() {

@@ -114,7 +114,8 @@ class _SettingsProfileState extends State<SettingsProfile> {
                                           name: widget.name,
                                           username:
                                               widget.username!.substring(1),
-                                          whatsapp: widget.whatsapp,
+                                          whatsapp:
+                                              widget.whatsapp.substring(4),
                                         ),
                                         transition:
                                             Transition.rightToLeftWithFade);

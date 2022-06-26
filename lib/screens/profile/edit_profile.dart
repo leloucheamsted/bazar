@@ -5,11 +5,13 @@ import 'package:bazar/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+// import 'package:get/get.dart';
 import '../../config/palette.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class EditProfile extends StatefulWidget {
   final String? name;
@@ -32,11 +34,12 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController whatsappcontroller = TextEditingController();
   String lastStreet = "Douala";
   String choiceStreet = "Douala";
-  late String lastUsername = widget.name!;
-  late String lastname = widget.username!;
+  late String lastUsername = widget.username!;
+  late String lastname = widget.name!;
   late String lastWhatsapp = widget.whatsapp!;
   String name = "";
   String username = "";
+  bool isValidName = true, isValidUsername = true, isValidWhatsapp = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -125,13 +128,18 @@ class _EditProfileState extends State<EditProfile> {
                         child: TextFormField(
                           onChanged: (value) {
                             setState(() {
-                              username = value;
-                              if (kDebugMode) {
-                                print(username);
+                              name = value;
+                              if (name.length > 2 &&
+                                  name.toLowerCase() != "mokolo") {
+                                isValidName = true;
+                                print(isValidName);
+                              } else {
+                                isValidName = false;
+                                print(isValidName);
                               }
                             });
                           },
-                          controller: pseudocontroller,
+                          controller: nametextController,
                           autocorrect: false,
                           textAlign: TextAlign.start,
                           validator: (value) {},
@@ -162,13 +170,18 @@ class _EditProfileState extends State<EditProfile> {
                         child: TextFormField(
                           onChanged: (value) {
                             setState(() {
-                              name = value;
-                              if (kDebugMode) {
-                                print(name);
+                              username = value;
+                              if (username.length > 2 &&
+                                  username.toLowerCase() != "mokolo") {
+                                isValidUsername = true;
+                                print(isValidUsername);
+                              } else {
+                                isValidUsername = false;
+                                print(isValidUsername);
                               }
                             });
                           },
-                          controller: nametextController,
+                          controller: pseudocontroller,
                           autocorrect: false,
                           textAlign: TextAlign.start,
                           validator: (value) {},
@@ -294,6 +307,15 @@ class _EditProfileState extends State<EditProfile> {
                               ),
                               child: TextField(
                                 controller: whatsappcontroller,
+                                onChanged: (value) {
+                                  if (value.length == 9 && value[0] == "6") {
+                                    isValidWhatsapp = true;
+                                    print(isValidWhatsapp);
+                                  } else {
+                                    isValidWhatsapp = false;
+                                    print(isValidWhatsapp);
+                                  }
+                                },
                                 inputFormatters: <TextInputFormatter>[
                                   // PhoneNumberFormatter(),
                                   LengthLimitingTextInputFormatter(9),
@@ -354,13 +376,51 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   onPressed: () async {
+                    print(isValidName.toString() +
+                        isValidUsername.toString() +
+                        isValidWhatsapp.toString());
+                    String info = "Your information is being modified...";
                     if (lastUsername == pseudocontroller.text &&
                         lastname == nametextController.text &&
                         whatsappcontroller.text == lastWhatsapp) {
-                      print("Les informations utilisateurs sont deja a jour");
+                      SnackPopup("Your information is already up to date ",
+                          Palette.primaryColor);
                     } else {
-                      print(
-                          "Les informations utilisateurs seront mises a jours");
+                      if (isValidName == true &&
+                          isValidUsername == true &&
+                          isValidWhatsapp == true) {
+                        SnackPopup(info, Palette.primaryColor);
+                        await uploadInfo().whenComplete(() => {
+                              info =
+                                  "Your information has been successfully updated",
+                              SnackPopup(info, Palette.primaryColor)
+                            });
+                        // call service function
+                      } else if (isValidName == false &&
+                          isValidUsername == false &&
+                          isValidWhatsapp == true) {
+                        SnackPopup("The name and username are incorrect",
+                            Palette.colorError);
+                      } else if (isValidName == false &&
+                          isValidUsername == false &&
+                          isValidWhatsapp == false) {
+                        SnackPopup("The form is incorrect", Palette.colorError);
+                      } else if (isValidName == true &&
+                          isValidUsername == true &&
+                          isValidWhatsapp == false) {
+                        SnackPopup("Please enter a correct whatsapp number",
+                            Palette.colorError);
+                      } else if (isValidName == false &&
+                          isValidUsername == true &&
+                          isValidWhatsapp == true) {
+                        SnackPopup(
+                            "Please enter a correct  name", Palette.colorError);
+                      } else if (isValidName == true &&
+                          isValidUsername == false &&
+                          isValidWhatsapp == true) {
+                        SnackPopup("Please enter a correct username",
+                            Palette.colorError);
+                      }
                     }
                     if (kDebugMode) {
                       print(lastname);
@@ -370,29 +430,6 @@ class _EditProfileState extends State<EditProfile> {
                       print(pseudocontroller.text);
                       print(whatsappcontroller.text);
                     }
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      // behavior: SnackBarBehavior.floating,
-                      backgroundColor: Palette.colorError,
-                      duration: const Duration(seconds: 6),
-                      content: SizedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            const Text(
-                              "Username not available",
-                              style: TextStyle(
-                                  color: Palette.colorLight,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Prompt_Regular'),
-                            ),
-                            SvgPicture.asset(
-                              'assets/close.svg',
-                              color: Palette.colorLight,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ));
                   },
                 ),
               ),
@@ -401,6 +438,44 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
     );
+  }
+
+// Snack Bar error show
+  void SnackPopup(String msg, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      // behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      duration: const Duration(seconds: 6),
+      content: SizedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              msg,
+              style: const TextStyle(
+                  color: Palette.colorLight,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Prompt_Regular'),
+            ),
+            SvgPicture.asset(
+              'assets/close.svg',
+              color: Palette.colorLight,
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
+// Upload user info
+  Future<void> uploadInfo() async {
+    // call service providr function
+    Provider.of<User>(context, listen: false).updateUserInfo(
+        nametextController.text,
+        pseudocontroller.text,
+        whatsappcontroller.text);
+    context.read<User>().getcurentuser();
+    //eturn false;
   }
 
   // Popup List categories
