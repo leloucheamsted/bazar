@@ -84,7 +84,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
         visibilitySucces = false;
       } else {
         isValid = true;
-        if (value == "basic" || value == "Basic" || value == "BASIC") {
+        if (value == "mokolo" || value == "Mokolo" || value == "MOKOLO") {
           visibilityError = true;
           visibilitySucces = false;
         } else {

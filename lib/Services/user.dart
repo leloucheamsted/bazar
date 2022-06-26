@@ -4,10 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
-import '../data/user.dart';
-
-class User with ChangeNotifier{
-  User({required this.name,required this.imgUrl,required this.username,required this.whatsapp,required this.uiud});
+class User with ChangeNotifier {
+  User(
+      {required this.name,
+      required this.imgUrl,
+      required this.username,
+      required this.whatsapp,
+      required this.uiud});
 
   String name;
   String username;
@@ -15,41 +18,74 @@ class User with ChangeNotifier{
   String imgUrl;
   String uiud;
 
-
   // final  User  _user=  User(name: 'name', imgUrl: 'imgUrl', username: 'username', whatsapp: 'whatsapp');
-  var datas={};
-
+  var datas = {};
+  CollectionReference users = FirebaseFirestore.instance.collection('Users');
   // User get user => _user;
 
- void getcurentuser() async {
+  void getcurentuser() async {
+    dynamic data;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String uuid =  prefs.getString('uuid')?? '';
-    if(kDebugMode){
+    String uuid = prefs.getString('uuid') ?? '';
+    if (kDebugMode) {
       print(uuid);
+      print(uiud.length);
     }
-      if(uuid.length>1){
-        await FirebaseFirestore.instance.collection("Users").doc("e0CPkvCtazKCgTUAWP1U").get().then((event) {
-          // for (var doc in event.docs) {
-           name=event['name'];
-            username=event['username'];
-            whatsapp=event['whatsapp'];
-            imgUrl=event['avatarUrl'];
-            uiud=event['uiud'];
-            print(name);
-            print(username);
-            print(whatsapp);
-            print(imgUrl);
-            print(uiud);
-        //  }
-        });
-        notifyListeners();
-      }
+    if (uuid.length > 1) {
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(uuid)
+          .get()
+          .then((DocumentSnapshot event) {
+        if (event.exists) {
+          data = event.data();
+          print('Document data: ${data}');
+          name = event['name'];
+          username = data['username'];
+          whatsapp = data['whatsapp'];
+          imgUrl = data['avatarUrl'];
+          uiud = data['uuid'];
+        } else {
+          print('Document does not exist on the database');
+        }
+        // for (var doc in event.docs) {
+        // print("My event is ======================" + event['name']);
+
+        if (kDebugMode) {
+          print("Mon nom utilisateur" + name);
+          print("Mon username" + username);
+          print("Mon whatapp" + whatsapp);
+          print("Mon avatar" + imgUrl);
+          print("Mon uiud " + uiud);
+        }
+      });
       notifyListeners();
     }
+    notifyListeners();
+  }
 
-    void main(){
-      var _user = User(name: name, imgUrl: imgUrl, username: username, whatsapp: whatsapp,uiud: uiud);
-      _user.getcurentuser();
+  void updateUserInfo(String name, username, whatsapp) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String uuid = prefs.getString('uuid') ?? '';
+    if (kDebugMode) {
+      print(uuid);
+      print(uiud.length);
     }
+    users
+        .doc(uuid)
+        .update(
+            {'name': name, 'username': '@' + username, 'whatsapp': whatsapp})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
 
+  void main() {
+    var _user = User(
+        name: name,
+        imgUrl: imgUrl,
+        username: username,
+        whatsapp: whatsapp,
+        uiud: uiud);
+    _user.getcurentuser();
+  }
 }

@@ -7,10 +7,15 @@ import 'package:flutter/material.dart';
 import '../config/palette.dart';
 import 'package:get/get.dart';
 
-class CardGif extends StatelessWidget {
+class CardGif extends StatefulWidget {
   final String urlGif;
   const CardGif({required this.urlGif, Key? key}) : super(key: key);
 
+  @override
+  _CardGifState createState() => _CardGifState();
+}
+
+class _CardGifState extends State<CardGif> {
   @override
   Widget build(BuildContext context) {
     Video video = Video(
@@ -31,28 +36,38 @@ class CardGif extends StatelessWidget {
         DocumentSnapshot<Map<String, dynamic>> documentSnapshot;
         FirebaseFirestore.instance
             .collection("Videos")
-            .where("gifUrl", isEqualTo: urlGif)
+            .where("gifUrl", isEqualTo: widget.urlGif)
             .get()
             .then((value) {
           documentSnapshot = value.docs.first;
-          video.nom = documentSnapshot.data()!["nom"];
-          video.numeroVendeur = documentSnapshot.data()!["numeroVendeur"];
-          video.prix = documentSnapshot.data()!["prix"];
-          video.quantite = documentSnapshot.data()!["quantite"];
-          video.url = documentSnapshot.data()!["url"];
-          video.username = documentSnapshot.data()!["username"];
-          video.video_title = documentSnapshot.data()!["video_title"];
-          video.Category = documentSnapshot.data()!["Category"];
-          video.likes = documentSnapshot.data()!["likes"];
-          video.profile = documentSnapshot.data()!["profile"];
-          video.details = documentSnapshot.data()!["details"];
+          setState(() {
+            video.nom = documentSnapshot.data()!["nom"];
+            video.numeroVendeur = documentSnapshot.data()!["numeroVendeur"];
+            video.prix = documentSnapshot.data()!["prix"];
+            video.quantite = documentSnapshot.data()!["quantite"];
+            video.url = documentSnapshot.data()!["url"];
+            video.username = documentSnapshot.data()!["username"];
+            video.video_title = documentSnapshot.data()!["video_title"];
+            video.Category = documentSnapshot.data()!["Category"];
+            video.likes = documentSnapshot.data()!["likes"];
+            video.profile = documentSnapshot.data()!["profile"];
+            video.details = documentSnapshot.data()!["details"];
+            video.loadController();
+            video.controller!.play();
+            showVideo(video);
+          });
+
           if (kDebugMode) {
-            print(documentSnapshot.data()!["title"]);
+            print(documentSnapshot.data()!["numeroVendeur"]);
+            print(video.numeroVendeur);
           }
         });
-        Get.to(ShowVideo(video: video),
-            transition: Transition.cupertino,
-            duration: const Duration(milliseconds: 500));
+        if (kDebugMode) {
+          print(video.nom);
+        }
+        // Get.to(ShowVideo(video: video),
+        //     transition: Transition.cupertino,
+        //     duration: const Duration(milliseconds: 500));
       },
       child: Stack(
         children: [
@@ -63,7 +78,7 @@ class CardGif extends StatelessWidget {
               image: DecorationImage(
                 fit: BoxFit.cover,
                 image: CachedNetworkImageProvider(
-                  urlGif,
+                  widget.urlGif,
                 ),
               ),
             ),
@@ -82,5 +97,18 @@ class CardGif extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void showVideo(Video video) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            color: Palette.colorLight,
+            height: MediaQuery.of(context).size.height,
+            child: ShowVideo(video: video),
+          );
+        });
   }
 }

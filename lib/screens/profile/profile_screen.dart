@@ -30,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //late Stream dataList;
   @override
   void initState() {
+    Provider.of<User>(context, listen: false).getcurentuser();
     // dataList = FirebaseFirestore.instance
     //     .collection('collection')
     //     .where('name', isEqualTo: 'lelouche')
@@ -56,8 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         statusBarColor: Colors.white));
     List<DocumentSnapshot> items;
     return Scaffold(
-      body:
-      Container(
+      body: Container(
         padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
         color: Colors.white,
         child: Column(children: [
@@ -76,33 +76,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fit: BoxFit.cover),
                   shape: BoxShape.circle,
                 ),
-                child: (widget.isUser ==true)! ?
-                    GestureDetector(
-                  onTap: (){
-
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        color: Colors.black12,
-                        alignment: Alignment.center,
-                        height: 20,
-                        width: 100,
-                        child: const Text(
-                          ''
-                          'Edit',
-                          style: TextStyle(
-                              color: Palette.colorLight,
-                              fontFamily: "Prompt_Regular",
-                              fontWeight: FontWeight.w400,
-                              fontSize: 10),
+                child: (widget.isUser == true)
+                    ? GestureDetector(
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.all(0),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              color: Colors.black12,
+                              alignment: Alignment.center,
+                              height: 20,
+                              width: 100,
+                              child: const Text(
+                                ''
+                                'Edit',
+                                style: TextStyle(
+                                    color: Palette.colorLight,
+                                    fontFamily: "Prompt_Regular",
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 10),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ) : null,
+                      )
+                    : null,
               ),
               const SizedBox(
                 width: 20,

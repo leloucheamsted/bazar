@@ -21,11 +21,11 @@ import '../data/video.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/otp/otp1.dart';
-import '../widgets/button.dart';
 import '../widgets/card_gif.dart';
 import '../widgets/profile_card.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_share2/whatsapp_share2.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -44,7 +44,7 @@ class _FeedScreenState extends State<FeedScreen> {
   final feedViewModel = GetIt.instance<FeedViewModel>();
   late int position;
   CarouselController? nextElemnet = CarouselController();
-
+  late bool isPLaying = false;
   @override
   void initState() {
     feedViewModel.loadVideo(0);
@@ -95,92 +95,86 @@ class _FeedScreenState extends State<FeedScreen> {
       print(feedViewModel.videos.length.toString());
     }
 
-    return GestureDetector(
-      onPanUpdate: (details) {
-        print("Updated############################");
-      },
-      child: Scaffold(
-        backgroundColor: Palette.colorLight,
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(4.0, 0, 2, 0),
-                child: Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
-                      child: Text(
-                        ' Explore',
-                        style: TextStyle(
-                          fontFamily: "Prompt_SemiBold",
-                          fontWeight: FontWeight.w600,
-                          color: Palette.colorText,
-                          fontSize: 25,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    Button(
-                        iconImage: 'assets/chrono.svg',
-                        // iconSize: 30,
-                        onPressed: () {}),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                child: CarouselSlider.builder(
-                  itemCount: feedViewModel.videos.length,
-                  itemBuilder:
-                      (BuildContext context, int itemIndex, int pageViewIndex) {
-                    itemIndex = itemIndex % (feedViewModel.videos.length);
-                    // return Text(feedViewModel.videos[itemIndex].nom);
-                    return GestureDetector(
-                     onVerticalDragUpdate: (details) {
-                       if (details.delta.direction > 0) {
-                         if(pageViewIndex==0){
-
-                         }
-                         else{
-                           nextElemnet?.previousPage(duration:const Duration(milliseconds: 2000),curve: Curves.linearToEaseOut);
-                         }
-                         if (kDebugMode) {
-                           print("################################");
-                           print(details);
-
-                         }
-                       }
-                       else{
-                         nextElemnet?.nextPage(duration:const Duration(milliseconds: 2000),curve: Curves.linearToEaseOut);
-                         feedViewModel.changeVideo(pageViewIndex+1);
-                          // nextElemnet?.animateToPage(pageViewIndex+1,curve: Curves.easeInToLinear);
-
-                       }
-                     },
-                    child: videoCard(feedViewModel.videos[itemIndex]));
+    return Scaffold(
+      backgroundColor: Palette.colorLight,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        child: Stack(
+          children: [
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(4.0, 0, 2, 0),
+            //   child: Row(
+            //     children: [
+            //       const Padding(
+            //         padding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+            //         child: Text(
+            //           ' Explore',
+            //           style: TextStyle(
+            //             fontFamily: "Prompt_SemiBold",
+            //             fontWeight: FontWeight.w600,
+            //             color: Palette.colorText,
+            //             fontSize: 25,
+            //           ),
+            //         ),
+            //       ),
+            //       const Spacer(),
+            //       Button(
+            //           iconImage: 'assets/chrono.svg',
+            //           // iconSize: 30,
+            //           onPressed: () {}),
+            //     ],
+            //   ),
+            // ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+              child: CarouselSlider.builder(
+                itemCount: feedViewModel.videos.length,
+                itemBuilder:
+                    (BuildContext context, int itemIndex, int pageViewIndex) {
+                  itemIndex = itemIndex % (feedViewModel.videos.length);
+                  // return Text(feedViewModel.videos[itemIndex].nom);
+                  // return GestureDetector(
+                  //     onVerticalDragUpdate: (details) {
+                  //       if (details.delta.direction > 0) {
+                  //         if (pageViewIndex == 0) {
+                  //         } else {
+                  //           nextElemnet?.previousPage(
+                  //               duration: const Duration(milliseconds: 2000),
+                  //               curve: Curves.linearToEaseOut);
+                  //         }
+                  //         if (kDebugMode) {
+                  //           print("################################");
+                  //           print(details);
+                  //         }
+                  //       } else {
+                  //         nextElemnet?.nextPage(
+                  //             duration: const Duration(milliseconds: 2000),
+                  //             curve: Curves.linearToEaseOut);
+                  //         feedViewModel.changeVideo(pageViewIndex + 1);
+                  //         // nextElemnet?.animateToPage(pageViewIndex+1,curve: Curves.easeInToLinear);
+                  //
+                  //       }
+                  //     },
+                  return videoCard(feedViewModel.videos[itemIndex]);
+                },
+                carouselController: nextElemnet!,
+                options: CarouselOptions(
+                  viewportFraction: 1,
+                  initialPage: 0,
+                  height: MediaQuery.of(context).size.height,
+                  enableInfiniteScroll: false,
+                  reverse: false,
+                  autoPlay: false,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    index = index % (feedViewModel.videos.length);
+                    feedViewModel.changeVideo(index);
                   },
-                  carouselController: nextElemnet!,
-                  options: CarouselOptions(
-                    viewportFraction: 1,
-                    initialPage: 0,
-                    height: MediaQuery.of(context).size.height,
-                    enableInfiniteScroll: false,
-                    reverse: false,
-                    autoPlay: false,
-                   
-                    enlargeCenterPage: true,
-                    onPageChanged: (index, reason) {
-                      index = index % (feedViewModel.videos.length);
-                      feedViewModel.changeVideo(index);
-                    },
-                    scrollDirection: Axis.vertical,
-                  ),
+                  scrollDirection: Axis.vertical,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -269,7 +263,8 @@ class _FeedScreenState extends State<FeedScreen> {
                         child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: GestureDetector(
-                              onTap: (){
+                              onTap: () {
+                                video.controller!.pause();
                                 profileUser(video);
                               },
                               child: Row(
@@ -412,16 +407,16 @@ class _FeedScreenState extends State<FeedScreen> {
                           minWidth: 50,
                           color: Palette.primaryColor,
                           onPressed: () async {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            String count =  prefs.getString('counter')?? '';
-                            String name= prefs.getString('uuid')?? '';
-                            String uuid= prefs.getString('uuid')?? '';
-                            if(kDebugMode){
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            String count = prefs.getString('counter') ?? '';
+                            String name = prefs.getString('nom') ?? '';
+                            String uuid = prefs.getString('uuid') ?? '';
+                            if (kDebugMode) {
                               print('index');
-                              print(count);
+                              print("count" + count);
                               print(name);
                               print(uuid);
-
                             }
                             //  var counter = await _counter;
                             if (count != "1") {
@@ -431,7 +426,8 @@ class _FeedScreenState extends State<FeedScreen> {
                               if (kDebugMode) {
                                 print("open whatsapp");
                               }
-                             // openwhatsapp(video);
+                              //  isInstalled();
+                              openwhatsapp(video);
                               // Navigator.push(
                               //     context,
                               //     MaterialPageRoute(
@@ -460,11 +456,25 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
+  Future<void> share() async {
+    await WhatsappShare.share(
+      text: 'Whatsapp share text',
+      linkUrl: 'https://flutter.dev/',
+      phone: '911234567890',
+    );
+  }
+
+  Future<void> isInstalled() async {
+    final val = await WhatsappShare.isInstalled();
+    print('Whatsapp is installed: $val');
+  }
+
   ///  Popup Achat du produit
   Future<void> openwhatsapp(Video video) async {
     var whatsapp = "+" + video.numeroVendeur;
-    var whatsappURlAndroid =
-        "whatsapp://send?phone=" + whatsapp + "&text=Hi, I just saw your article on Mokole app and i am interested in placing an order\n\n\n Bonjour, je viens de voir votre article sur l'application Mokolo et je suis intéressé pour passer une commande";
+    var whatsappURlAndroid = "whatsapp://send?phone=" +
+        whatsapp +
+        "&text=Hi, I just saw your article on Mokole app and i am interested in placing an order\n\n\n Bonjour, je viens de voir votre article sur l'application Mokolo et je suis intéressé pour passer une commande";
     var whatappURLIos =
         "https://wa.me/$whatsapp?text=${Uri.parse("Hi, I just saw your article on Mokole app and i am interested in placing an order\n\n\n Bonjour, je viens de voir votre article sur l'application Mokolo et je suis intéressé pour passer une commande")}";
     if (Platform.isIOS) {
@@ -700,7 +710,7 @@ class _FeedScreenState extends State<FeedScreen> {
         });
   }
 
-/// Buy Popup
+  /// Buy Popup
   // ignore: non_constant_identifier_names
   void BuyPopup(context) {
     showModalBottomSheet(
@@ -718,19 +728,16 @@ class _FeedScreenState extends State<FeedScreen> {
               ),
             ),
             child: Column(
-
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Center(
-                  child:
-                  Text(
+                  child: Text(
                     'Welcome to mokolo',
                     style: TextStyle(
                       fontFamily: 'Prompt_Bold',
                       fontSize: 24.0,
                     ),
                   ),
-
                 ),
                 const Spacer(),
                 const Text(
@@ -740,7 +747,9 @@ class _FeedScreenState extends State<FeedScreen> {
                     fontSize: 15.0,
                   ),
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(
+                  height: 4,
+                ),
                 const Text(
                   '2- Tap the Buy now button to place your order.',
                   style: TextStyle(
@@ -748,7 +757,9 @@ class _FeedScreenState extends State<FeedScreen> {
                     fontSize: 15.0,
                   ),
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(
+                  height: 4,
+                ),
                 const Text(
                   '3- Enter your shipping details and pay.',
                   style: TextStyle(
@@ -777,7 +788,7 @@ class _FeedScreenState extends State<FeedScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                              const EnterNumberScreen())).then((value) {
+                                  const EnterNumberScreen())).then((value) {
                         setState(() {});
 
                         // Get.to(EnterNumberScreen(),
@@ -803,8 +814,7 @@ class _FeedScreenState extends State<FeedScreen> {
         context: context,
         backgroundColor: Colors.transparent,
         builder: (BuildContext bc) {
-          return
-            Container(
+          return Container(
             height: MediaQuery.of(context).size.height * .30,
             padding: const EdgeInsets.all(20.0),
             decoration: const BoxDecoration(
@@ -814,87 +824,86 @@ class _FeedScreenState extends State<FeedScreen> {
                 topRight: Radius.circular(30.0),
               ),
             ),
-              child: Column(
-
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(
-                    child:
-                     Text(
-                      'Welcome to mokolo',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: Text(
+                    'Welcome to mokolo',
+                    style: TextStyle(
+                      fontFamily: 'Prompt_Bold',
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                const Text(
+                  '1- Swipe up and down to discover new articles.',
+                  style: TextStyle(
+                    fontFamily: 'Prompt_Regular',
+                    fontSize: 15.0,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                const Text(
+                  '2- Tap the Buy now button to place your order.',
+                  style: TextStyle(
+                    fontFamily: 'Prompt_Regular',
+                    fontSize: 15.0,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                const Text(
+                  '3- Enter your shipping details and pay.',
+                  style: TextStyle(
+                    fontFamily: 'Prompt_Regular',
+                    fontSize: 15.0,
+                  ),
+                ),
+                const Spacer(
+                  flex: 3,
+                ),
+                SizedBox(
+                  height: 40.0,
+                  width: double.infinity,
+                  child: RaisedButton(
+                    textColor: Colors.white,
+                    color: Palette.primaryColor,
+                    child: const Text(
+                      "Start",
                       style: TextStyle(
-                        fontFamily: 'Prompt_Bold',
-                        fontSize: 24.0,
+                        fontSize: 20.0,
+                        fontFamily: 'Prompt_Medium',
                       ),
                     ),
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const EnterNumberScreen())).then((value) {
+                        setState(() {});
 
-                  ),
-                  const Spacer(),
-                  const Text(
-                    '1- Swipe up and down to discover new articles.',
-                    style: TextStyle(
-                      fontFamily: 'Prompt_Regular',
-                      fontSize: 15.0,
+                        // Get.to(EnterNumberScreen(),
+                        //     transition: Transition.rightToLeftWithFade);
+                        // MaterialPageRoute(
+                        //     builder: (context) => EnterNumberScreen());
+                      });
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
                     ),
                   ),
-                  const SizedBox(height: 4,),
-                  const Text(
-                    '2- Tap the Buy now button to place your order.',
-                    style: TextStyle(
-                      fontFamily: 'Prompt_Regular',
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  const SizedBox(height: 4,),
-                  const Text(
-                    '3- Enter your shipping details and pay.',
-                    style: TextStyle(
-                      fontFamily: 'Prompt_Regular',
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  const Spacer(
-                    flex: 3,
-                  ),
-                  SizedBox(
-                    height: 40.0,
-                    width: double.infinity,
-                    child: RaisedButton(
-                      textColor: Colors.white,
-                      color: Palette.primaryColor,
-                      child: const Text(
-                        "Start",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontFamily: 'Prompt_Medium',
-                        ),
-                      ),
-                      onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const EnterNumberScreen())).then((value) {
-                          setState(() {});
-
-                          // Get.to(EnterNumberScreen(),
-                          //     transition: Transition.rightToLeftWithFade);
-                          // MaterialPageRoute(
-                          //     builder: (context) => EnterNumberScreen());
-                        });
-                      },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
+                ),
+              ],
+            ),
           );
         });
   }
-
 
   /// Widget profile user who is post article
   void profileUser(Video video) {
@@ -902,134 +911,131 @@ class _FeedScreenState extends State<FeedScreen> {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (BuildContext bc)
-    {
-      return
-        Container(
-          height: MediaQuery.of(context).size.height*0.8,
-          decoration: const BoxDecoration(
-            color: Palette.colorLight,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0),
-              topRight: Radius.circular(15.0),
+        builder: (BuildContext bc) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            decoration: const BoxDecoration(
+              color: Palette.colorLight,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+              ),
             ),
-          ),
-          child: Column(children: [
-
-            /// Top bar
-            Container(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(children: [
-                Container(
-                  height: 90,
-                  width: 90,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    color: Palette.colorInput,
-                    image: DecorationImage(
-                        image: NetworkImage(video.profile),
-                        fit: BoxFit.cover),
-                    shape: BoxShape.circle,
+            child: Column(children: [
+              /// Top bar
+              Container(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(children: [
+                  Container(
+                    height: 90,
+                    width: 90,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      color: Palette.colorInput,
+                      image: DecorationImage(
+                          image: NetworkImage(video.profile),
+                          fit: BoxFit.cover),
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      video.nom ?? '',
-                      style: const TextStyle(
-                        fontFamily: "Prompt_Regular",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 18,
-                        color: Color.fromRGBO(22, 23, 34, 1),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        video.nom ?? '',
+                        style: const TextStyle(
+                          fontFamily: "Prompt_Regular",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                          color: Color.fromRGBO(22, 23, 34, 1),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      video.username ?? '',
-                      style: const TextStyle(
-                        fontFamily: "Prompt_SemiBold",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 18,
-                        color: Palette.colorText,
+                      const SizedBox(
+                        height: 10,
                       ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-              ]),
-            ),
+                      Text(
+                        video.username ?? '',
+                        style: const TextStyle(
+                          fontFamily: "Prompt_SemiBold",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                          color: Palette.colorText,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                ]),
+              ),
 
-            // Dividor
-            const Divider(),
+              // Dividor
+              const Divider(),
 
 // Liste de publication
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("Users")
-                  .doc("e0CPkvCtazKCgTUAWP1U")
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(
-                      'Error in receiving trip list publication: ${snapshot
-                          .error}');
-                }
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    return const Text('Not connected to the Stream or null');
+              StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("Users")
+                    .doc("e0CPkvCtazKCgTUAWP1U")
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text(
+                        'Error in receiving trip list publication: ${snapshot.error}');
+                  }
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                      return const Text('Not connected to the Stream or null');
 
-                  case ConnectionState.waiting:
-                    return const Text('Awaiting for interaction');
+                    case ConnectionState.waiting:
+                      return const Text('Awaiting for interaction');
 
-                  case ConnectionState.active:
-                    if (kDebugMode) {
-                      print("Stream has started but not finished");
-                    }
+                    case ConnectionState.active:
+                      if (kDebugMode) {
+                        print("Stream has started but not finished");
+                      }
 
-                    List<String>? list;
-                    if (snapshot.hasData) {
-                      list = List<dynamic>.from(snapshot.data!['publication'])
-                          .cast<String>();
-                    }
+                      List<String>? list;
+                      if (snapshot.hasData) {
+                        list = List<dynamic>.from(snapshot.data!['publication'])
+                            .cast<String>();
+                      }
 
-                    return Expanded(
-                      child: MediaQuery.removeViewPadding(
-                        context: context,
-                        removeTop: true,
-                        child: GridView.builder(
-                            itemCount: list!.length,
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            primary: false,
-                            gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 9 / 16,
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 1.5,
-                              crossAxisSpacing: 1.5,
-                            ),
-                            itemBuilder: (BuildContext, index) {
-                              return CardGif(urlGif: list![index]);
-                            }),
-                      ),
-                    );
-                }
-                return const SizedBox(
-                  child: Text("No trip publication found."),
-                );
-              },
-            )
-          ]),
-        );
-    });
-}
-
-
+                      return Expanded(
+                        child: MediaQuery.removeViewPadding(
+                          context: context,
+                          removeTop: true,
+                          child: GridView.builder(
+                              itemCount: list!.length,
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              primary: false,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 9 / 16,
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 1.5,
+                                crossAxisSpacing: 1.5,
+                              ),
+                              itemBuilder: (BuildContext, index) {
+                                return CardGif(urlGif: list![index]);
+                              }),
+                        ),
+                      );
+                  }
+                  return const SizedBox(
+                    child: Text("No trip publication found."),
+                  );
+                },
+              )
+            ]),
+          );
+        }).whenComplete(() => {
+          print("completed"),
+          video.controller!.play(),
+        });
+  }
 }

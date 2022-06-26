@@ -15,7 +15,12 @@ class EditProfile extends StatefulWidget {
   final String? name;
   final String? username;
   final String? whatsapp;
-  const EditProfile({required this.name,required this.username,required this.whatsapp, Key? key}) : super(key: key);
+  const EditProfile(
+      {required this.name,
+      required this.username,
+      required this.whatsapp,
+      Key? key})
+      : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -24,12 +29,12 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   TextEditingController nametextController = TextEditingController();
   TextEditingController pseudocontroller = TextEditingController();
-  TextEditingController whatsappcontroller =TextEditingController();
+  TextEditingController whatsappcontroller = TextEditingController();
   String lastStreet = "Douala";
   String choiceStreet = "Douala";
   late String lastUsername = widget.name!;
   late String lastname = widget.username!;
-  late String lastWhatsapp=widget.whatsapp!;
+  late String lastWhatsapp = widget.whatsapp!;
   String name = "";
   String username = "";
   @override
@@ -37,10 +42,9 @@ class _EditProfileState extends State<EditProfile> {
     // TODO: implement initState
 
     setState(() {
-
       pseudocontroller.text = lastUsername;
-      nametextController.text =lastname;
-      whatsappcontroller.text=lastWhatsapp;
+      nametextController.text = lastname;
+      whatsappcontroller.text = lastWhatsapp;
       choiceStreet = "Douala";
       // lastname=context.watch<User>().name;
       // lastUsername =context.watch<User>().username;
@@ -69,9 +73,9 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    setState((){
-      lastUsername=context.watch<User>().username;
-      lastname=context.watch<User>().name;
+    setState(() {
+      // lastUsername = context.watch<User>().username.substring(1);
+      //lastname = context.watch<User>().name;
     });
 
     if (Platform.isAndroid) {
@@ -101,7 +105,6 @@ class _EditProfileState extends State<EditProfile> {
           SizedBox(
               child: Column(
             children: [
-
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 25, 15, 8),
                 child: SingleChildScrollView(
@@ -131,20 +134,19 @@ class _EditProfileState extends State<EditProfile> {
                           controller: pseudocontroller,
                           autocorrect: false,
                           textAlign: TextAlign.start,
-                          focusNode: FocusNode(),
                           validator: (value) {},
-                          style:const  TextStyle(
+                          style: const TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
                           ),
-                          decoration:const InputDecoration.collapsed(
+                          decoration: const InputDecoration.collapsed(
                             hintText: 'Full Name',
                             hintStyle: TextStyle(color: Palette.colorgray),
                           ),
                         ),
                       ),
 
-                  const     SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       // Full Name
@@ -169,19 +171,18 @@ class _EditProfileState extends State<EditProfile> {
                           controller: nametextController,
                           autocorrect: false,
                           textAlign: TextAlign.start,
-                          focusNode: FocusNode(),
                           validator: (value) {},
-                          style:const  TextStyle(
+                          style: const TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
                           ),
-                          decoration:const  InputDecoration.collapsed(
+                          decoration: const InputDecoration.collapsed(
                             hintText: 'Full Name',
                             hintStyle: TextStyle(color: Palette.colorgray),
                           ),
                         ),
                       ),
-                  const     SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
 
@@ -196,10 +197,10 @@ class _EditProfileState extends State<EditProfile> {
                           child: Row(
                             children: [
                               SvgPicture.asset('assets/Cameroon.svg'),
-                            const   SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
-                           const    Text(
+                              const Text(
                                 'Cameroon',
                                 style: TextStyle(
                                   fontFamily: "Prompt_Regular",
@@ -208,7 +209,7 @@ class _EditProfileState extends State<EditProfile> {
                                   fontSize: 20,
                                 ),
                               ),
-                           const    Spacer(),
+                              const Spacer(),
                               SvgPicture.asset(
                                 'assets/plus.svg',
                                 color: Palette.colorText,
@@ -218,7 +219,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
 
-                  const     SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       // City
@@ -245,7 +246,7 @@ class _EditProfileState extends State<EditProfile> {
                                     fontSize: 20,
                                   ),
                                 ),
-                             const    Spacer(),
+                                const Spacer(),
                                 SvgPicture.asset(
                                   'assets/plus.svg',
                                   color: Palette.colorText,
@@ -256,7 +257,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
 
-                      const     SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Row(
@@ -300,7 +301,7 @@ class _EditProfileState extends State<EditProfile> {
                                     "[^,.-]",
                                   )),
                                 ],
-                               // onChanged: _onChanged_number,
+                                // onChanged: _onChanged_number,
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.start,
                                 style: const TextStyle(
@@ -353,6 +354,22 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   onPressed: () async {
+                    if (lastUsername == pseudocontroller.text &&
+                        lastname == nametextController.text &&
+                        whatsappcontroller.text == lastWhatsapp) {
+                      print("Les informations utilisateurs sont deja a jour");
+                    } else {
+                      print(
+                          "Les informations utilisateurs seront mises a jours");
+                    }
+                    if (kDebugMode) {
+                      print(lastname);
+                      print(lastUsername);
+                      print(lastWhatsapp);
+                      print(nametextController.text);
+                      print(pseudocontroller.text);
+                      print(whatsappcontroller.text);
+                    }
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       // behavior: SnackBarBehavior.floating,
                       backgroundColor: Palette.colorError,
@@ -376,7 +393,6 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                     ));
-                    updateProfile();
                   },
                 ),
               ),
@@ -385,12 +401,6 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
     );
-  }
-
-  void updateProfile() {
-    if (kDebugMode) {
-      print('object');
-    }
   }
 
   // Popup List categories

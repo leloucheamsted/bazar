@@ -9,11 +9,15 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 
-
 import '../../Services/user.dart';
-class SettingsProfile extends StatefulWidget {
 
-  const SettingsProfile({required this.name,required this.username,required this.whatsapp,Key? key}) : super(key: key);
+class SettingsProfile extends StatefulWidget {
+  const SettingsProfile(
+      {required this.name,
+      required this.username,
+      required this.whatsapp,
+      Key? key})
+      : super(key: key);
   final String? name;
   final String? username;
   final String whatsapp;
@@ -21,22 +25,22 @@ class SettingsProfile extends StatefulWidget {
   _SettingsProfileState createState() => _SettingsProfileState();
 }
 
-class _SettingsProfileState extends State<SettingsProfile>{
- late String name=widget.name!;
- late String username=widget.username!;
+class _SettingsProfileState extends State<SettingsProfile> {
+  late String name = widget.name!;
+  late String username = widget.username!;
   @override
-  void initState(){
-
+  void initState() {
     if (kDebugMode) {
       print(widget.name);
       print(widget.username);
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
           statusBarColor: Palette.primaryColor));
@@ -44,11 +48,12 @@ class _SettingsProfileState extends State<SettingsProfile>{
     return WillPopScope(
       onWillPop: () async {
         Navigator.of(context).pop();
-        SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarIconBrightness: Brightness.dark,
             statusBarBrightness: Brightness.dark,
-            statusBarIconBrightness: Brightness.dark, // dark text for status bar
+            statusBarIconBrightness:
+                Brightness.dark, // dark text for status bar
             statusBarColor: Colors.white));
 
         return false;
@@ -73,7 +78,6 @@ class _SettingsProfileState extends State<SettingsProfile>{
         body: SizedBox(
           child: Column(
             children: [
-
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                 child: SingleChildScrollView(
@@ -105,7 +109,13 @@ class _SettingsProfileState extends State<SettingsProfile>{
                               ItemSettings(
                                   settings: 'Edit my profile',
                                   Pop: () {
-                                    Get.to(   EditProfile(name:widget.name,username: widget.username,whatsapp: widget.whatsapp,),
+                                    Get.to(
+                                        EditProfile(
+                                          name: widget.name,
+                                          username:
+                                              widget.username!.substring(1),
+                                          whatsapp: widget.whatsapp,
+                                        ),
                                         transition:
                                             Transition.rightToLeftWithFade);
                                   }),
