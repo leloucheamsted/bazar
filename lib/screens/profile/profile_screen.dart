@@ -72,7 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 decoration: BoxDecoration(
                   color: Palette.colorInput,
                   image: DecorationImage(
-                      image: NetworkImage(context.watch<User>().imgUrl),
+                      image: NetworkImage(
+                          Provider.of<User>(context, listen: true).imgUrl),
                       fit: BoxFit.cover),
                   shape: BoxShape.circle,
                 ),
@@ -174,19 +175,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection("Users")
-                .doc(context.read<User>().uiud)
+                .doc(Provider.of<User>(context, listen: true).uiud ?? '')
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Text(
-                    'Error in receiving trip list publication: ${snapshot.error}');
+                return const Expanded(
+                  child: SizedBox(
+                    child: Center(
+                      child: Text(
+                        "Error in receiving trip  list publication.",
+                        style: TextStyle(
+                            fontFamily: "Prompt_Medium",
+                            fontSize: 20.0,
+                            color: Palette.colorText),
+                      ),
+                    ),
+                  ),
+                );
               }
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return const Text('Not connected to the Stream or null');
+                  return const Expanded(
+                    child: SizedBox(
+                      child: Center(
+                        child: Text(
+                          "Not connected to the Stream or null.",
+                          style: TextStyle(
+                              fontFamily: "Prompt_Medium",
+                              fontSize: 20.0,
+                              color: Palette.colorText),
+                        ),
+                      ),
+                    ),
+                  );
 
                 case ConnectionState.waiting:
-                  return const Text('Awaiting for interaction');
+                  return const Expanded(
+                    child: SizedBox(
+                      child: Center(
+                        child: Text(
+                          "Awaiting for interaction....",
+                          style: TextStyle(
+                              fontFamily: "Prompt_Medium",
+                              fontSize: 20.0,
+                              color: Palette.colorText),
+                        ),
+                      ),
+                    ),
+                  );
 
                 case ConnectionState.active:
                   if (kDebugMode) {
@@ -197,32 +233,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (snapshot.hasData) {
                     list = List<dynamic>.from(snapshot.data!['publication'])
                         .cast<String>();
-                  }
+                    if (list.isEmpty) {
+                      if (kDebugMode) {
+                        print("liste de pub,ication vide vide ");
+                      }
+                    } else {
+                      if (kDebugMode) {
+                        print("Liste de publication contenante");
 
-                  return Expanded(
-                    child: MediaQuery.removeViewPadding(
-                      context: context,
-                      removeTop: true,
-                      child: GridView.builder(
-                          itemCount: list!.length,
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          primary: false,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: 9 / 16,
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 1.5,
-                            crossAxisSpacing: 1.5,
+                        return Expanded(
+                          child: MediaQuery.removeViewPadding(
+                            context: context,
+                            removeTop: true,
+                            child: GridView.builder(
+                                itemCount: list!.length,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                primary: false,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  childAspectRatio: 9 / 16,
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 1.5,
+                                  crossAxisSpacing: 1.5,
+                                ),
+                                itemBuilder: (BuildContext, index) {
+                                  if (list!.isEmpty) {
+                                    Text("lelou");
+                                  } else {}
+                                  return CardGif(urlGif: list![index]);
+                                }),
                           ),
-                          itemBuilder: (BuildContext, index) {
-                            return CardGif(urlGif: list![index]);
-                          }),
-                    ),
-                  );
+                        );
+                      }
+                    }
+                  }
               }
-              return const SizedBox(
-                child: Text("No trip publication found."),
+
+              // if publication list is empty
+              return const Expanded(
+                child: SizedBox(
+                  child: Center(
+                    child: Text(
+                      "No trip publication found.",
+                      style: TextStyle(
+                          fontFamily: "Prompt_Medium",
+                          fontSize: 20.0,
+                          color: Palette.colorText),
+                    ),
+                  ),
+                ),
               );
             },
           )
