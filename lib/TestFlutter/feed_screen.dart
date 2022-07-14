@@ -956,7 +956,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        video.nom ?? '',
+                        video.nom,
                         style: const TextStyle(
                           fontFamily: "Prompt_Regular",
                           fontWeight: FontWeight.w400,
@@ -968,7 +968,7 @@ class _FeedScreenState extends State<FeedScreen> {
                         height: 10,
                       ),
                       Text(
-                        video.username ?? '',
+                        video.username,
                         style: const TextStyle(
                           fontFamily: "Prompt_SemiBold",
                           fontWeight: FontWeight.w400,
@@ -1035,6 +1035,9 @@ class _FeedScreenState extends State<FeedScreen> {
                               }),
                         ),
                       );
+                    case ConnectionState.done:
+                      // TODO: Handle this case.
+                      break;
                   }
                   return const SizedBox(
                     child: Text("No trip publication found."),

@@ -112,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    Provider.of<User>(context, listen: true).name ?? '',
+                    Provider.of<User>(context, listen: true).name,
                     style: const TextStyle(
                       fontFamily: "Prompt_Regular",
                       fontWeight: FontWeight.w400,
@@ -124,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: 10,
                   ),
                   Text(
-                    Provider.of<User>(context, listen: true).username ?? '',
+                    Provider.of<User>(context, listen: true).username,
                     style: const TextStyle(
                       fontFamily: "Prompt_SemiBold",
                       fontWeight: FontWeight.w400,
@@ -175,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection("Users")
-                .doc(Provider.of<User>(context, listen: true).uiud ?? '')
+                .doc(Provider.of<User>(context, listen: true).uiud)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -246,7 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             context: context,
                             removeTop: true,
                             child: GridView.builder(
-                                itemCount: list!.length,
+                                itemCount: list.length,
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 primary: false,
@@ -261,13 +261,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   if (list!.isEmpty) {
                                     Text("lelou");
                                   } else {}
-                                  return CardGif(urlGif: list![index]);
+                                  return CardGif(urlGif: list[index]);
                                 }),
                           ),
                         );
                       }
                     }
                   }
+                  break;
+                case ConnectionState.done:
+                  // TODO: Handle this case.
+                  break;
               }
 
               // if publication list is empty

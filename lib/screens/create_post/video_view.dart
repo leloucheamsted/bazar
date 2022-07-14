@@ -65,21 +65,21 @@ class _VideoViewPageState extends State<VideoViewPage> {
               maxWidth: double.infinity,
               child: _controller.value.isInitialized
                   ? VisibilityDetector(
-                key: const Key("unique key"),
-                onVisibilityChanged: (VisibilityInfo info) {
-                  debugPrint(
-                      "${info.visibleFraction} of my widget is visible");
-                  if (info.visibleFraction == 0) {
-                    _controller?.pause();
-                  } else {
-                    _controller?.play();
-                  }
-                },
-                    child: AspectRatio(
+                      key: const Key("unique key"),
+                      onVisibilityChanged: (VisibilityInfo info) {
+                        debugPrint(
+                            "${info.visibleFraction} of my widget is visible");
+                        if (info.visibleFraction == 0) {
+                          _controller.pause();
+                        } else {
+                          _controller.play();
+                        }
+                      },
+                      child: AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),
                       ),
-                  )
+                    )
                   : Container(),
             ),
             Positioned(
