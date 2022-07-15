@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +23,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   TextEditingController pseudocontroller = TextEditingController();
   TextEditingController whatsappcontroller = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  late Future<String> nom, pseudo, numero, whatsappNumber,uid,counter;
+  late Future<String> nom, pseudo, numero, whatsappNumber, uid, counter;
   late String numero1 = Get.arguments.toString();
   String uuid = const Uuid().v4();
   bool isValid = false;
@@ -51,6 +50,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
     }
   }
 
+  // ignore: non_constant_identifier_names
   _onChanged_number(String value) {
     setState(() {
       length = value.length;
@@ -62,6 +62,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
     });
   }
 
+  // ignore: non_constant_identifier_names
   _onChanged_name(String value) {
     setState(() {
       if (value.length > 2) {
@@ -76,6 +77,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
     });
   }
 
+  // ignore: non_constant_identifier_names
   _onChanged_username(String value) {
     setState(() {
       if (value.length <= 3) {
@@ -97,10 +99,10 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    DocumentReference users = FirebaseFirestore.instance.collection('Users').doc(uuid);
+    DocumentReference users =
+        FirebaseFirestore.instance.collection('Users').doc(uuid);
 
     Future addUser() async {
-      final prefs = await SharedPreferences.getInstance();
       final user = {
         'name': nametextController.text,
         'username': '@' + pseudocontroller.text,
@@ -109,14 +111,15 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
         'following': [],
         'publication': [],
         'balance': 0,
-        'whatsapp': "+237"+ whatsappcontroller.text,
+        'whatsapp': "+237" + whatsappcontroller.text,
         'uuid': uuid,
-        'avatarUrl': 'https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/Group%20121.jpg?alt=media&token=aaa44834-ecd2-40f4-a19a-e1ee949433d6'
+        'avatarUrl':
+            'https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/Group%20121.jpg?alt=media&token=aaa44834-ecd2-40f4-a19a-e1ee949433d6'
       };
       await users
           .set(user)
           .then((value) => {
-                 Navigator.of(context)
+                Navigator.of(context)
                     .popUntil(ModalRoute.withName(Navigator.defaultRouteName)),
               })
           // ignore: invalid_return_type_for_catch_error, avoid_print
@@ -218,6 +221,7 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                     if (value == "base" || value == "basic") {
                       return "Username  not valid";
                     }
+                    return null;
                   },
                   style: const TextStyle(
                     fontSize: 20.0,
@@ -339,8 +343,8 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                           status == true &&
                           isValidName == true
                       ? () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    FocusScope.of(context).unfocus();
+                          final prefs = await SharedPreferences.getInstance();
+                          FocusScope.of(context).unfocus();
                           addUser();
                           nom = prefs
                               .setString('nom', nametextController.text)
@@ -357,12 +361,16 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                               .then((bool success) {
                             return whatsappcontroller.text;
                           });
-                          uid=prefs.setString('uuid', uuid).then((bool success){
+                          uid = prefs
+                              .setString('uuid', uuid)
+                              .then((bool success) {
                             return uid;
                           });
-                    counter=prefs.setString('counter', "1").then((bool success){
-                      return counter;
-                    });
+                          counter = prefs
+                              .setString('counter', "1")
+                              .then((bool success) {
+                            return counter;
+                          });
                         }
                       : null,
                   //status
@@ -386,4 +394,3 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
     );
   }
 }
-

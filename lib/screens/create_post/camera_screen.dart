@@ -3,21 +3,19 @@ import 'dart:math';
 import 'dart:async';
 import 'package:bazar/config/palette.dart';
 import 'package:bazar/main.dart';
-import 'package:bazar/screens/camera_view.dart';
 import 'package:bazar/screens/create_post/video_view.dart';
 import 'package:bazar/widgets/button.dart';
 import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image/image.dart' as img;
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:path_provider/path_provider.dart';
+// import 'package:uuid/uuid.dart';
 
+// ignore: must_be_immutable
 class CameraScreen extends StatefulWidget {
   List<CameraDescription>? cameras;
   CameraScreen({required this.cameras, Key? key}) : super(key: key);
@@ -27,7 +25,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late CameraController _cameraController;
   late Future<void> cameraValue;
   bool isRecoring = false;
@@ -39,14 +37,16 @@ class _CameraScreenState extends State<CameraScreen> {
   late Timer _timer;
   int _start = 15;
   bool duration = false;
+  // ignore: non_constant_identifier_names
   String NoRecordIcon = "assets/elipse2.svg";
+  // ignore: non_constant_identifier_names
   String RecordIcon = "assets/elipse3.svg";
   final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer(Duration(milliseconds: 500), () {
+    _timer = Timer(const Duration(milliseconds: 500), () {
       // SOMETHING
     });
     setState(() {});
@@ -65,8 +65,8 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   void startTime() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(oneSec, (Timer timer) async {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSec, (Timer timer) async {
       //  await _cameraController.startVideoRecording();
       if (_start == 0) {
         setState(() async {
@@ -103,7 +103,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     if (Platform.isAndroid) {
       //  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.light,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
@@ -113,7 +113,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return WillPopScope(
       onWillPop: () async {
 //SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarIconBrightness: Brightness.dark,
             statusBarIconBrightness:
@@ -137,7 +137,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           child: CameraPreview(_cameraController)),
                     );
                   } else {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
@@ -146,7 +146,7 @@ class _CameraScreenState extends State<CameraScreen> {
               top: 50.0,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
-                child: Container(
+                child: SizedBox(
                   width: size,
                   child: Row(
                     children: [
@@ -155,7 +155,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           onPressed: () {
                             if (Platform.isAndroid) {
                               SystemChrome.setSystemUIOverlayStyle(
-                                  SystemUiOverlayStyle(
+                                  const SystemUiOverlayStyle(
                                       systemNavigationBarColor:
                                           Colors.transparent,
                                       systemNavigationBarIconBrightness:
@@ -167,10 +167,10 @@ class _CameraScreenState extends State<CameraScreen> {
 
                             Navigator.of(context).pop();
                           }),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Align(
                           alignment: Alignment.topCenter,
                           child: Text(
@@ -198,7 +198,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                     .setFlashMode(FlashMode.torch)
                                 : _cameraController.setFlashMode(FlashMode.off);
                           }),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       InkWell(
@@ -221,7 +221,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                         // onPressed: () {},
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                     ],
@@ -233,11 +233,11 @@ class _CameraScreenState extends State<CameraScreen> {
               bottom: 50.0,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-                child: Container(
+                child: SizedBox(
                   width: size,
                   child: Row(children: [
                     Padding(
-                      padding: EdgeInsets.fromLTRB(8, 20, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(8, 20, 0, 0),
                       child: GestureDetector(
                         onTap: () async {
                           FilePickerResult? result =
@@ -251,9 +251,13 @@ class _CameraScreenState extends State<CameraScreen> {
                                 .execute(
                                     '-i videoplayback.mp4 -ss 00:00:00 -t 00:00:15 -c copy smallfile1.mp4')
                                 .then((value) {
-                              print('Got value ');
+                              if (kDebugMode) {
+                                print('Got value ');
+                              }
                             }).catchError((error) {
-                              print('Error');
+                              if (kDebugMode) {
+                                print('Error');
+                              }
                             });
                             Navigator.push(
                                 context,
@@ -273,7 +277,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                 SvgPicture.asset(
                                   'assets/upload.svg',
                                 ),
-                                Text(
+                                const Text(
                                   'upload',
                                   style: TextStyle(
                                       color: Colors.white,
@@ -287,9 +291,9 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                       child: Align(
                         alignment: Alignment.topCenter,
                         child: Column(
@@ -298,7 +302,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           children: [
                             Text(
                               '$_start Sec',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontFamily: "Prompt_Regular",
                                   fontWeight: FontWeight.w600,
                                   fontSize: 24,
@@ -307,11 +311,11 @@ class _CameraScreenState extends State<CameraScreen> {
                             // ElevatedButton(onPressed: (), ON child: Text('BOUTTON'),),
                             GestureDetector(
                               onTap: (() async {
-                                var id = Uuid().v4();
-                                final Directory _appDocDir =
-                                    await getApplicationDocumentsDirectory();
-                                final dir = _appDocDir.path;
-                                final outPath = "$dir/$id.mp4";
+                                //var id = const Uuid().v4();
+                                // final Directory _appDocDir =
+                                //   await getApplicationDocumentsDirectory();
+                                // final dir = _appDocDir.path;
+                                // final outPath = "$dir/$id.mp4";
                                 if (isRecoring == false) {
                                   setState(() {
                                     duration = !duration;
@@ -330,18 +334,19 @@ class _CameraScreenState extends State<CameraScreen> {
                                   !iscamerafront
                                       ? {
                                           ScaffoldMessenger.of(context)
-                                              .showSnackBar(new SnackBar(
+                                              .showSnackBar(SnackBar(
                                             // behavior: SnackBarBehavior.floating,
                                             backgroundColor:
                                                 Palette.primaryColor,
 
-                                            duration: new Duration(seconds: 4),
-                                            content: new Row(
+                                            duration:
+                                                const Duration(seconds: 4),
+                                            content: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: <Widget>[
-                                                new Text(
+                                                const Text(
                                                   "Processing your capture",
                                                   style: TextStyle(
                                                       color: Palette.colorLight,
@@ -350,20 +355,21 @@ class _CameraScreenState extends State<CameraScreen> {
                                                       fontFamily:
                                                           'Prompt_Regular'),
                                                 ),
-                                                new SvgPicture.asset(
+                                                SvgPicture.asset(
                                                   'assets/close.svg',
                                                   color: Palette.colorLight,
                                                 ),
                                               ],
                                             ),
                                           )),
-                                          await _flutterFFmpeg
-                                              .execute(
-                                                  "-i ${videopath.path} -vf hflip -c:a copy $outPath")
-                                              .then(
-                                                (returnCode) => print(
-                                                    "Return code $returnCode"),
-                                              ),
+                                          // await _flutterFFmpeg
+                                          //     .execute(
+                                          //         "-i ${videopath.path} -vf hflip -c:a copy $outPath")
+                                          //     .then(
+                                          //       // ignore: avoid_print
+                                          //       (returnCode) => print(
+                                          //           "Return code $returnCode"),
+                                          //     ),
                                         }
                                       : null;
                                   Navigator.push(
@@ -372,7 +378,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                           builder: (builder) => VideoViewPage(
                                               path: iscamerafront
                                                   ? videopath.path
-                                                  : outPath)));
+                                                  : videopath.path)));
                                   _timer.cancel();
                                 }
                               }),
@@ -392,7 +398,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                       ),
                     ),
-                    Spacer(
+                    const Spacer(
                       flex: 2,
                     ),
                   ]),
@@ -404,8 +410,8 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   void startTimer(bool exc) {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
       oneSec,
       (Timer timer) => setState(
         () {

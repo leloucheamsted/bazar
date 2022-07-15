@@ -7,9 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:flutter/services.dart';
-
-import '../../Services/user.dart';
 
 class SettingsProfile extends StatefulWidget {
   const SettingsProfile(
@@ -40,7 +37,7 @@ class _SettingsProfileState extends State<SettingsProfile> {
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
           statusBarColor: Palette.primaryColor));
@@ -48,7 +45,7 @@ class _SettingsProfileState extends State<SettingsProfile> {
     return WillPopScope(
       onWillPop: () async {
         Navigator.of(context).pop();
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarIconBrightness: Brightness.dark,
             statusBarBrightness: Brightness.dark,

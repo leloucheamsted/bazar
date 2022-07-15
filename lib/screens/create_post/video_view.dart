@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 //import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'dart:math' as math;
 
 class VideoViewPage extends StatefulWidget {
   const VideoViewPage({Key? key, required this.path}) : super(key: key);
@@ -77,7 +78,11 @@ class _VideoViewPageState extends State<VideoViewPage> {
                       },
                       child: AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.rotationY(math.pi),
+                          child: VideoPlayer(_controller),
+                        ),
                       ),
                     )
                   : Container(),

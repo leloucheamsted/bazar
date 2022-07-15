@@ -1,14 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
-import '../config/palette.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../config/palette.dart';
 
 class User with ChangeNotifier {
   User(
@@ -45,14 +39,18 @@ class User with ChangeNotifier {
           .then((DocumentSnapshot event) {
         if (event.exists) {
           data = event.data();
-          print('Document data: ${data}');
+          if (kDebugMode) {
+            print('Document data: $data');
+          }
           name = event['name'];
           username = data['username'];
           whatsapp = data['whatsapp'];
           imgUrl = data['avatarUrl'];
           uiud = data['uuid'];
         } else {
-          print('Document does not exist on the database');
+          if (kDebugMode) {
+            print('Document does not exist on the database');
+          }
         }
         // for (var doc in event.docs) {
         // print("My event is ======================" + event['name']);
@@ -85,9 +83,11 @@ class User with ChangeNotifier {
           'whatsapp': "+237" + whatsapp
         })
         .then((value) => {
+              // ignore: avoid_print
               print("User Updated"),
               getcurentuser(),
             })
+        // ignore: invalid_return_type_for_catch_error, avoid_print
         .catchError((error) => print("Failed to update user: $error"));
     getcurentuser();
     notifyListeners();

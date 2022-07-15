@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class ShowPop {
   var _isShow = false;
 
@@ -7,6 +5,7 @@ class ShowPop {
     return _isShow;
   }
 
+  // ignore: non_constant_identifier_names
   void IsShow() {
     _isShow = !_isShow;
   }

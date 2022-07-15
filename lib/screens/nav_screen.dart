@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:bazar/Services/feef_videoModel.dart';
@@ -13,7 +15,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/palette.dart';
@@ -27,7 +28,6 @@ class NavScreen extends StatefulWidget {
 }
 
 class _NavScreenState extends State<NavScreen> {
-  late Future<int> _counter;
   late int c;
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
@@ -50,11 +50,7 @@ class _NavScreenState extends State<NavScreen> {
     final prefs = await SharedPreferences.getInstance();
     final int counter = (prefs.getInt('_counter') ?? 0);
 
-    setState(() {
-      _counter = prefs.setInt('_counter', counter).then((bool success) {
-        return counter;
-      });
-    });
+    setState(() {});
     if (counter < 1) {
       WelcomePopup(context);
     }
@@ -62,7 +58,7 @@ class _NavScreenState extends State<NavScreen> {
 
   selecter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    c = await prefs.getInt('_counter') ?? 0;
+    c = prefs.getInt('_counter') ?? 0;
     if (c == 0) {
       //  await prefs.setInt('_counter', 1);
       //return FirstPage();
@@ -77,7 +73,7 @@ class _NavScreenState extends State<NavScreen> {
     super.initState();
     selecter();
 
-    Timer(Duration(seconds: 20), () {
+    Timer(const Duration(seconds: 20), () {
       _incrementCounter();
     });
   }
@@ -317,6 +313,7 @@ class _NavScreenState extends State<NavScreen> {
   }
 
   //  Popup welcome
+  // ignore: non_constant_identifier_names
   void WelcomePopup(context) {
     showModalBottomSheet(
         context: context,
@@ -425,6 +422,7 @@ class _NavScreenState extends State<NavScreen> {
   }
 
   //  Popup Search
+  // ignore: non_constant_identifier_names
   void SearchPopup(context) {
     showModalBottomSheet(
         context: context,

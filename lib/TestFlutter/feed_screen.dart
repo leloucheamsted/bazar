@@ -3,7 +3,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math' as math;
 // import 'package:bazar/screens/PayProcess/buy_process1.dart';
 import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:cached_video_player/cached_video_player.dart';
@@ -37,7 +36,6 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-  late Future<int> _counter;
   late int c;
   late String number;
   final locator = GetIt.instance;
@@ -236,12 +234,12 @@ class _FeedScreenState extends State<FeedScreen> {
                     // decoration:const BoxDecoration(
                     //   gradient: LinearGradient(colors: [Color.fromRGBO(219, 219, 219, 0.05),Color.fromRGBO(230, 230, 230, 1)],stops: [0,1],transform: GradientRotation(3*math.pi / 2),)
                     // ),
-                    child: Center(
-                      child: Container(
+                    child: const Center(
+                      child: SizedBox(
                         height: 70,
                         width: 70,
                         // color: Palette.loadingColor,
-                        child: const Center(
+                        child: Center(
                             child: CircularProgressIndicator(
                           backgroundColor: Colors.transparent,
                           valueColor:
@@ -475,7 +473,9 @@ class _FeedScreenState extends State<FeedScreen> {
       share();
     } else {
       // else
-      print("whatsapp is not installed");
+      if (kDebugMode) {
+        print("whatsapp is not installed");
+      }
     }
   }
 
@@ -1030,13 +1030,13 @@ class _FeedScreenState extends State<FeedScreen> {
                                 mainAxisSpacing: 1.5,
                                 crossAxisSpacing: 1.5,
                               ),
+                              // ignore: avoid_types_as_parameter_names, non_constant_identifier_names
                               itemBuilder: (BuildContext, index) {
                                 return CardGif(urlGif: list![index]);
                               }),
                         ),
                       );
                     case ConnectionState.done:
-                      // TODO: Handle this case.
                       break;
                   }
                   return const SizedBox(
@@ -1047,6 +1047,7 @@ class _FeedScreenState extends State<FeedScreen> {
             ]),
           );
         }).whenComplete(() => {
+          // ignore: avoid_print
           print("completed"),
           video.controller!.play(),
         });

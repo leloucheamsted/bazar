@@ -1,7 +1,6 @@
 import 'package:bazar/Services/user.dart';
 import 'package:bazar/service_locator.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import './screens/screens.dart';
@@ -41,7 +40,7 @@ void main() async {
               uiud: 'uiud'),
         )
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -57,7 +56,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: NavScreen(),
+      home: const NavScreen(),
     );
   }
 }

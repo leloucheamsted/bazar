@@ -1,12 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:bazar/Services/user.dart';
 import 'package:bazar/data/video.dart';
 import 'package:bazar/widgets/profile_card.dart';
 import 'package:cached_video_player/cached_video_player.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
@@ -81,12 +80,12 @@ class _ShowVideoState extends State<ShowVideo> {
                     // decoration:const BoxDecoration(
                     //   gradient: LinearGradient(colors: [Color.fromRGBO(219, 219, 219, 0.05),Color.fromRGBO(230, 230, 230, 1)],stops: [0,1],transform: GradientRotation(3*math.pi / 2),)
                     // ),
-                    child: Center(
-                      child: Container(
+                    child: const Center(
+                      child: SizedBox(
                         height: 70,
                         width: 70,
                         // color: Palette.loadingColor,
-                        child: const Center(
+                        child: Center(
                             child: CircularProgressIndicator(
                           backgroundColor: Colors.transparent,
                           valueColor:
@@ -298,6 +297,7 @@ class _ShowVideoState extends State<ShowVideo> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   void DetailsPopup(String details, String quantite, String number) {
     if (kDebugMode) {
       print(context.watch<User>().whatsapp);
@@ -409,6 +409,7 @@ class _ShowVideoState extends State<ShowVideo> {
                   ),
 
                   /// delete button if is user who had post product
+                  // ignore: unrelated_type_equality_checks
                   if (widget.video == context.watch<User>().whatsapp)
                     SizedBox(
                       height: 50.0,

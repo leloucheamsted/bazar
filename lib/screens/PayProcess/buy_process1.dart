@@ -10,9 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:stacked_services/stacked_services.dart';
 
 class BuyProcessOne extends StatefulWidget {
   final Video video;
@@ -87,7 +85,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemNavigationBarColor: Palette.colorLight,
         systemNavigationBarIconBrightness: Brightness.light,
         systemNavigationBarDividerColor: Palette.colorLight,
@@ -98,7 +96,7 @@ class _BuyProcessOneState extends State<BuyProcessOne> {
       onWillPop: () async {
         Navigator.of(context).pop();
         if (Platform.isAndroid) {
-          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
               systemNavigationBarColor: Colors.transparent,
               systemNavigationBarIconBrightness: Brightness.dark,
               statusBarIconBrightness:

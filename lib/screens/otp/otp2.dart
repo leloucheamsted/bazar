@@ -1,8 +1,8 @@
 import 'package:bazar/widgets/countdown.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/widgets.dart';
 import '../../config/palette.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -29,26 +29,20 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
       color: const Color.fromRGBO(126, 203, 224, 1),
     ),
   );
-  int _counter = 0;
   late AnimationController _controller;
   int levelClock = 120;
   @override
   void initState() {
     _verifyPhone();
-    // TODO: implement initState
     super.initState();
     _controller = AnimationController(
         vsync: this, duration: Duration(seconds: levelClock));
 
     _controller.forward();
 
-    print(phone);
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    if (kDebugMode) {
+      print(phone);
+    }
   }
 
   @override
@@ -60,14 +54,13 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
 
   @override
   Widget build(BuildContext context) {
-    String number = Get.arguments.toString();
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,
         backgroundColor: Palette.colorLight,
         //iconTheme: IconThemeData(color: Palette.colorText),
         centerTitle: true,
-        title: Text('mokolo',
+        title: const Text('mokolo',
             style: TextStyle(
                 fontSize: 40.0,
                 fontFamily: 'Prompt_Bold',
@@ -80,7 +73,7 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
           alignment: Alignment.center,
           child: Column(
             children: [
-              Text(
+              const Text(
                 '6-digit code',
                 style: TextStyle(
                   fontSize: 30.0,
@@ -88,7 +81,7 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
                   color: Palette.colorText,
                 ),
               ),
-              Text(
+              const Text(
                 'Please enter the code we’ve sent by SMS',
                 style: TextStyle(
                   fontSize: 18.0,
@@ -96,13 +89,13 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
                   color: Colors.grey,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Pinput(
                 length: 6,
                 focusNode: _pinPutFocusNode,
-                animationDuration: Duration(milliseconds: 10),
+                animationDuration: const Duration(milliseconds: 10),
                 animationCurve: Curves.easeInOut,
                 controller: _pinPutController,
                 pinAnimationType: PinAnimationType.fade,
@@ -115,26 +108,28 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
                         .then((value) async {
                       FocusScope.of(context).previousFocus();
                       Get.to(
-                        SetupAccountScreen(),
+                        const SetupAccountScreen(),
                         arguments: phone,
                         transition: Transition.rightToLeft,
-                        duration: Duration(seconds: 1),
+                        duration: const Duration(seconds: 1),
                       );
                     });
                   } catch (e) {
                     FocusScope.of(context).unfocus();
                     _scaffoldkey.currentState!
-                        .showSnackBar(SnackBar(content: Text('invalid OTP')));
+                        // ignore: deprecated_member_use
+                        .showSnackBar(
+                            const SnackBar(content: Text('invalid OTP')));
                   }
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Resend code in ',
                     style: TextStyle(
                         fontFamily: "Prompt_Regular",
@@ -169,7 +164,7 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
               content: const Text("Phone Number verified!!!"),
               actions: [
                 CupertinoButton(
-                    child: Text('Close'),
+                    child: const Text('Close'),
                     onPressed: () {
                       Navigator.of(context).pop();
                     }),
@@ -178,7 +173,9 @@ class _EnterCodeScreenState extends State<EnterCodeScreen>
           });
         },
         verificationFailed: (FirebaseAuthException e) {
-          print(e.message);
+          if (kDebugMode) {
+            print(e.message);
+          }
         },
         codeSent: (String verficationID, int? resendToken) {
           setState(() {

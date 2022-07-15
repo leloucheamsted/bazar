@@ -1,4 +1,5 @@
-import 'dart:developer';
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +8,6 @@ import 'package:bazar/screens/profile/setting.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:stacked_services/stacked_services.dart';
 // import '../../widgets/button.dart';
@@ -49,13 +49,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark, // dark text for status bar
         statusBarColor: Colors.white));
-    List<DocumentSnapshot> items;
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
@@ -257,9 +256,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   mainAxisSpacing: 1.5,
                                   crossAxisSpacing: 1.5,
                                 ),
+                                // ignore: avoid_types_as_parameter_names
                                 itemBuilder: (BuildContext, index) {
                                   if (list!.isEmpty) {
-                                    Text("lelou");
+                                    const Text("lelou");
                                   } else {}
                                   return CardGif(urlGif: list[index]);
                                 }),
@@ -270,7 +270,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                   break;
                 case ConnectionState.done:
-                  // TODO: Handle this case.
                   break;
               }
 

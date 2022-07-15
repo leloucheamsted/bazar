@@ -42,8 +42,6 @@ class _EditProfileState extends State<EditProfile> {
   bool isValidName = true, isValidUsername = true, isValidWhatsapp = true;
   @override
   void initState() {
-    // TODO: implement initState
-
     setState(() {
       pseudocontroller.text = lastUsername;
       nametextController.text = lastname;
@@ -132,17 +130,23 @@ class _EditProfileState extends State<EditProfile> {
                               if (name.length > 2 &&
                                   name.toLowerCase() != "mokolo") {
                                 isValidName = true;
-                                print(isValidName);
+                                if (kDebugMode) {
+                                  print(isValidName);
+                                }
                               } else {
                                 isValidName = false;
-                                print(isValidName);
+                                if (kDebugMode) {
+                                  print(isValidName);
+                                }
                               }
                             });
                           },
                           controller: nametextController,
                           autocorrect: false,
                           textAlign: TextAlign.start,
-                          validator: (value) {},
+                          validator: (value) {
+                            return null;
+                          },
                           style: const TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
@@ -174,17 +178,23 @@ class _EditProfileState extends State<EditProfile> {
                               if (username.length > 2 &&
                                   username.toLowerCase() != "mokolo") {
                                 isValidUsername = true;
-                                print(isValidUsername);
+                                if (kDebugMode) {
+                                  print(isValidUsername);
+                                }
                               } else {
                                 isValidUsername = false;
-                                print(isValidUsername);
+                                if (kDebugMode) {
+                                  print(isValidUsername);
+                                }
                               }
                             });
                           },
                           controller: pseudocontroller,
                           autocorrect: false,
                           textAlign: TextAlign.start,
-                          validator: (value) {},
+                          validator: (value) {
+                            return null;
+                          },
                           style: const TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
@@ -310,10 +320,14 @@ class _EditProfileState extends State<EditProfile> {
                                 onChanged: (value) {
                                   if (value.length == 9 && value[0] == "6") {
                                     isValidWhatsapp = true;
-                                    print(isValidWhatsapp);
+                                    if (kDebugMode) {
+                                      print(isValidWhatsapp);
+                                    }
                                   } else {
                                     isValidWhatsapp = false;
-                                    print(isValidWhatsapp);
+                                    if (kDebugMode) {
+                                      print(isValidWhatsapp);
+                                    }
                                   }
                                 },
                                 inputFormatters: <TextInputFormatter>[
@@ -376,9 +390,11 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   onPressed: () async {
-                    print(isValidName.toString() +
-                        isValidUsername.toString() +
-                        isValidWhatsapp.toString());
+                    if (kDebugMode) {
+                      print(isValidName.toString() +
+                          isValidUsername.toString() +
+                          isValidWhatsapp.toString());
+                    }
                     String info = "Your information is being modified...";
                     if (lastUsername == pseudocontroller.text &&
                         lastname == nametextController.text &&
@@ -441,6 +457,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
 // Snack Bar error show
+  // ignore: non_constant_identifier_names
   void SnackPopup(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       // behavior: SnackBarBehavior.floating,

@@ -1,7 +1,5 @@
 import 'package:bazar/Services/service_video.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 //import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
@@ -27,8 +25,9 @@ class FielModelFire extends BaseViewModel {
     videoSource!.listVideos[index].controller!.play();
     //videoSource.listVideos[prevVideo].controller.removeListener(() {});
 
-    if (videoSource!.listVideos[prevVideo].controller != null)
+    if (videoSource!.listVideos[prevVideo].controller != null) {
       videoSource!.listVideos[prevVideo].controller!.pause();
+    }
 
     prevVideo = index;
     notifyListeners();
@@ -40,7 +39,9 @@ class FielModelFire extends BaseViewModel {
     if (videoSource!.listVideos.length > index) {
       await videoSource!.listVideos[index].loadController();
       videoSource!.listVideos[index].controller?.play();
-      print('index');
+      if (kDebugMode) {
+        print('index');
+      }
       notifyListeners();
     }
   }

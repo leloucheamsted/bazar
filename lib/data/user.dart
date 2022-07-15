@@ -17,11 +17,11 @@ class CurrentUser {
         imgUrl = json['avatarUrl'];
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['username'] = this.username;
-    data['whatsapp'] = this.whatsapp;
-    data['avatarUrl'] = this.imgUrl;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['username'] = username;
+    data['whatsapp'] = whatsapp;
+    data['avatarUrl'] = imgUrl;
     return data;
   }
 }

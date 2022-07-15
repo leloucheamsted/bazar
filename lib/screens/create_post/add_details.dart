@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -371,7 +370,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                             : null;
                       },
                       child: const Padding(
-                        padding: const EdgeInsets.fromLTRB(35.0, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(35.0, 0, 0, 0),
                         child: Center(
                           child: Text(
                             'Publish',
@@ -419,13 +418,13 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
     // context.read<User>().getcurentuser();
     // final prefs = await SharedPreferences.getInstance();
     // String? user = prefs.getString('name');
-    if(kDebugMode){
+    if (kDebugMode) {
       print(context.read<User>().username);
       print(context.read<User>().name);
       print(context.read<User>().whatsapp);
       print(context.read<User>().uiud);
     }
-    var id = Uuid().v4();
+    var id = const Uuid().v4();
     final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
     final Directory _appDocDir = await getApplicationDocumentsDirectory();
     final dir = _appDocDir.path;
@@ -437,8 +436,8 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
             File(widget.path),
           );
       await storage.ref('Gif/$id').putFile(
-        File(outPath),
-      );
+            File(outPath),
+          );
       String downloadURL = await firebase_storage.FirebaseStorage.instance
           .ref('videos/$id')
           .getDownloadURL();
@@ -447,27 +446,26 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
       String downloadGifURL = await firebase_storage.FirebaseStorage.instance
           .ref('Gif/$id')
           .getDownloadURL();
-      if(kDebugMode){
+      if (kDebugMode) {
         print(downloadGifURL);
         print(downloadURL);
       }
       //
-      final data =
-        {
-          "numeroVendeur": context.read<User>().whatsapp,
-          "prix": price,
-          "nom":  context.read<User>().name,
-          "video_title": "video_title",
-          "Category": choiceCategory,
-          "likes": '0',
-          "details": details!,
-          "whatsapp":context.read<User>().whatsapp,
-          "profile": context.read<User>().imgUrl,
-          "quantite": NbrePiece.toString(),
-          "url": downloadURL,
-          "username":  context.read<User>().username,
-          'gifUrl': downloadGifURL
-        };
+      final data = {
+        "numeroVendeur": context.read<User>().whatsapp,
+        "prix": price,
+        "nom": context.read<User>().name,
+        "video_title": "video_title",
+        "Category": choiceCategory,
+        "likes": '0',
+        "details": details!,
+        "whatsapp": context.read<User>().whatsapp,
+        "profile": context.read<User>().imgUrl,
+        "quantite": NbrePiece.toString(),
+        "url": downloadURL,
+        "username": context.read<User>().username,
+        'gifUrl': downloadGifURL
+      };
       await FirebaseFirestore.instance.collection("Videos").doc().set(data);
       await FirebaseFirestore.instance
           .collection('Users')
@@ -475,7 +473,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
           .update({
         'publication': FieldValue.arrayUnion([downloadGifURL])
       });
-      if(kDebugMode){
+      if (kDebugMode) {
         print("Your publication has added with succes");
       }
     } catch (e) {
@@ -628,7 +626,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                               },
                               borderRadius: BorderRadius.circular(30),
                               child: const Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                                 child: Icon(
                                   Icons.arrow_back_outlined,
                                   color: Palette.colorLight,

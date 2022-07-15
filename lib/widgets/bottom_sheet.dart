@@ -22,11 +22,13 @@ class _BottomSheeScreentState extends State<BottomSheetScreen> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
+                // ignore: prefer_const_literals_to_create_immutables
                 boxShadow: [
-                  BoxShadow(blurRadius: 10, color: Colors.grey, spreadRadius: 5)
+                  const BoxShadow(
+                      blurRadius: 10, color: Colors.grey, spreadRadius: 5)
                 ]),
             child: Column(
-              children: <Widget>[DecoratedTextField(), SheetButton()],
+              children: const <Widget>[DecoratedTextField(), SheetButton()],
             ),
           )
         ],
@@ -36,6 +38,8 @@ class _BottomSheeScreentState extends State<BottomSheetScreen> {
 }
 
 class DecoratedTextField extends StatelessWidget {
+  const DecoratedTextField({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,7 +51,7 @@ class DecoratedTextField extends StatelessWidget {
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: TextField(
+      child: const TextField(
         decoration:
             InputDecoration.collapsed(hintText: 'Enter your reference number'),
       ),
@@ -56,8 +60,9 @@ class DecoratedTextField extends StatelessWidget {
 }
 
 class SheetButton extends StatefulWidget {
-  SheetButton({Key? key}) : super(key: key);
+  const SheetButton({Key? key}) : super(key: key);
 
+  @override
   _SheetButtonState createState() => _SheetButtonState();
 }
 
@@ -75,17 +80,17 @@ class _SheetButtonState extends State<SheetButton> {
                 checkingFlight = true;
               });
 
-              await Future.delayed(Duration(seconds: 1));
+              await Future.delayed(const Duration(seconds: 1));
 
               setState(() {
                 success = true;
               });
 
-              await Future.delayed(Duration(milliseconds: 500));
+              await Future.delayed(const Duration(milliseconds: 500));
 
               Navigator.pop(context);
             },
-            child: Text(
+            child: const Text(
               'Check Flight',
               style: TextStyle(
                 color: Colors.white,
@@ -93,8 +98,8 @@ class _SheetButtonState extends State<SheetButton> {
             ),
           )
         : !success
-            ? CircularProgressIndicator()
-            : Icon(
+            ? const CircularProgressIndicator()
+            : const Icon(
                 Icons.check,
                 color: Colors.green,
               );

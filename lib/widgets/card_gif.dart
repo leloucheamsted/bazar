@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../config/palette.dart';
-import 'package:get/get.dart';
 
 class CardGif extends StatefulWidget {
   final String urlGif;
@@ -32,7 +31,6 @@ class _CardGifState extends State<CardGif> {
         username: '');
     return InkWell(
       onTap: () async {
-        ;
         DocumentSnapshot<Map<String, dynamic>> documentSnapshot;
         FirebaseFirestore.instance
             .collection("Videos")

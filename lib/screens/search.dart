@@ -11,8 +11,9 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      // ignore: prefer_const_literals_to_create_immutables
       children: [
-        Positioned(
+        const Positioned(
           child: TextField(),
         ),
       ],
