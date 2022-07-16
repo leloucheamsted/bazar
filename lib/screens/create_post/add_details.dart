@@ -1,25 +1,25 @@
 import 'dart:io';
 import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/config/palette.dart';
-
+import 'package:bazar/screens/create_post/video_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../Services/user.dart';
 
 class AddDetailsScreen extends StatefulWidget {
   final String path;
-  const AddDetailsScreen({required this.path, Key? key}) : super(key: key);
+  final bool isCamerefront;
+  const AddDetailsScreen(
+      {required this.path, required this.isCamerefront, Key? key})
+      : super(key: key);
 
   @override
   _AddDetailsScreenState createState() => _AddDetailsScreenState();
@@ -87,14 +87,18 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
       onWillPop: () async {
         if (Platform.isAndroid) {
           SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-              systemNavigationBarColor: Palette.primaryColor,
-              systemNavigationBarDividerColor: Palette.primaryColor,
+              systemNavigationBarColor: Colors.transparent,
               systemNavigationBarIconBrightness: Brightness.dark,
               statusBarIconBrightness:
-                  Brightness.light, // dark text for status bar
+                  Brightness.dark, // dark text for status bar
               statusBarColor: Colors.transparent));
         }
-        Navigator.pop(context, false);
+        Navigator.pop(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => VideoViewPage(
+                  path: widget.path, isCamerafront: widget.isCamerefront),
+            ));
         return false;
       },
       child: Scaffold(
@@ -415,6 +419,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
 
 // Fonction d'ajout de la video sur firebase et d'ajout de la publication
   Future uploadStorage() async {
+    final FlutterFFmpeg _flutterFFmpeg0 = FlutterFFmpeg();
     // context.read<User>().getcurentuser();
     // final prefs = await SharedPreferences.getInstance();
     // String? user = prefs.getString('name');
@@ -424,16 +429,31 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
       print(context.read<User>().whatsapp);
       print(context.read<User>().uiud);
     }
-    var id = const Uuid().v4();
-    final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+    var id1 = const Uuid().v4();
     final Directory _appDocDir = await getApplicationDocumentsDirectory();
     final dir = _appDocDir.path;
+    final outPath1 = "$dir/$id1.mp4";
+    // verify to flip video
+    if (widget.isCamerefront == false) {
+      await _flutterFFmpeg0
+          .execute("-i ${widget.path} -vf hflip -c:a copy $outPath1")
+          .then(
+            // ignore: avoid_print
+            (returnCode) => print("Return code $returnCode"),
+          );
+    }
+
+    // create gif
+    var id = const Uuid().v4();
+    final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+    //  final Directory _appDocDir = await getApplicationDocumentsDirectory();
+    // final dir = _appDocDir.path;
     final outPath = "$dir/$id.gif";
     await _flutterFFmpeg
         .execute('-i ${widget.path} -vf fps=5,scale=450:-1 -t 3 $outPath');
     try {
       await storage.ref('videos/$id').putFile(
-            File(widget.path),
+            File(widget.isCamerefront == true ? widget.path : outPath1),
           );
       await storage.ref('Gif/$id').putFile(
             File(outPath),

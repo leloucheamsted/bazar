@@ -1,4 +1,7 @@
 import 'package:bazar/Services/user.dart';
+import 'package:bazar/screens/create_post/add_details.dart';
+import 'package:bazar/screens/create_post/camera_screen.dart';
+import 'package:bazar/screens/create_post/video_view.dart';
 import 'package:bazar/service_locator.dart';
 import 'package:camera/camera.dart';
 import 'package:provider/provider.dart';
@@ -57,6 +60,15 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const NavScreen(),
+      routes: <String, WidgetBuilder>{
+        '/nav_screen': (BuildContext context) => const NavScreen(),
+        '/camera_screen': (BuildContext context) =>
+            CameraScreen(cameras: cameras),
+        '/video_view_screen': (BuildContext context) =>
+            const VideoViewPage(path: 'path', isCamerafront: false),
+        '/add_details_screen': (context) =>
+            const AddDetailsScreen(path: 'path', isCamerefront: false),
+      },
     );
   }
 }

@@ -31,6 +31,7 @@ class _CameraScreenState extends State<CameraScreen> {
   bool isRecoring = false;
   bool flash = false;
   bool iscamerafront = true;
+  bool isruning = false;
   // final double mirror = iscamerafront == true ? math.pi : 0;
 
   double transform = 0;
@@ -49,7 +50,9 @@ class _CameraScreenState extends State<CameraScreen> {
     _timer = Timer(const Duration(milliseconds: 500), () {
       // SOMETHING
     });
-    setState(() {});
+    setState(() {
+      isruning = false;
+    });
     _cameraController = CameraController(cameras![0], ResolutionPreset.medium);
     cameraValue = _cameraController.initialize();
   }
@@ -60,7 +63,10 @@ class _CameraScreenState extends State<CameraScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (builder) => VideoViewPage(path: videopath.path)));
+              builder: (builder) => VideoViewPage(
+                    path: videopath.path,
+                    isCamerafront: iscamerafront,
+                  )));
     }
   }
 
@@ -80,7 +86,10 @@ class _CameraScreenState extends State<CameraScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (builder) => VideoViewPage(path: videopath.path)));
+                  builder: (builder) => VideoViewPage(
+                        path: videopath.path,
+                        isCamerafront: iscamerafront,
+                      )));
         });
       } else {
         setState(() {
@@ -203,16 +212,18 @@ class _CameraScreenState extends State<CameraScreen> {
                       ),
                       InkWell(
                         onTap: () async {
-                          setState(() {
-                            iscamerafront = !iscamerafront;
-                            transform = transform + pi;
-                          });
-                          int cameraPos = iscamerafront ? 0 : 1;
-                          _cameraController = CameraController(
-                            widget.cameras![cameraPos],
-                            ResolutionPreset.max,
-                          );
-                          cameraValue = _cameraController.initialize();
+                          if (isRecoring == false) {
+                            setState(() {
+                              iscamerafront = !iscamerafront;
+                              transform = transform + pi;
+                            });
+                            int cameraPos = iscamerafront ? 0 : 1;
+                            _cameraController = CameraController(
+                              widget.cameras![cameraPos],
+                              ResolutionPreset.max,
+                            );
+                            cameraValue = _cameraController.initialize();
+                          } else {}
                         },
                         borderRadius: BorderRadius.circular(30),
                         child: Padding(
@@ -263,7 +274,9 @@ class _CameraScreenState extends State<CameraScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => VideoViewPage(
-                                        path: result.files.single.path!)));
+                                          path: result.files.single.path!,
+                                          isCamerafront: iscamerafront,
+                                        )));
                           }
                         },
                         child: Container(
@@ -333,35 +346,35 @@ class _CameraScreenState extends State<CameraScreen> {
                                       .stopVideoRecording();
                                   !iscamerafront
                                       ? {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            // behavior: SnackBarBehavior.floating,
-                                            backgroundColor:
-                                                Palette.primaryColor,
+                                          // ScaffoldMessenger.of(context)
+                                          //     .showSnackBar(SnackBar(
+                                          //   // behavior: SnackBarBehavior.floating,
+                                          //   backgroundColor:
+                                          //       Palette.primaryColor,
 
-                                            duration:
-                                                const Duration(seconds: 4),
-                                            content: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                const Text(
-                                                  "Processing your capture",
-                                                  style: TextStyle(
-                                                      color: Palette.colorLight,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontFamily:
-                                                          'Prompt_Regular'),
-                                                ),
-                                                SvgPicture.asset(
-                                                  'assets/close.svg',
-                                                  color: Palette.colorLight,
-                                                ),
-                                              ],
-                                            ),
-                                          )),
+                                          //   duration:
+                                          //       const Duration(seconds: 4),
+                                          //   content: Row(
+                                          //     mainAxisAlignment:
+                                          //         MainAxisAlignment
+                                          //             .spaceBetween,
+                                          //     children: <Widget>[
+                                          //       const Text(
+                                          //         "Processing your capture",
+                                          //         style: TextStyle(
+                                          //             color: Palette.colorLight,
+                                          //             fontWeight:
+                                          //                 FontWeight.w400,
+                                          //             fontFamily:
+                                          //                 'Prompt_Regular'),
+                                          //       ),
+                                          //       SvgPicture.asset(
+                                          //         'assets/close.svg',
+                                          //         color: Palette.colorLight,
+                                          //       ),
+                                          //     ],
+                                          //   ),
+                                          // )),
                                           // await _flutterFFmpeg
                                           //     .execute(
                                           //         "-i ${videopath.path} -vf hflip -c:a copy $outPath")
@@ -376,9 +389,11 @@ class _CameraScreenState extends State<CameraScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (builder) => VideoViewPage(
-                                              path: iscamerafront
-                                                  ? videopath.path
-                                                  : videopath.path)));
+                                                path: iscamerafront
+                                                    ? videopath.path
+                                                    : videopath.path,
+                                                isCamerafront: iscamerafront,
+                                              )));
                                   _timer.cancel();
                                 }
                               }),

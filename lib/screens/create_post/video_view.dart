@@ -11,8 +11,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'dart:math' as math;
 
 class VideoViewPage extends StatefulWidget {
-  const VideoViewPage({Key? key, required this.path}) : super(key: key);
+  const VideoViewPage(
+      {Key? key, required this.path, required this.isCamerafront})
+      : super(key: key);
   final String path;
+  final bool isCamerafront;
 
   @override
   _VideoViewPageState createState() => _VideoViewPageState();
@@ -71,7 +74,7 @@ class _VideoViewPageState extends State<VideoViewPage> {
                         debugPrint(
                             "${info.visibleFraction} of my widget is visible");
                         if (info.visibleFraction == 0) {
-                          _controller.pause();
+                          _controller.dispose();
                         } else {
                           _controller.play();
                         }
@@ -80,7 +83,9 @@ class _VideoViewPageState extends State<VideoViewPage> {
                         aspectRatio: _controller.value.aspectRatio,
                         child: Transform(
                           alignment: Alignment.center,
-                          transform: Matrix4.rotationY(math.pi),
+                          transform: widget.isCamerafront == false
+                              ? Matrix4.rotationY(math.pi)
+                              : Matrix4.rotationY(0),
                           child: VideoPlayer(_controller),
                         ),
                       ),
@@ -181,12 +186,19 @@ class _VideoViewPageState extends State<VideoViewPage> {
                               } else {
                                 _controller.pause();
                                 // _controller.dispose();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (builder) => AddDetailsScreen(
-                                              path: widget.path,
-                                            )));
+                                Navigator.of(context).pushReplacementNamed(
+                                    '/add_details_screen',
+                                    arguments: {
+                                      'path': widget.path,
+                                      'isCamerefront': widget.isCamerafront
+                                    });
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (builder) => AddDetailsScreen(
+                                //             path: widget.path,
+                                //             isCamerefront:
+                                //                 widget.isCamerafront)));
                               }
                             },
                             child: const Padding(
@@ -290,10 +302,10 @@ class _VideoViewPageState extends State<VideoViewPage> {
     );
   }
 
-  @override
-  void dispose() {
-    //  _controller.pause();
-    _controller.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   //  _controller.pause();
+  //   _controller.pause();
+  //   // super.dispose();
+  // }
 }
