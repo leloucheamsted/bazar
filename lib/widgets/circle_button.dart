@@ -17,9 +17,9 @@ class CircleButton extends StatelessWidget {
     return SizedBox(
         height: 20.0,
         width: 20.0,
-        child: new IconButton(
+        child: IconButton(
           alignment: Alignment.center,
-          padding: new EdgeInsets.all(0.0),
+          padding: const EdgeInsets.all(0.0),
           icon: Icon(icon),
           onPressed: onPressed,
         ));

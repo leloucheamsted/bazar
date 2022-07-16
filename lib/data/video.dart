@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 //import 'package:video_player/video_player.dart';
@@ -7,8 +5,10 @@ import 'package:cached_video_player/cached_video_player.dart';
 
 class Video {
   String numeroVendeur;
+  // ignore: non_constant_identifier_names
   String video_title;
   String prix;
+  // ignore: non_constant_identifier_names
   String Category;
   String quantite;
   String url;
@@ -24,7 +24,9 @@ class Video {
       required this.prix,
       required this.nom,
       required this.username,
+      // ignore: non_constant_identifier_names
       required this.video_title,
+      // ignore: non_constant_identifier_names
       required this.Category,
       required this.likes,
       required this.details,
@@ -46,18 +48,18 @@ class Video {
         url = json['url'];
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['numeroVendeur'] = this.numeroVendeur;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['numeroVendeur'] = numeroVendeur;
     data['nom'] = nom;
-    data['username'] = this.username;
-    data['profile'] = this.profile;
-    data['video_title'] = this.video_title;
-    data['Category'] = this.Category;
-    data['quantite'] = this.quantite;
-    data['likes'] = this.likes;
-    data['details'] = this.details;
-    data['prix'] = this.prix;
-    data['url'] = this.url;
+    data['username'] = username;
+    data['profile'] = profile;
+    data['video_title'] = video_title;
+    data['Category'] = Category;
+    data['quantite'] = quantite;
+    data['likes'] = likes;
+    data['details'] = details;
+    data['prix'] = prix;
+    data['url'] = url;
     return data;
   }
 

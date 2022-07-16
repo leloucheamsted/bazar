@@ -1,30 +1,25 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:bazar/Services/feef_videoModel.dart';
+import 'package:bazar/Services/user.dart';
 import 'package:bazar/TestFlutter/feed_screen.dart';
-import 'package:bazar/data/show_pop.dart';
-import 'package:bazar/main.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
-import 'package:bazar/screens/home_screen.dart';
 import 'package:bazar/screens/otp/otp1.dart';
 import 'package:bazar/screens/profile/profile_screen.dart';
 import 'package:bazar/screens/search_screen.dart';
-import 'package:bazar/widgets/testFire.dart';
 import 'package:camera/camera.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/palette.dart';
-import 'package:get/get.dart';
-import '../../config/palette.dart';
 import '../../config/palette.dart';
 import 'orders/orders_screen.dart';
-import 'package:provider/provider.dart';
 
 class NavScreen extends StatefulWidget {
   const NavScreen({Key? key}) : super(key: key);
@@ -33,57 +28,52 @@ class NavScreen extends StatefulWidget {
 }
 
 class _NavScreenState extends State<NavScreen> {
-  late Future<int> _counter;
+  late int c;
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
-    FeedScreen(),
+    const FeedScreen(),
     const SearchScreen(),
-    new OrdersScreen(
+    OrdersScreen(
       onClicked: () {
         if (kDebugMode) {
           print("show");
         }
       },
     ),
-    ProfileScreen(),
+    const ProfileScreen(isUser: true),
   ]; // to store nested tabs
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = FeedScreen(); // Our first view in viewport
+  Widget currentScreen = const FeedScreen(); // Our first view in viewport
   FeedViewModel feedViewModel = FeedViewModel();
   //  Verifier si c'est la premiere fois que l'utilisateur install l'application
   Future<void> _incrementCounter() async {
     final prefs = await SharedPreferences.getInstance();
-    final int counter = (prefs.getInt('count') ?? 0);
+    final int counter = (prefs.getInt('_counter') ?? 0);
 
-    setState(() {
-      _counter = prefs.setInt('count', counter).then((bool success) {
-        return counter;
-      });
-    });
+    setState(() {});
     if (counter < 1) {
       WelcomePopup(context);
     }
   }
 
-  Future<int> counter() async {
-    final prefs = await SharedPreferences.getInstance();
-    final int counter = (prefs.getInt('count') ?? 0);
-
-    setState(() {
-      _counter = prefs.setInt('count', counter).then((bool success) {
-        return counter;
-      });
-    });
-    return _counter;
+  selecter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    c = prefs.getInt('_counter') ?? 0;
+    if (c == 0) {
+      //  await prefs.setInt('_counter', 1);
+      //return FirstPage();
+    } else {
+      //return SecondPage();
+    }
   }
 
   @override
   void initState() {
     //  feedViewModel.getNumber();
     super.initState();
-    counter();
+    selecter();
 
-    Timer(Duration(seconds: 20), () {
+    Timer(const Duration(seconds: 20), () {
       _incrementCounter();
     });
   }
@@ -91,7 +81,7 @@ class _NavScreenState extends State<NavScreen> {
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.dark,
@@ -106,26 +96,26 @@ class _NavScreenState extends State<NavScreen> {
         children: screens,
       ),
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
           height: 60,
-          decoration: BoxDecoration(),
+          decoration: const BoxDecoration(),
           child: Column(
             children: [
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () {
                         setState(() {
                           currentScreen =
-                              FeedScreen(); // if user taps on this dashboard tab will be active
+                              const FeedScreen(); // if user taps on this dashboard tab will be active
                           currentTab = 0;
                         });
                       },
@@ -133,13 +123,13 @@ class _NavScreenState extends State<NavScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           ImageIcon(
-                            AssetImage('assets/nav_icons/home.png'),
+                            const AssetImage('assets/nav_icons/home.png'),
                             size: 20.0,
                             color: currentTab == 0
                                 ? Palette.primaryColor
                                 : Palette.colorgray,
                           ),
-                          Divider(
+                          const Divider(
                             height: 10.0,
                           ),
                           Text(
@@ -157,8 +147,15 @@ class _NavScreenState extends State<NavScreen> {
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () async {
-                        int c = await counter();
-                        if (c < 1) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        String index = prefs.getString('counter') ?? "0";
+                        if (kDebugMode) {
+                          print('object');
+                          print(index);
+                        }
+                        // int c = await counter();
+                        if (index != "1") {
                           WelcomePopup(context);
                         } else {
                           try {
@@ -172,7 +169,9 @@ class _NavScreenState extends State<NavScreen> {
                                       ),
                                     ));
                           } catch (e) {
-                            print(e);
+                            if (kDebugMode) {
+                              print(e);
+                            }
                           }
                         }
                       },
@@ -187,7 +186,7 @@ class _NavScreenState extends State<NavScreen> {
                                 ? Palette.primaryColor
                                 : Palette.colorgray,
                           ),
-                          Divider(
+                          const Divider(
                             height: 10.0,
                           ),
                           Text(
@@ -202,59 +201,78 @@ class _NavScreenState extends State<NavScreen> {
                         ],
                       ),
                     ),
+                    // MaterialButton(
+                    //   minWidth: 40,
+                    //   onPressed: () async {
+                    //    // int c = await counter();
+                    //     if (c < 1) {
+                    //       WelcomePopup(context);
+                    //     } else {
+                    //       setState(() {
+                    //         currentScreen = new OrdersScreen(
+                    //           onClicked: () {
+                    //             print("clicked");
+                    //           },
+                    //         ); // if user taps on this dashboard tab will be active
+                    //         currentTab = 2;
+                    //       });
+                    //     }
+                    //   },
+                    //   child: Column(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: <Widget>[
+                    //       ImageIcon(
+                    //         AssetImage('assets/nav_icons/orders.png'),
+                    //         size: 20.0,
+                    //         color: currentTab == 2
+                    //             ? Palette.primaryColor
+                    //             : Palette.colorgray,
+                    //       ),
+                    //       Divider(
+                    //         height: 10.0,
+                    //       ),
+                    //       Text(
+                    //         'Operations',
+                    //         style: TextStyle(
+                    //           fontFamily: 'Prompt_Medium',
+                    //           color: currentTab == 2
+                    //               ? Palette.primaryColor
+                    //               : Palette.colorgray,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    //
                     MaterialButton(
                       minWidth: 40,
                       onPressed: () async {
-                        int c = await counter();
-                        if (c < 1) {
-                          WelcomePopup(context);
-                        } else {
-                          setState(() {
-                            currentScreen = new OrdersScreen(
-                              onClicked: () {
-                                print("clicked");
-                              },
-                            ); // if user taps on this dashboard tab will be active
-                            currentTab = 2;
-                          });
+                        Provider.of<User>(context, listen: false)
+                            .getcurentuser();
+                        // context.read<User>().getcurentuser();
+                        if (kDebugMode) {
+                          print("navScreen.dart / username pf user" +
+                              context.read<User>().username);
                         }
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          ImageIcon(
-                            AssetImage('assets/nav_icons/orders.png'),
-                            size: 20.0,
-                            color: currentTab == 2
-                                ? Palette.primaryColor
-                                : Palette.colorgray,
-                          ),
-                          Divider(
-                            height: 10.0,
-                          ),
-                          Text(
-                            'Operations',
-                            style: TextStyle(
-                              fontFamily: 'Prompt_Medium',
-                              color: currentTab == 2
-                                  ? Palette.primaryColor
-                                  : Palette.colorgray,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    MaterialButton(
-                      minWidth: 40,
-                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        String index = prefs.getString('counter') ?? "0";
+                        if (kDebugMode) {
+                          //print('object');
+                          print(
+                              "navscree.dart / index of statut first load app" +
+                                  index);
+                          print(context.read<User>().username);
+                        }
                         // feedViewModel!.getNumber();
-                        int c = await counter();
-                        if (c < 1) {
+                        // int c = await counter();
+                        if (index != "1") {
                           WelcomePopup(context);
                         } else {
                           setState(() {
-                            currentScreen =
-                                ProfileScreen(); // if user taps on this dashboard tab will be active
+                            currentScreen = const ProfileScreen(
+                              isUser: true,
+                            ); // if user taps on this dashboard tab will be active
                             currentTab = 3;
                           });
                         }
@@ -263,13 +281,13 @@ class _NavScreenState extends State<NavScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           ImageIcon(
-                            AssetImage('assets/nav_icons/profile.png'),
+                            const AssetImage('assets/nav_icons/profile.png'),
                             size: 20.0,
                             color: currentTab == 3
                                 ? Palette.primaryColor
                                 : Palette.colorgray,
                           ),
-                          Divider(
+                          const Divider(
                             height: 10.0,
                           ),
                           Text(
@@ -295,40 +313,73 @@ class _NavScreenState extends State<NavScreen> {
   }
 
   //  Popup welcome
+  // ignore: non_constant_identifier_names
   void WelcomePopup(context) {
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (BuildContext bc) {
-          return Container(
-            height: MediaQuery.of(context).size.height * .30,
-            padding: const EdgeInsets.all(20.0),
-            decoration: const BoxDecoration(
-              color: Palette.colorLight,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
+          return IntrinsicHeight(
+            child: Container(
+              padding: const EdgeInsets.all(20.0),
+              decoration: const BoxDecoration(
+                color: Palette.colorLight,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
               ),
-            ),
-            child: Center(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Welcome to basic',
-                    style: TextStyle(
-                      fontFamily: 'Prompt_Bold',
-                      fontSize: 24.0,
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        'Welcome to mokolo',
+                        style: TextStyle(
+                          fontFamily: 'Prompt_Bold',
+                          fontSize: 24.0,
+                        ),
+                      ),
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    'Experience a new way of shopping with short videos feed. Just swipe for new items and if you found the one you like, tap buy now button to purchase it.',
+                  const Spacer(),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Text(
+                      '1- Swipe up and down to discover new articles.',
+                      style: TextStyle(
+                        fontFamily: 'Prompt_Regular',
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  const Text(
+                    '2- Tap the Buy now button to place your order.',
                     style: TextStyle(
                       fontFamily: 'Prompt_Regular',
-                      fontSize: 18.0,
+                      fontSize: 15.0,
                     ),
                   ),
-                  Spacer(
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                    child: Text(
+                      '3- Enter your shipping details and pay.',
+                      style: TextStyle(
+                        fontFamily: 'Prompt_Regular',
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  ),
+                  const Spacer(
                     flex: 3,
                   ),
                   SizedBox(
@@ -337,7 +388,7 @@ class _NavScreenState extends State<NavScreen> {
                     child: RaisedButton(
                       textColor: Colors.white,
                       color: Palette.primaryColor,
-                      child: Text(
+                      child: const Text(
                         "Start",
                         style: TextStyle(
                           fontSize: 20.0,
@@ -346,10 +397,10 @@ class _NavScreenState extends State<NavScreen> {
                       ),
                       onPressed: () async {
                         Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EnterNumberScreen()))
-                            .then((value) {
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const EnterNumberScreen())).then((value) {
                           setState(() {});
 
                           // Get.to(EnterNumberScreen(),
@@ -358,8 +409,8 @@ class _NavScreenState extends State<NavScreen> {
                           //     builder: (context) => EnterNumberScreen());
                         });
                       },
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(15.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                     ),
                   ),
@@ -371,6 +422,7 @@ class _NavScreenState extends State<NavScreen> {
   }
 
   //  Popup Search
+  // ignore: non_constant_identifier_names
   void SearchPopup(context) {
     showModalBottomSheet(
         context: context,
@@ -397,10 +449,10 @@ class _NavScreenState extends State<NavScreen> {
                             color: Palette.colorgray,
                             borderRadius: BorderRadius.circular(18),
                           ),
-                          child: TextField(
+                          child: const TextField(
                             autofocus: true,
                             textAlignVertical: TextAlignVertical.center,
-                            decoration: new InputDecoration.collapsed(
+                            decoration: InputDecoration.collapsed(
                               hintText: 'Search for an item …',
                               hintStyle: TextStyle(
                                 fontFamily: "Prompt_Regular",
@@ -418,7 +470,7 @@ class _NavScreenState extends State<NavScreen> {
                           onTap: () async {
                             Navigator.of(context).pop();
                             // Allez a l'onglet 2
-                            currentScreen = await SearchScreen();
+                            currentScreen = const SearchScreen();
                             currentTab = 1;
                             FocusScope.of(context).unfocus();
                           },
@@ -432,7 +484,7 @@ class _NavScreenState extends State<NavScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
             ),
           );

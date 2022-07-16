@@ -1,16 +1,20 @@
 import 'dart:io';
 
 import 'package:bazar/config/palette.dart';
-import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 //import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'dart:math' as math;
 
 class VideoViewPage extends StatefulWidget {
-  const VideoViewPage({Key? key, required this.path}) : super(key: key);
+  const VideoViewPage(
+      {Key? key, required this.path, required this.isCamerafront})
+      : super(key: key);
   final String path;
+  final bool isCamerafront;
 
   @override
   _VideoViewPageState createState() => _VideoViewPageState();
@@ -63,9 +67,27 @@ class _VideoViewPageState extends State<VideoViewPage> {
             OverflowBox(
               maxWidth: double.infinity,
               child: _controller.value.isInitialized
-                  ? AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
+                  ? VisibilityDetector(
+                      key: const Key("unique key"),
+                      onVisibilityChanged: (VisibilityInfo info) {
+                        debugPrint(
+                            "${info.visibleFraction} of my widget is visible");
+                        if (info.visibleFraction == 0) {
+                          _controller.dispose();
+                        } else {
+                          _controller.play();
+                        }
+                      },
+                      child: AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: widget.isCamerafront == false
+                              ? Matrix4.rotationY(math.pi)
+                              : Matrix4.rotationY(0),
+                          child: VideoPlayer(_controller),
+                        ),
+                      ),
                     )
                   : Container(),
             ),
@@ -163,12 +185,19 @@ class _VideoViewPageState extends State<VideoViewPage> {
                               } else {
                                 _controller.pause();
                                 // _controller.dispose();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (builder) => AddDetailsScreen(
-                                              path: widget.path,
-                                            )));
+                                Navigator.of(context).pushReplacementNamed(
+                                    '/add_details_screen',
+                                    arguments: {
+                                      'path': widget.path,
+                                      'isCamerefront': widget.isCamerafront
+                                    });
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (builder) => AddDetailsScreen(
+                                //             path: widget.path,
+                                //             isCamerefront:
+                                //                 widget.isCamerafront)));
                               }
                             },
                             child: const Padding(
@@ -272,10 +301,10 @@ class _VideoViewPageState extends State<VideoViewPage> {
     );
   }
 
-  @override
-  void dispose() {
-    //  _controller.pause();
-    _controller.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   //  _controller.pause();
+  //   _controller.pause();
+  //   // super.dispose();
+  // }
 }
