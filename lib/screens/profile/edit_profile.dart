@@ -1,15 +1,28 @@
 import 'dart:io';
 
+import 'package:bazar/Services/user.dart';
 import 'package:bazar/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+// import 'package:get/get.dart';
 import '../../config/palette.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key}) : super(key: key);
+  final String? name;
+  final String? username;
+  final String? whatsapp;
+  const EditProfile(
+      {required this.name,
+      required this.username,
+      required this.whatsapp,
+      Key? key})
+      : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -18,21 +31,24 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   TextEditingController nametextController = TextEditingController();
   TextEditingController pseudocontroller = TextEditingController();
+  TextEditingController whatsappcontroller = TextEditingController();
   String lastStreet = "Douala";
   String choiceStreet = "Douala";
-  String lastUsername = 'lelouche';
-  String lastname = "amsted";
+  late String lastUsername = widget.username!;
+  late String lastname = widget.name!;
+  late String lastWhatsapp = widget.whatsapp!;
   String name = "";
   String username = "";
+  bool isValidName = true, isValidUsername = true, isValidWhatsapp = true;
   @override
   void initState() {
-    // TODO: implement initState
-
     setState(() {
       pseudocontroller.text = lastUsername;
       nametextController.text = lastname;
+      whatsappcontroller.text = lastWhatsapp;
       choiceStreet = "Douala";
-      username = lastUsername;
+      // lastname=context.watch<User>().name;
+      // lastUsername =context.watch<User>().username;
     });
 
     getdata();
@@ -49,30 +65,47 @@ class _EditProfileState extends State<EditProfile> {
         .then((value) {
       setState(() {
         pointlist = List.from(value.data()!["Liste_ville"]);
-        print(pointlist.length);
+        if (kDebugMode) {
+          print(pointlist.length);
+        }
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      // lastUsername = context.watch<User>().username.substring(1);
+      //lastname = context.watch<User>().name;
+    });
+
     if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarIconBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light, // dark text for status bar
           statusBarColor: Palette.primaryColor));
     }
     return Scaffold(
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: Palette.primaryColor,
+        centerTitle: true,
+        title: const Text(
+          'Edit profile',
+          style: TextStyle(
+            fontFamily: "Prompt_SemiBold",
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            color: Palette.colorLight,
+          ),
+        ),
+      ),
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          Container(
+          SizedBox(
               child: Column(
             children: [
-              Topbar(
-                  title: 'Edit profile',
-                  onpressed: () {
-                    Navigator.of(context).pop();
-                  }),
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 25, 15, 8),
                 child: SingleChildScrollView(
@@ -93,27 +126,39 @@ class _EditProfileState extends State<EditProfile> {
                         child: TextFormField(
                           onChanged: (value) {
                             setState(() {
-                              username = value;
-                              print(username);
+                              name = value;
+                              if (name.length > 2 &&
+                                  name.toLowerCase() != "mokolo") {
+                                isValidName = true;
+                                if (kDebugMode) {
+                                  print(isValidName);
+                                }
+                              } else {
+                                isValidName = false;
+                                if (kDebugMode) {
+                                  print(isValidName);
+                                }
+                              }
                             });
                           },
-                          controller: pseudocontroller,
+                          controller: nametextController,
                           autocorrect: false,
                           textAlign: TextAlign.start,
-                          focusNode: FocusNode(),
-                          validator: (value) {},
-                          style: TextStyle(
+                          validator: (value) {
+                            return null;
+                          },
+                          style: const TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
                           ),
-                          decoration: InputDecoration.collapsed(
-                            hintText: 'Username',
+                          decoration: const InputDecoration.collapsed(
+                            hintText: 'Full Name',
                             hintStyle: TextStyle(color: Palette.colorgray),
                           ),
                         ),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       // Full Name
@@ -129,26 +174,38 @@ class _EditProfileState extends State<EditProfile> {
                         child: TextFormField(
                           onChanged: (value) {
                             setState(() {
-                              name = value;
-                              print(name);
+                              username = value;
+                              if (username.length > 2 &&
+                                  username.toLowerCase() != "mokolo") {
+                                isValidUsername = true;
+                                if (kDebugMode) {
+                                  print(isValidUsername);
+                                }
+                              } else {
+                                isValidUsername = false;
+                                if (kDebugMode) {
+                                  print(isValidUsername);
+                                }
+                              }
                             });
                           },
-                          controller: nametextController,
+                          controller: pseudocontroller,
                           autocorrect: false,
                           textAlign: TextAlign.start,
-                          focusNode: FocusNode(),
-                          validator: (value) {},
-                          style: TextStyle(
+                          validator: (value) {
+                            return null;
+                          },
+                          style: const TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Prompt_Regular',
                           ),
-                          decoration: InputDecoration.collapsed(
+                          decoration: const InputDecoration.collapsed(
                             hintText: 'Full Name',
                             hintStyle: TextStyle(color: Palette.colorgray),
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
 
@@ -163,10 +220,10 @@ class _EditProfileState extends State<EditProfile> {
                           child: Row(
                             children: [
                               SvgPicture.asset('assets/Cameroon.svg'),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
-                              Text(
+                              const Text(
                                 'Cameroon',
                                 style: TextStyle(
                                   fontFamily: "Prompt_Regular",
@@ -175,7 +232,7 @@ class _EditProfileState extends State<EditProfile> {
                                   fontSize: 20,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               SvgPicture.asset(
                                 'assets/plus.svg',
                                 color: Palette.colorText,
@@ -185,7 +242,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       // City
@@ -205,14 +262,14 @@ class _EditProfileState extends State<EditProfile> {
                               children: [
                                 Text(
                                   choiceStreet,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: "Prompt_Regular",
                                     fontWeight: FontWeight.w500,
                                     color: Palette.colorText,
                                     fontSize: 20,
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 SvgPicture.asset(
                                   'assets/plus.svg',
                                   color: Palette.colorText,
@@ -221,6 +278,78 @@ class _EditProfileState extends State<EditProfile> {
                             ),
                           ),
                         ),
+                      ),
+
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            child: Container(
+                              height: 45,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                color: Palette.colorInput,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SvgPicture.asset('assets/Cameroon.svg'),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              height: 45,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Palette.colorInput,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: TextField(
+                                controller: whatsappcontroller,
+                                onChanged: (value) {
+                                  if (value.length == 9 && value[0] == "6") {
+                                    isValidWhatsapp = true;
+                                    if (kDebugMode) {
+                                      print(isValidWhatsapp);
+                                    }
+                                  } else {
+                                    isValidWhatsapp = false;
+                                    if (kDebugMode) {
+                                      print(isValidWhatsapp);
+                                    }
+                                  }
+                                },
+                                inputFormatters: <TextInputFormatter>[
+                                  // PhoneNumberFormatter(),
+                                  LengthLimitingTextInputFormatter(9),
+                                  FilteringTextInputFormatter.allow(RegExp(
+                                    "[^,.-]",
+                                  )),
+                                ],
+                                // onChanged: _onChanged_number,
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                  fontSize: 20.0,
+                                  fontFamily: 'Prompt_Regular',
+                                ),
+                                decoration: const InputDecoration.collapsed(
+                                    hintText: 'whatsapp number'),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -234,52 +363,90 @@ class _EditProfileState extends State<EditProfile> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(15),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
-                child: OutlineButton(
-                  textColor: Palette.colorText,
-                  color: Palette.secondColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    textStyle: const TextStyle(
+                      color: Palette.colorLight,
+                      fontSize: 20,
+                    ),
+                    padding: const EdgeInsets.all(5),
+                  ),
+                  // textColor: Palette.colorText,
+                  // color: Palette.secondColor,
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
                     child: Text(
                       "Edit",
                       style: TextStyle(
                         fontSize: 20.0,
+                        color: Palette.colorText,
                         fontFamily: 'Prompt_Medium',
                       ),
                     ),
                   ),
                   onPressed: () async {
-                    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                      // behavior: SnackBarBehavior.floating,
-                      backgroundColor: Palette.colorError,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.only(bottom: 0.0),
-                      duration: new Duration(seconds: 6),
-                      content: Container(
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Text(
-                              "Username not available",
-                              style: TextStyle(
-                                  color: Palette.colorLight,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Prompt_Regular'),
-                            ),
-                            new SvgPicture.asset(
-                              'assets/close.svg',
-                              color: Palette.colorLight,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ));
-                    updateProfile();
+                    if (kDebugMode) {
+                      print(isValidName.toString() +
+                          isValidUsername.toString() +
+                          isValidWhatsapp.toString());
+                    }
+                    String info = "Your information is being modified...";
+                    if (lastUsername == pseudocontroller.text &&
+                        lastname == nametextController.text &&
+                        whatsappcontroller.text == lastWhatsapp) {
+                      SnackPopup("Your information is already up to date ",
+                          Palette.primaryColor);
+                    } else {
+                      if (isValidName == true &&
+                          isValidUsername == true &&
+                          isValidWhatsapp == true) {
+                        SnackPopup(info, Palette.primaryColor);
+                        await uploadInfo().whenComplete(() => {
+                              info =
+                                  "Your information has been successfully updated",
+                              SnackPopup(info, Palette.primaryColor)
+                            });
+                        // call service function
+                      } else if (isValidName == false &&
+                          isValidUsername == false &&
+                          isValidWhatsapp == true) {
+                        SnackPopup("The name and username are incorrect",
+                            Palette.colorError);
+                      } else if (isValidName == false &&
+                          isValidUsername == false &&
+                          isValidWhatsapp == false) {
+                        SnackPopup("The form is incorrect", Palette.colorError);
+                      } else if (isValidName == true &&
+                          isValidUsername == true &&
+                          isValidWhatsapp == false) {
+                        SnackPopup("Please enter a correct whatsapp number",
+                            Palette.colorError);
+                      } else if (isValidName == false &&
+                          isValidUsername == true &&
+                          isValidWhatsapp == true) {
+                        SnackPopup(
+                            "Please enter a correct  name", Palette.colorError);
+                      } else if (isValidName == true &&
+                          isValidUsername == false &&
+                          isValidWhatsapp == true) {
+                        SnackPopup("Please enter a correct username",
+                            Palette.colorError);
+                      }
+                    }
+                    if (kDebugMode) {
+                      print(lastname);
+                      print(lastUsername);
+                      print(lastWhatsapp);
+                      print(nametextController.text);
+                      print(pseudocontroller.text);
+                      print(whatsappcontroller.text);
+                    }
                   },
-                  shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(15.0),
-                  ),
                 ),
               ),
             ),
@@ -289,11 +456,47 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void updateProfile() {
-    print('object');
+// Snack Bar error show
+  // ignore: non_constant_identifier_names
+  void SnackPopup(String msg, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      // behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      duration: const Duration(seconds: 6),
+      content: SizedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              msg,
+              style: const TextStyle(
+                  color: Palette.colorLight,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Prompt_Regular'),
+            ),
+            SvgPicture.asset(
+              'assets/close.svg',
+              color: Palette.colorLight,
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
+// Upload user info
+  Future<void> uploadInfo() async {
+    // call service providr function
+    Provider.of<User>(context, listen: false).updateUserInfo(
+        nametextController.text,
+        pseudocontroller.text,
+        whatsappcontroller.text);
+    context.read<User>().getcurentuser();
+    //eturn false;
   }
 
   // Popup List categories
+  // ignore: non_constant_identifier_names
   void PopupListCity() async {
     //  Cat();
 
@@ -313,7 +516,7 @@ class _EditProfileState extends State<EditProfile> {
                       onpressed: () {
                         Navigator.of(context).pop();
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Expanded(
@@ -326,7 +529,9 @@ class _EditProfileState extends State<EditProfile> {
                               Navigator.of(context).pop();
                               setState(() {
                                 choiceStreet = pointlist[index];
-                                print(choiceStreet);
+                                if (kDebugMode) {
+                                  print(choiceStreet);
+                                }
                               });
                             },
                             child: ItemVille(
@@ -334,7 +539,9 @@ class _EditProfileState extends State<EditProfile> {
                                 Pop: () {
                                   setState(() {
                                     choiceStreet = pointlist[index];
-                                    print(choiceStreet);
+                                    if (kDebugMode) {
+                                      print(choiceStreet);
+                                    }
                                     Navigator.of(context).pop(); // Close popup
                                   });
                                 }),

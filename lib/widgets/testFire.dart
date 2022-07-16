@@ -1,13 +1,10 @@
-import 'package:bazar/Services/feef_videoModel.dart';
+// ignore_for_file: file_names
 import 'package:bazar/Services/fiel_model_fire.dart';
-import 'package:bazar/Services/video_controller.dart';
-import 'package:bazar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:stacked/stacked.dart';
 //import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
-import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../data/video.dart';
@@ -95,7 +92,7 @@ class _TestFireState extends State<TestFire> {
                 child: Center(
                   child: Text(
                     video.nom,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),

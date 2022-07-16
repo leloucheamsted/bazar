@@ -1,13 +1,7 @@
 import 'package:bazar/config/palette.dart';
-import 'package:bazar/data/show_pop.dart';
-import 'package:bazar/screens/orders/withdraw.dart';
 import 'package:bazar/widgets/order_item.dart';
-import 'package:bazar/widgets/topbar.dart';
-import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 
 class OrdersScreen extends StatefulWidget {
   final Function onClicked;
@@ -37,7 +31,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             Container(
               padding: const EdgeInsets.all(15),
               child: Column(children: [
-                Container(
+                const SizedBox(
                   width: double.infinity,
                   child: Text(
                     'Balance',
@@ -48,14 +42,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         color: Palette.colorText),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Row(
                   children: [
                     // TOTAL BALANCE
                     Row(
-                      children: [
+                      children: const [
                         //  Prix du peoduits
                         Text(
                           '90,000',
@@ -80,7 +74,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         ),
                       ],
                     ),
-                    Spacer(),
+                    const Spacer(),
 
                     InkWell(
                       onTap: () {
@@ -96,7 +90,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10)),
-                        child: Text(
+                        child: const Text(
                           'withdraw',
                           style: TextStyle(
                               fontFamily: "Prompt_Medium",
@@ -108,10 +102,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
-                Container(
+                const SizedBox(
                   width: double.infinity,
                   child: Text(
                     'Transactions',
@@ -127,7 +121,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
               child: Container(
-                decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                decoration:
+                    const BoxDecoration(color: Colors.white, boxShadow: [
                   BoxShadow(
                       color: Colors.white,
                       offset: Offset(0, 10),
@@ -139,8 +134,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   removeTop: true,
                   child: ListView(
                     shrinkWrap: true,
+                    // ignore: prefer_const_literals_to_create_immutables
                     children: [
-                      OrderItem(),
+                      const OrderItem(),
                     ],
                   ),
                 ),
@@ -152,6 +148,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   void Popwidraw(context) {
     showModalBottomSheet(
         context: context,
@@ -178,10 +175,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             color: Palette.colorgray,
                             borderRadius: BorderRadius.circular(18),
                           ),
-                          child: TextField(
+                          child: const TextField(
                             autofocus: true,
                             textAlignVertical: TextAlignVertical.center,
-                            decoration: new InputDecoration.collapsed(
+                            decoration: InputDecoration.collapsed(
                               hintText: 'Search for an item …',
                               hintStyle: TextStyle(
                                 fontFamily: "Prompt_Regular",
@@ -212,7 +209,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
             ),
           );

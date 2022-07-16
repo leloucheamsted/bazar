@@ -14,37 +14,37 @@ class CameraViewPage extends StatelessWidget {
         backgroundColor: Colors.black,
         actions: [
           IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.crop_rotate,
                 size: 27,
               ),
               onPressed: () {}),
           IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.emoji_emotions_outlined,
                 size: 27,
               ),
               onPressed: () {}),
           IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.title,
                 size: 27,
               ),
               onPressed: () {}),
           IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.edit,
                 size: 27,
               ),
               onPressed: () {}),
         ],
       ),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Stack(
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height - 150,
               child: Image.file(
@@ -57,9 +57,9 @@ class CameraViewPage extends StatelessWidget {
               child: Container(
                 color: Colors.black38,
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                 child: TextFormField(
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
                   ),
@@ -68,19 +68,19 @@ class CameraViewPage extends StatelessWidget {
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "Add Caption....",
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.add_photo_alternate,
                         color: Colors.white,
                         size: 27,
                       ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Colors.white,
                         fontSize: 17,
                       ),
                       suffixIcon: CircleAvatar(
                         radius: 27,
                         backgroundColor: Colors.tealAccent[700],
-                        child: Icon(
+                        child: const Icon(
                           Icons.check,
                           color: Colors.white,
                           size: 27,

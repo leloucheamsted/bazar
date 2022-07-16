@@ -5,7 +5,9 @@ import '../config/palette.dart';
 
 class ItemSettings extends StatelessWidget {
   final String settings;
+  // ignore: non_constant_identifier_names
   final VoidCallback Pop;
+  // ignore: non_constant_identifier_names
   const ItemSettings({required this.settings, required this.Pop, Key? key})
       : super(key: key);
 
@@ -29,7 +31,7 @@ class ItemSettings extends StatelessWidget {
                     Expanded(
                       child: Text(
                         settings,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontFamily: "Prompt_Regular",
                           fontSize: 18,
@@ -46,7 +48,7 @@ class ItemSettings extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(),
+              const Divider(),
             ],
           ),
         ),

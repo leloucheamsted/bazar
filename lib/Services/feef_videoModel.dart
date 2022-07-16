@@ -1,8 +1,8 @@
-import 'package:cached_video_player/cached_video_player.dart';
+// ignore_for_file: file_names
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:stacked/stacked.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../data/video.dart';
 
 class FeedViewModel extends BaseViewModel {
@@ -28,18 +28,19 @@ class FeedViewModel extends BaseViewModel {
     var videoList = <Video>[];
     var videos = (await FirebaseFirestore.instance.collection('Videos').get());
 
-    videos.docs.forEach((element) {
+    for (var element in videos.docs) {
       Video video = Video.fromJson(element.data());
       videoList.add(video);
-    });
-     return videoList;
+    }
+    return videoList;
+    // ignore: dead_code
     notifyListeners();
-   
   }
 
   changeVideo(index) async {
-    if (videos[prevVideo].controller != null)
+    if (videos[prevVideo].controller != null) {
       videos[prevVideo].controller!.pause();
+    }
 
     if (videos[index].controller == null) {
       await videos[index].loadController();
@@ -51,7 +52,9 @@ class FeedViewModel extends BaseViewModel {
     }
     notifyListeners();
 
-    print(index);
+    if (kDebugMode) {
+      print(index);
+    }
   }
 
   void loadVideo(int index) async {

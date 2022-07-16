@@ -1,23 +1,25 @@
 import 'dart:io';
 import 'package:bazar/Services/service_video.dart';
 import 'package:bazar/config/palette.dart';
-
+import 'package:bazar/screens/create_post/video_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import '../../Services/user.dart';
 
 class AddDetailsScreen extends StatefulWidget {
   final String path;
-  const AddDetailsScreen({required this.path, Key? key}) : super(key: key);
+  final bool isCamerefront;
+  const AddDetailsScreen(
+      {required this.path, required this.isCamerefront, Key? key})
+      : super(key: key);
 
   @override
   _AddDetailsScreenState createState() => _AddDetailsScreenState();
@@ -85,14 +87,18 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
       onWillPop: () async {
         if (Platform.isAndroid) {
           SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-              systemNavigationBarColor: Palette.primaryColor,
-              systemNavigationBarDividerColor: Palette.primaryColor,
+              systemNavigationBarColor: Colors.transparent,
               systemNavigationBarIconBrightness: Brightness.dark,
               statusBarIconBrightness:
-                  Brightness.light, // dark text for status bar
+                  Brightness.dark, // dark text for status bar
               statusBarColor: Colors.transparent));
         }
-        Navigator.pop(context, false);
+        Navigator.pop(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => VideoViewPage(
+                  path: widget.path, isCamerafront: widget.isCamerefront),
+            ));
         return false;
       },
       child: Scaffold(
@@ -131,7 +137,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         // height: 200,
                         alignment: Alignment.topLeft,
                         decoration: BoxDecoration(
-                          color: Palette.colorgray,
+                          color: Palette.colorInput,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Stack(children: [
@@ -184,7 +190,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                         height: 50,
                         alignment: Alignment.topLeft,
                         decoration: BoxDecoration(
-                          color: Palette.colorgray,
+                          color: Palette.colorInput,
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Center(
@@ -220,7 +226,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                       height: 50,
                       alignment: Alignment.topLeft,
                       decoration: BoxDecoration(
-                        color: Palette.colorgray,
+                        color: Palette.colorInput,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(
@@ -260,7 +266,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                               'FCFA',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Colors.grey,
+                                color: Palette.colorInput,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: "Prompt_Regular",
                               ),
@@ -283,7 +289,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                       height: 50,
                       alignment: Alignment.topLeft,
                       decoration: BoxDecoration(
-                        color: Palette.colorgray,
+                        color: Palette.colorInput,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(children: [
@@ -368,7 +374,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                             : null;
                       },
                       child: const Padding(
-                        padding: const EdgeInsets.fromLTRB(35.0, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(35.0, 0, 0, 0),
                         child: Center(
                           child: Text(
                             'Publish',
@@ -413,53 +419,83 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
 
 // Fonction d'ajout de la video sur firebase et d'ajout de la publication
   Future uploadStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? user = prefs.getString('name');
-    var id = Uuid().v4();
-    final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+    final FlutterFFmpeg _flutterFFmpeg0 = FlutterFFmpeg();
+    // context.read<User>().getcurentuser();
+    // final prefs = await SharedPreferences.getInstance();
+    // String? user = prefs.getString('name');
+    if (kDebugMode) {
+      print(context.read<User>().username);
+      print(context.read<User>().name);
+      print(context.read<User>().whatsapp);
+      print(context.read<User>().uiud);
+    }
+    var id1 = const Uuid().v4();
     final Directory _appDocDir = await getApplicationDocumentsDirectory();
     final dir = _appDocDir.path;
+    final outPath1 = "$dir/$id1.mp4";
+    // verify to flip video
+    if (widget.isCamerefront == false) {
+      await _flutterFFmpeg0
+          .execute("-i ${widget.path} -vf hflip -c:a copy $outPath1")
+          .then(
+            // ignore: avoid_print
+            (returnCode) => print("Return code $returnCode"),
+          );
+    }
+
+    // create gif
+    var id = const Uuid().v4();
+    final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+    //  final Directory _appDocDir = await getApplicationDocumentsDirectory();
+    // final dir = _appDocDir.path;
     final outPath = "$dir/$id.gif";
     await _flutterFFmpeg
         .execute('-i ${widget.path} -vf fps=5,scale=450:-1 -t 3 $outPath');
     try {
-      await storage.ref('videos/lelouche').putFile(
-            File(widget.path),
+      await storage.ref('videos/$id').putFile(
+            File(widget.isCamerefront == true ? widget.path : outPath1),
           );
-      String downloadURL = await firebase_storage.FirebaseStorage.instance
-          .ref('videos/lelouche')
-          .getDownloadURL();
-      debugPrint(outPath);
-      await storage.ref('Gif/lelouche').putFile(
+      await storage.ref('Gif/$id').putFile(
             File(outPath),
           );
-      String downloadGifURL = await firebase_storage.FirebaseStorage.instance
-          .ref('Gif/lelouche')
+      String downloadURL = await firebase_storage.FirebaseStorage.instance
+          .ref('videos/$id')
           .getDownloadURL();
-      var data = [
-        {
-          "numeroVendeur": '$prefs.getString("number")',
-          "prix": price,
-          "nom": "$prefs.getString('name')",
-          "video_title": "video_title",
-          "Category": choiceCategory,
-          "likes": '0',
-          "details": details!,
-          "profile":
-              'https://firebasestorage.googleapis.com/v0/b/basic-aede4.appspot.com/o/cabraule.jpg?alt=media&token=d43ea864-6f86-4b6f-b2cd-385ffb65b7b5',
-          "quantite": NbrePiece.toString(),
-          "url": downloadURL,
-          "username": "cabraule",
-          'gifUrl': downloadGifURL
-        }
-      ];
-      await FirebaseFirestore.instance.collection("Videos").add(data.first);
+      // debugPrint(outPath);
+      //
+      String downloadGifURL = await firebase_storage.FirebaseStorage.instance
+          .ref('Gif/$id')
+          .getDownloadURL();
+      if (kDebugMode) {
+        print(downloadGifURL);
+        print(downloadURL);
+      }
+      //
+      final data = {
+        "numeroVendeur": context.read<User>().whatsapp,
+        "prix": price,
+        "nom": context.read<User>().name,
+        "video_title": "video_title",
+        "Category": choiceCategory,
+        "likes": '0',
+        "details": details!,
+        "whatsapp": context.read<User>().whatsapp,
+        "profile": context.read<User>().imgUrl,
+        "quantite": NbrePiece.toString(),
+        "url": downloadURL,
+        "username": context.read<User>().username,
+        'gifUrl': downloadGifURL
+      };
+      await FirebaseFirestore.instance.collection("Videos").doc().set(data);
       await FirebaseFirestore.instance
           .collection('Users')
-          .doc('lelouche')
+          .doc('e0CPkvCtazKCgTUAWP1U')
           .update({
         'publication': FieldValue.arrayUnion([downloadGifURL])
       });
+      if (kDebugMode) {
+        print("Your publication has added with succes");
+      }
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -610,7 +646,7 @@ class _AddDetailsScreenState extends State<AddDetailsScreen> {
                               },
                               borderRadius: BorderRadius.circular(30),
                               child: const Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                                 child: Icon(
                                   Icons.arrow_back_outlined,
                                   color: Palette.colorLight,

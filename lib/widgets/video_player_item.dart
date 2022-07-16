@@ -1,11 +1,10 @@
-import 'dart:ui';
+// ignore_for_file: deprecated_member_use
+
 import 'package:bazar/data/video.dart';
 import 'package:bazar/widgets/profile_card.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bazar/config/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:getwidget/components/avatar/gf_avatar.dart';
 //import 'package:video_player/video_player.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 
@@ -23,7 +22,6 @@ class VideoPlayerItem extends StatefulWidget {
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
   late VideoPlayerController videoPlayerController;
 
-  @override
   bool get wantKeepAlive => true;
 
   @override
@@ -82,7 +80,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
               children: [
                 Container(
                   padding: const EdgeInsets.only(bottom: 0),
-                  color: Color.fromRGBO(0, 0, 0, 0.4),
+                  color: const Color.fromRGBO(0, 0, 0, 0.4),
                   height: 60,
                   child: Row(
                     children: [
@@ -93,7 +91,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               ProfileAvatar(imgUrl: widget.element.profile),
-                              SizedBox(
+                              const SizedBox(
                                 width: 5,
                               ),
                               Column(
@@ -102,7 +100,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                                 children: [
                                   Text(
                                     widget.element.nom,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: "Prompt_Medium",
                                       letterSpacing: 1,
                                       fontWeight: FontWeight.w600,
@@ -110,7 +108,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                                       color: Palette.colorLight,
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     'jbij',
                                     style: TextStyle(
                                       fontSize: 14,
@@ -137,7 +135,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                                   'assets/follow.svg',
                                   color: Palette.colorLight,
                                 ),
-                                Text(
+                                const Text(
                                   'Follow',
                                   style: TextStyle(
                                       fontFamily: "Prompt_SemiBold",
@@ -164,7 +162,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                                   'assets/details.svg',
                                   color: Palette.colorLight,
                                 ),
-                                Text(
+                                const Text(
                                   'details',
                                   style: TextStyle(
                                       fontFamily: "Prompt_SemiBold",
@@ -186,7 +184,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                 // Setion PEIX ET ACHAT
                 Container(
                   padding: const EdgeInsets.only(bottom: 0),
-                  color: Color.fromRGBO(41, 109, 252, 1),
+                  color: const Color.fromRGBO(41, 109, 252, 1),
                   height: 55,
                   child: Row(
                     children: [
@@ -198,17 +196,17 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                             //  Prix du peoduits
                             Text(
                               widget.element.prix,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "Prompt_SemiBold",
                                 fontWeight: FontWeight.w600,
                                 color: Palette.colorLight,
                                 fontSize: 20,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
-                            Text(
+                            const Text(
                               'FCFA',
                               style: TextStyle(
                                 fontFamily: "Prompt_SemiBold",
@@ -229,7 +227,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                           onPressed: () {
                             BuyPopup(context);
                           },
-                          child: Text(
+                          child: const Text(
                             'Buy Now',
                             style: TextStyle(
                               fontFamily: "Prompt_Medium",
@@ -250,6 +248,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   }
 
 //  Popup  Details
+  // ignore: non_constant_identifier_names
   void DetailsPopup(context) {
     showModalBottomSheet(
         context: context,
@@ -268,35 +267,35 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
             child: Center(
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Product details',
                     style: TextStyle(
                       fontFamily: 'Prompt_Bold',
                       fontSize: 24.0,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Text(
                         widget.element.details,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Prompt_Regular',
                           fontSize: 18.0,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
 
                   // quantity of product
                   Row(
                     children: [
-                      Text(
+                      const Text(
                         'InStock: ',
                         style: TextStyle(
                           fontFamily: 'Prompt_Regular',
@@ -305,12 +304,12 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                       ),
                       Text(
                         widget.element.quantite,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Prompt_Regular',
                           fontSize: 18.0,
                         ),
                       ),
-                      Text(
+                      const Text(
                         ' articles',
                         style: TextStyle(
                           fontFamily: 'Prompt_Regular',
@@ -319,16 +318,25 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   SizedBox(
                     height: 50.0,
                     width: double.infinity,
-                    child: OutlineButton(
-                      textColor: Palette.secondColor,
-                      color: Palette.secondColor,
-                      child: Text(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        textStyle: const TextStyle(
+                          color: Palette.secondColor,
+                          // fontSize: 20,
+                        ),
+                        backgroundColor: Palette.secondColor,
+                        padding: const EdgeInsets.all(10),
+                      ),
+                      child: const Text(
                         "Close",
                         style: TextStyle(
                           fontSize: 20.0,
@@ -338,9 +346,6 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                       onPressed: () async {
                         Navigator.of(context).pop();
                       },
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(15.0),
-                      ),
                     ),
                   ),
                 ],
@@ -351,6 +356,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   }
 
 // Buy Popup
+  // ignore: non_constant_identifier_names
   void BuyPopup(context) {
     showModalBottomSheet(
         context: context,
@@ -369,22 +375,22 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
             child: Center(
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Welcome to basic',
                     style: TextStyle(
                       fontFamily: 'Prompt_Bold',
                       fontSize: 24.0,
                     ),
                   ),
-                  Spacer(),
-                  Text(
+                  const Spacer(),
+                  const Text(
                     'Experience a new way of shopping with short videos feed. Just swipe for new items and if you found the one you like, tap buy now button to purchase it.',
                     style: TextStyle(
                       fontFamily: 'Prompt_Regular',
                       fontSize: 18.0,
                     ),
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 3,
                   ),
                   SizedBox(
@@ -393,7 +399,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                     child: RaisedButton(
                       textColor: Colors.white,
                       color: Palette.primaryColor,
-                      child: Text(
+                      child: const Text(
                         "Start",
                         style: TextStyle(
                           fontSize: 20.0,
@@ -415,8 +421,8 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                         //   CameraScreen(cameras),
                         // );
                       },
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(15.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                     ),
                   ),

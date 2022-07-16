@@ -10,7 +10,7 @@ class LoadingScreen extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
               colors: [
                 Colors.grey,
                 Colors.white,

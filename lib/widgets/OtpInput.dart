@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:bazar/config/palette.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +21,7 @@ class OtpInput extends StatelessWidget {
         keyboardType: TextInputType.number,
         controller: controller,
         maxLength: 1,
-        style: TextStyle(
+        style: const TextStyle(
           fontFamily: "Prompt_Regular",
           fontSize: 16,
           color: Palette.colorText,

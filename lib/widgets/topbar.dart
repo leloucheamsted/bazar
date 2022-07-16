@@ -14,33 +14,27 @@ class Topbar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15.0, 8, 15, 8),
-        child: Container(
-          child: Center(
-            child: Stack(children: [
-              Container(
-                child: InkWell(
-                  onTap: onpressed,
-                  child: Icon(
-                    Icons.arrow_back_outlined,
-                    color: Palette.colorLight,
-                  ),
+        child: Center(
+          child: Stack(children: [
+            InkWell(
+              onTap: onpressed,
+              child: const Icon(
+                Icons.arrow_back_outlined,
+                color: Palette.colorLight,
+              ),
+            ),
+            Center(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: "Prompt_SemiBold",
+                  fontWeight: FontWeight.w600,
+                  fontSize: 22,
+                  color: Palette.colorLight,
                 ),
               ),
-              Center(
-                child: Container(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: "Prompt_SemiBold",
-                      fontWeight: FontWeight.w600,
-                      fontSize: 22,
-                      color: Palette.colorLight,
-                    ),
-                  ),
-                ),
-              ),
-            ]),
-          ),
+            ),
+          ]),
         ),
       ),
     );

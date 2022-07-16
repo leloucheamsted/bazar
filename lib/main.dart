@@ -1,26 +1,23 @@
-import 'package:bazar/Services/providerModel.dart';
-import 'package:bazar/TestFlutter/feed_screen.dart';
-import 'package:bazar/data/show_pop.dart';
+import 'package:bazar/Services/user.dart';
 import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:bazar/screens/create_post/camera_screen.dart';
-import 'package:bazar/screens/otp/otp2.dart';
+import 'package:bazar/screens/create_post/video_view.dart';
 import 'package:bazar/service_locator.dart';
-import 'package:bazar/widgets/testProvider.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import './screens/screens.dart';
-import './config/palette.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 List<CameraDescription>? cameras;
-Future<void> main() async {
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   cameras = await availableCameras();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.white, // navigation bar color
     statusBarColor: Colors.white, // status bar color
     statusBarBrightness: Brightness.dark, //status bar brigtness
@@ -30,14 +27,30 @@ Future<void> main() async {
     systemNavigationBarIconBrightness: Brightness.light, //navigation bar icon
   ));
   setup();
-
+  // final rxPrefs = RxSharedPreferences(
+  //   SharedPreferences.getInstance(),
+  //   kReleaseMode ? null : const RxSharedPreferencesDefaultLogger(),
+  // );
   runApp(
-    MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => User(
+              name: 'name',
+              imgUrl: 'imgUrl',
+              username: 'username',
+              whatsapp: 'whatsapp',
+              uiud: 'uiud'),
+        )
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -46,7 +59,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: NavScreen(),
+      home: const NavScreen(),
+      routes: <String, WidgetBuilder>{
+        '/nav_screen': (BuildContext context) => const NavScreen(),
+        '/camera_screen': (BuildContext context) =>
+            CameraScreen(cameras: cameras),
+        '/video_view_screen': (BuildContext context) =>
+            const VideoViewPage(path: 'path', isCamerafront: false),
+        '/add_details_screen': (context) =>
+            const AddDetailsScreen(path: 'path', isCamerefront: false),
+      },
     );
   }
 }
