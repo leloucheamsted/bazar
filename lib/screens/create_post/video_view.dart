@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:bazar/config/palette.dart';
-import 'package:bazar/screens/create_post/add_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
